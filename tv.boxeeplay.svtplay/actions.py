@@ -7,18 +7,27 @@ def focusCategory():
     control.SetFocus()
 
 def listPrograms(url):
+    mc.ShowDialogWait()
     list = mc.GetActiveWindow().GetList(2000)
     items = svtplay.getPrograms(url)
-    fillListWithItems(items,list)
+    list.SetItems(items)
+    list.Refresh()
     list.SetFocus()
-    list.SetFocusedItem(0)
+    mc.HideDialogWait()
     
 def listEpisodes():
 
+
     listP = mc.GetActiveWindow().GetList(2000)
     focused = listP.GetItem(listP.GetFocusedItem()) 
-    url = focused.GetProperty("url")
+    url = focused.GetPath()
     ptitle = focused.GetLabel()
+
+    if (focused.GetProperty('type')=='programpage'):
+        listPrograms(focused.GetPath())
+        return
+
+    mc.GetActiveWindow().GetList(2000).SetSelected(listP.GetFocusedItem(), True)
     
     mc.ShowDialogWait()
     itemList = mc.ListItems()
@@ -37,10 +46,12 @@ def listEpisodes():
     
     mc.HideDialogWait()
     
-    mc.GetActiveWindow().GetList(3001).SetItems(items)
-    mc.GetActiveWindow().GetList(3001).SetFocusedItem(0)
-    mc.GetActiveWindow().GetList(3001).SetFocus()
+    if (len(items)>0):
+        mc.GetActiveWindow().GetList(3001).SetItems(items)
+        mc.GetActiveWindow().GetList(3001).SetFocusedItem(0)
+        mc.GetActiveWindow().GetList(3001).SetFocus()
 
+    mc.GetActiveWindow().GetList(2000).SetFocusedItem(1000)
 
     #for item in mc.GetActiveWindow().GetList(3001).GetItems():
     
@@ -56,30 +67,6 @@ def activeButton(numb):
     window.GetToggleButton(1008).SetSelected(False)
     window.GetToggleButton(numb).SetSelected(True)
 
-def fillListWithItems(items,list):
-    itemList = mc.ListItems()
-    
-    for item in items:
-        i = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
-        i.SetLabel(item.name)
-        #i.SetPath(item.url)
-        i.SetProperty("type", item.type)
-        i.SetProperty("url", item.url)
-        i.SetThumbnail(item.image)
-        itemList.append(i)
-        
-    list.SetItems(itemList)
-
-def playRTMP():
-    url = "rtmp://fl11.c91005.cdn.qbrick.com/91005/_definst_/kluster/20110321/PG-1132930-012A-BARDA2009-01-mp4-e-v1.mp4"
-    mc.ShowDialogNotification(url)
-    listItem = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
-    listItem.SetPath(url)
-    listItem.SetLabel('My Test Video')
-    listItem.SetContentType('application/vnd.apple.mpegurl')
-    mc.GetPlayer().Play(listItem)
-    
-    
 def redefineVideos():
     listP = mc.GetActiveWindow().GetList(2000)
     focused = listP.GetItem(listP.GetFocusedItem()) 
@@ -90,13 +77,15 @@ def redefineVideos():
         item = svtplay.defineVideo(item)
         item.SetLabel(item.GetLabel().replace(ptitle+" - ",""))
     
-    #mc.GetActiveWindow().GetList(3001).SetItems(items)
-
 def home():
     activeButton(1001)
     list = mc.GetActiveWindow().GetList(2000)
-    fillListWithItems(svtplay.getStart(),list)
-
+    items = svtplay.getStart()
+    list.SetItems(items)
+    list.SetFocus()
+    list.SetFocusedItem(0)
+    listEpisodes()
+    redefineVideos()
     
     
 

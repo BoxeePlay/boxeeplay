@@ -31,7 +31,7 @@
         	<posx>160</posx>
 			<width>90</width>
 			<height>30</height>
-			<label>(X) BETA2</label>
+			<label>(X) BETA3</label>
 			<font>font14</font>
 			<textcolor>ffbcbdc0</textcolor>
 			<focusedcolor>white</focusedcolor>
@@ -46,6 +46,8 @@
 			<onclick lang="python"><![CDATA[mc.GetApp().Close()]]></onclick>
 		</control>
       
+      <control type="group" ID="999">
+
 		<control type="grouplist" id="1000">
 			<posy>73</posy>
         	<posx>23</posx>
@@ -68,7 +70,7 @@
 				<texturefocus border="10">button.png</texturefocus>
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
-				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96251/barn')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.home()]]></onclick>
 				<onclick lang="python"><![CDATA[actions.activeButton(1001)]]></onclick>
 			</control>
 			<control type="togglebutton" id="1002">
@@ -87,7 +89,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96251/barn')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1001)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1002)]]></onclick>
 			</control>
 			<control type="togglebutton" id="1003">
 				<width>150</width>
@@ -105,7 +107,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96257/film_och_drama')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1002)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1003)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1004">
 				<width>170</width>
@@ -123,7 +125,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96256/kultur_och_noje')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1003)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1004)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1005">
 				<width>200</width>
@@ -141,7 +143,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96254/samhalle_och_fakta')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1004)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1005)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1006">
 				<width>110</width>
@@ -159,7 +161,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96255/nyheter')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1005)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1006)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1007">
 				<width>80</width>
@@ -177,7 +179,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96253/sport')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1006)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1007)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1008">
 				<width>140</width>
@@ -195,7 +197,7 @@
 				<alttexturefocus border="10">button.png</alttexturefocus>
 				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
 				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96252/oppet_arkiv')]]></onclick>
-				<onclick lang="python"><![CDATA[actions.activeButton(1007)]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1008)]]></onclick>
          	</control>
 
 		</control>
@@ -205,10 +207,10 @@
 	<posx>25</posx>
 	<posy>135</posy>
 	<width>250</width>
-	<height>600</height>
+	<height>550</height>
 	<visible>true</visible>
 	<onup>1000</onup>
-	<onright>3000</onright>
+	<onright>3001</onright>
 	<content type="action">
 		<onclick lang="python"><![CDATA[
 actions.listEpisodes()
@@ -245,7 +247,7 @@ actions.listEpisodes()
 			<posy>0</posy>
 			<width>225</width>
 			<height>30</height>
-			<texture>button.png</texture>
+			<texture>button_alt.png</texture>
 		</control>
       <control type="label">
          <posx>30</posx>
@@ -254,17 +256,16 @@ actions.listEpisodes()
          <height>30</height>
          <font>font16</font>
          <aligny>center</aligny>
-         <selectedcolor>white</selectedcolor>
+         <selectedcolor>green</selectedcolor>
          <align>left</align>
          <info>ListItem.Label</info>
       </control>
    </focusedlayout>
 </control>
 
-<control type="group" id="3000">
+	<control type="panel" id="3001">
 			<posx>300</posx>
 			<posy>135</posy>
-			<control type="panel" id="3001">
 			<height>592</height>
 			<width>900</width>
 			<scrolltime>200</scrolltime>
@@ -350,6 +351,7 @@ actions.listEpisodes()
 				</control>
 			</focusedlayout>
 		</control>
+
 	</control>
       
    </controls>

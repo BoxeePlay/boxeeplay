@@ -8,13 +8,13 @@ def getStart():
 	ul = re.compile('<ul class="navigation playerbrowser[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0]
 	types = re.compile('<li class="[^"]*">\W+<a href="([^"]+)"[^>]*>([^<]+)').findall(ul, re.DOTALL)
     
-	items = []
+	items = mc.ListItems()
 	for url,title in types:
-		c1 = content.videoitem()
-		c1.name = utilities.decodeHtmlEntities(title)
-		c1.url = url
-		c1.type = 'startitem'
-		items.append(c1)
+		i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
+		i.SetLabel(utilities.decodeHtmlEntities(title))
+		i.SetPath(url)
+		i.SetProperty('type','startitem')
+		items.append(i)
         
 	return items    
 
@@ -22,9 +22,9 @@ def getStartEpisodes(url):
 	data = utilities.getData(content.baseurl+'/'+url)
 	uls = re.compile('<ul class="list {pagenum:[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0]
 	lis = re.compile('<li class="[^"]*">\W+<a href="([^"]+)" title="([^"]+)"').findall(uls, re.DOTALL)
-	items = itemList = mc.ListItems()
+	items = mc.ListItems()
 	for url,title in lis:
-		mc.LogInfo('**************** '+title+'   -   '+content.baseurl+url )
+		#mc.LogInfo('**************** '+title+'   -   '+content.baseurl+url )
 		i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
 		i.SetLabel(title)
 		i.SetPath(content.baseurl+url)
@@ -33,22 +33,22 @@ def getStartEpisodes(url):
 	return items
 
 
-def getCategories():
-	data = utilities.getData(content.baseurl+'/kategorier')
-	ul = re.compile('<ul class="list category-list[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0]
-	categories = re.compile('<li class="[^"]*">\W+<div class="container">\W*<a href="([^"]+)"[^>]*>\W*<img[^>]+src="([^"]+)[^>]+>\W*<span class="bottom"></span>\W*<span class="[^"]*">([^>]+)</span>').findall(ul, re.DOTALL)
-    
-	items = []
-	for curl, image, title in categories:
-		c1 = content.videoitem()
-		c1.name = utilities.decodeHtmlEntities(title)
-		c1.url = curl
-		c1.image = image
-		c1.level = 'category'
-		c1.type = 'folder'
-		items.append(c1)
+#def getCategories():
+#	data = utilities.getData(content.baseurl+'/kategorier')
+#	ul = re.compile('<ul class="list category-list[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0]
+#	categories = re.compile('<li class="[^"]*">\W+<div class="container">\W*<a href="([^"]+)"[^>]*>\W*<img[^>]+src="([^"]+)[^>]+>\W*<span class="bottom"></span>\W*<span class="[^"]*">([^>]+)</span>').findall(ul, re.DOTALL)
+ #   
+	#items = []
+#	for curl, image, title in categories:
+#		c1 = content.videoitem()
+#		c1.name = utilities.decodeHtmlEntities(title)
+#		c1.url = curl
+#		c1.image = image
+#		c1.level = 'category'
+#		c1.type = 'folder'
+#		items.append(c1)
         
-	return items    
+#	return items    
 
 def getProgramRSS(url):
 	data = utilities.getData(content.baseurl+url)
@@ -58,22 +58,33 @@ def getProgramRSS(url):
 def getPrograms(url):
     data = utilities.getData(content.baseurl+url)
     uls = re.compile('<ul class="list[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)
-    #pagecount = int(re.compile('<ul class="list {pagenum:(\d+)[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0])
-    items = []
+    pagecount = int(re.compile('<ul class="list {pagenum:(\d+)[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0])
+    items = mc.ListItems()
     for ul in uls:
 		programs = re.compile('<li class="[^"]*"\W*>\W+<a href="([^"]+)"[^>]+title="([^"]*)"[^>]+>\W+<img[^>]+src="[^"]+[^>]+>\W+(<!--[^/]+/span -->\W+){0,1}<span[^>]*>([^<]+)</span>').findall(ul, re.DOTALL)
 		for purl, desc, x, title in programs:
-			c1 = content.videoitem()
-			c1.url = purl
-			c1.name = title
-			c1.desc = desc
-			items.append(c1)
+			if (len(title)>1):
+				i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
+				i.SetLabel(title)
+				i.SetPath(purl)
+				i.SetDescription(desc)
+				items.append(i)
+    
+    if (pagecount>1):
+		next = re.compile('<ul class="pagination program">[\W\w]+?<li class="next "><a href="([^"]+)"').findall(data, re.DOTALL)[0]
+		i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
+		i.SetLabel('>> Visa nästa sida')
+		i.SetPath(url+next)
+		i.SetProperty('type','programpage')
+		items.append(i)
+		mc.LogInfo('*************** ' +url+next)
+    	
     return items
 	
 def getEpisodes(url):
 	data = utilities.getData(content.baseurl+url)
 	uls = re.compile('<link rel="alternate" href="([^"]+)"').findall(data, re.DOTALL)
-	items = []
+	items = mc.ListItems()
 	for ul in uls:
 		data = utilities.getData(ul)
 		programs = re.compile('<item>\W*<title>([^"]+)</title>\W*<link>([^"]+)</link>').findall(data, re.DOTALL)
@@ -81,15 +92,13 @@ def getEpisodes(url):
 			#data = getData(purl)
 			#videolink = re.compile('dynamicStreams=url:([^,]+),').findall(data, re.DOTALL)[0]
 			#addListItem(videolink, videolink, "", 'video')
+			i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
 			data = utilities.getData(purl)
 			image=re.compile('<meta property="og:image" content="([^"]+)"').findall(data, re.DOTALL)[0]
-			c1 = content.videoitem()
-			c1.name = utilities.decodeHtmlEntities(title)
-			c1.url = purl
-			c1.image = image
-			c1.level = 'video'
-			c1.type = 'video'
-			items.append(c1)
+			i.SetLabel(utilities.decodeHtmlEntities(title))
+			i.SetPath(purl)
+			i.SetThumbnail(image)
+			items.append(i)
 	return items
 
 def getImageUrl(data):
@@ -120,8 +129,12 @@ def defineVideo(item):
 	domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
 	id = re.compile('_definst_/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
 	url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id) + '.mp4'
+	url = url + '&bx-jsactions=http://boxeeplay.tv/flowplayer/flow.js'
 	
-	mc.LogInfo('******** URL = '+url)
+	#Får inte denna att fungera!
+	path = 'flash://boxeeplay.tv/src=' + quote_plus(url)
+	
+	#mc.LogInfo('******** URL = '+url)
 	
 	item.SetPath(url)
 	item.SetProperty('url',url)
@@ -130,24 +143,3 @@ def defineVideo(item):
 	
 	return item
 
-def play(listitem):
-	#data = getData(url)
-	#videolink = re.compile('pathflv=([^&]+)').findall(data, re.DOTALL)[0]
-	
-	#item=xbmcgui.ListItem(name, iconImage='', thumbnailImage='')
-	#item.setInfo(type="Video", infoLabels={ "Title": name})
-	
-   #my_stream = {
-   #'url':      listitem.GetPath(),
-   #'quality':  'A',
-   #'title':    listitem.GetLabel()
-   #}
-   
-   #playHlsStream(my_stream)	
-	
-	player = mc.GetPlayer()
-	player.Play(listitem)
-	#mc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(videolink, item)
-	
-		
-		

@@ -1,2 +1,14 @@
 syntax: glob
 .DS_Store
+\.project
+\.pydevproject
+cnet
+com\.bart\.tv
+flickr
+foratv
+kidmango
+lastfm
+reddittv
+se\.hypernode\.svtplay
+speedtv
+\.hgignore
