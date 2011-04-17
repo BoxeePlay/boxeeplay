@@ -1,0 +1,356 @@
+<?xml version=	"1.0"?>
+<window type="window" id="14000">
+   <defaultcontrol always="true">1000</defaultcontrol>
+   <allowoverlay>no</allowoverlay>
+   <onload lang="python">
+<![CDATA[
+]]>
+	</onload>
+   <controls>
+      <control type="group">
+         <animation type="WindowOpen">
+            <effect type="fade" start="0" end="100" time="200" />
+         </animation>
+         <control type="image">
+            <width>1280</width>
+            <height>720</height>
+            <texture>ba_background.png</texture>
+         </control>
+		<!--control type="image">
+		   <width>1280</width>
+		   <height>720</height>
+		   <texture>debuggrid.png</texture>
+		</control-->
+      </control>
+      
+      
+		<control type="button" id="99">
+			<ondown>1000</ondown>
+			<onright>199</onright>
+			<posy>23</posy>
+        	<posx>160</posx>
+			<width>90</width>
+			<height>30</height>
+			<label>(X) BETA2</label>
+			<font>font14</font>
+			<textcolor>ffbcbdc0</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<selectedcolor>white</selectedcolor>
+			<align>center</align>
+			<aligny>top</aligny>
+			<textoffsety>8</textoffsety>
+			<texturenofocus border="10">button_bg.png</texturenofocus>
+			<texturefocus border="10">button.png</texturefocus>
+			<alttexturefocus border="10">button.png</alttexturefocus>
+			<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+			<onclick lang="python"><![CDATA[mc.GetApp().Close()]]></onclick>
+		</control>
+      
+		<control type="grouplist" id="1000">
+			<posy>73</posy>
+        	<posx>23</posx>
+			<itemgap>10</itemgap>
+			<orientation>horizontal</orientation>
+			<ondown>2000</ondown>
+			<onup>99</onup>
+			<control type="togglebutton" id="1001">
+				<width>80</width>
+				<height>40</height>
+				<label>START</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96251/barn')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1001)]]></onclick>
+			</control>
+			<control type="togglebutton" id="1002">
+				<width>80</width>
+				<height>40</height>
+				<label>BARN</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96251/barn')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1001)]]></onclick>
+			</control>
+			<control type="togglebutton" id="1003">
+				<width>150</width>
+				<height>40</height>
+				<label>FILM & DRAMA</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96257/film_och_drama')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1002)]]></onclick>
+         	</control>
+			<control type="togglebutton" id="1004">
+				<width>170</width>
+				<height>40</height>
+				<label>KULTUR & NÖJE</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96256/kultur_och_noje')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1003)]]></onclick>
+         	</control>
+			<control type="togglebutton" id="1005">
+				<width>200</width>
+				<height>40</height>
+				<label>SAMHÄLLE & FAKTA</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96254/samhalle_och_fakta')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1004)]]></onclick>
+         	</control>
+			<control type="togglebutton" id="1006">
+				<width>110</width>
+				<height>40</height>
+				<label>NYHETER</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96255/nyheter')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1005)]]></onclick>
+         	</control>
+			<control type="togglebutton" id="1007">
+				<width>80</width>
+				<height>40</height>
+				<label>SPORT</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96253/sport')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1006)]]></onclick>
+         	</control>
+			<control type="togglebutton" id="1008">
+				<width>140</width>
+				<height>40</height>
+				<label>ÖPPET ARKIV</label>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texturenofocus border="10">button_bg.png</texturenofocus>
+				<texturefocus border="10">button.png</texturefocus>
+				<alttexturefocus border="10">button.png</alttexturefocus>
+				<alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+				<onclick lang="python"><![CDATA[actions.listPrograms('/c/96252/oppet_arkiv')]]></onclick>
+				<onclick lang="python"><![CDATA[actions.activeButton(1007)]]></onclick>
+         	</control>
+
+		</control>
+
+<control type="list" id="2000">
+	<description>Programs</description>
+	<posx>25</posx>
+	<posy>135</posy>
+	<width>250</width>
+	<height>600</height>
+	<visible>true</visible>
+	<onup>1000</onup>
+	<onright>3000</onright>
+	<content type="action">
+		<onclick lang="python"><![CDATA[
+actions.listEpisodes()
+]]></onclick>
+	</content>
+
+   <viewtype label="3D list">list</viewtype>
+   <orientation>vertical</orientation>
+   <pagecontrol>25</pagecontrol>
+   <scrolltime>200</scrolltime>
+   <itemlayout width="250" height="30">
+      <control type="label">
+         <posx>30</posx>
+         <posy>0</posy>
+         <width>300</width>
+         <height>30</height>
+         <font>font16</font>
+         <aligny>center</aligny>
+         <selectedcolor>yellow</selectedcolor>
+         <align>left</align>
+         <info>ListItem.Label</info>
+      </control>
+   </itemlayout>
+   <focusedlayout height="30" width="250">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>30</width>
+			<height>30</height>
+			<texture>arrow.png</texture>
+		</control>
+		<control type="image">
+			<posx>25</posx>
+			<posy>0</posy>
+			<width>225</width>
+			<height>30</height>
+			<texture>button.png</texture>
+		</control>
+      <control type="label">
+         <posx>30</posx>
+         <posy>0</posy>
+         <width>300</width>
+         <height>30</height>
+         <font>font16</font>
+         <aligny>center</aligny>
+         <selectedcolor>white</selectedcolor>
+         <align>left</align>
+         <info>ListItem.Label</info>
+      </control>
+   </focusedlayout>
+</control>
+
+<control type="group" id="3000">
+			<posx>300</posx>
+			<posy>135</posy>
+			<control type="panel" id="3001">
+			<height>592</height>
+			<width>900</width>
+			<scrolltime>200</scrolltime>
+			<pagecontrol>60</pagecontrol>
+			<orientation>horizontal</orientation>
+			<onleft>2000</onleft>
+			<onup>1000</onup>
+			<itemlayout width="180" height="180">
+				<control type="image">
+					<width>178</width>
+					<height>165</height>
+					<texture>video_dark_bg.png</texture>
+				</control>
+				<control type="image">
+					<visible>IsEmpty(ListItem.Thumb)</visible>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>168</width>
+					<height>95</height>
+					<aspectratio>stretch</aspectratio>
+					<texture>video_nothumb.png</texture>
+				</control>
+				<control type="image">
+					<visible>!IsEmpty(ListItem.Thumb)</visible>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>168</width>
+					<height>95</height>
+					<aspectratio>stretch</aspectratio>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>105</posy>
+					<width>175</width>
+					<height>70</height>
+					<font>font21sq</font>
+					<selectedcolor>red</selectedcolor>
+					<wrapmultiline>true</wrapmultiline>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout width="180" height="180">
+				<control type="image">
+					<width>178</width>
+					<height>165</height>
+					<texture>video_dark_bg.png</texture>
+				</control>
+				<control type="image">
+					<animation effect="fade" start="0" end="100" time="300" delay="0" reversable="true">Focus</animation>
+					<animation effect="fade" start="100" end="0" time="300" delay="0" reversable="true">UnFocus</animation>
+					<width>178</width>
+					<height>105</height>
+					<texture>video_search.png</texture>
+				</control>
+				<control type="image">
+					<visible>!IsEmpty(ListItem.Thumb)</visible>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>168</width>
+					<height>95</height>
+					<aspectratio>stretch</aspectratio>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="image">
+					<visible>IsEmpty(ListItem.Thumb)</visible>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>168</width>
+					<height>95</height>
+					<aspectratio>stretch</aspectratio>
+					<texture>video_nothumb.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>105</posy>
+					<width>175</width>
+					<height>60</height>
+					<font>font21sq</font>
+					<selectedcolor>red</selectedcolor>
+					<wrapmultiline>true</wrapmultiline>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</control>
+      
+   </controls>
+</window>
