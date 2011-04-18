@@ -12,3 +12,7 @@ reddittv
 se\.hypernode\.svtplay
 speedtv
 \.hgignore
+tv\.boxeeplay\.svtplay/actions\.pyo
+tv\.boxeeplay\.svtplay/content\.pyc
+tv\.boxeeplay\.svtplay/content\.pyo
+tv\.boxeeplay\.svtplay/counter\.pyo
