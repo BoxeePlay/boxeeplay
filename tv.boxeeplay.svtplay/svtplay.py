@@ -152,25 +152,21 @@ def defineVideo(item):
 
 def playItem(item):
 
-    
-    #mc.ShowDialogOk("platform",mc.GetActiveWindow().GetLabel(14002).GetLabel())
+    url = 'url:' + item.GetPath()
+    play = re.compile('url:(.*?)\.mp4', re.DOTALL + re.IGNORECASE).search(str(url)).group(1)
+    domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
+    id = re.compile('_definst_/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
+    url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id) + '.mp4'
+    url = url + '&bx-jsactions=http://boxeeplay.tv/flowplayer/flow.js'
+    #Funkar inte i 0.9 men kanske i >1?
 
-    try:
-        url = 'url:' + item.GetPath()
-        play = re.compile('url:(.*?)\.mp4', re.DOTALL + re.IGNORECASE).search(str(url)).group(1)
-        domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
-        id = re.compile('_definst_/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
-        url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id) + '.mp4'
-        url = url + '&bx-jsactions=http://boxeeplay.tv/flowplayer/flow.js'
-        #Funkar inte i 0.9 men kanske i >1?
+    if (utilities.isNotBeta()):
+        url = 'flash://boxeeplay.tv/src=' + quote_plus(url)
 
-        #url = 'flash://boxeeplay.tv/src=' + quote_plus(url)
-        item.SetPath(url)
-        #item.SetReportToServer(False)
+    item.SetPath(url)
+    #item.SetReportToServer(False)
 
-        player = mc.GetPlayer()
-        player.Play(item)
-    except:
-        mc.ShowDialogOk("Betaversion", "Den här videon har ett format vi inte klarar i betaversionen. Välj ett annat avsnitt!")
+    player = mc.GetPlayer()
+    player.Play(item)
 
 

@@ -1,4 +1,4 @@
-import urllib2
+import urllib2,mc
 
 def getData(url):
     request = urllib2.Request(url)
@@ -10,3 +10,12 @@ def getData(url):
 
 def decodeHtmlEntities(string):
     return string.replace("&amp;", "&")
+
+def isNotBeta():
+    #Denna SKA skrivas om! Beroende av skinnet nu, inte bra! Men GetPlatform fungerar ej!
+    ver = mc.GetActiveWindow().GetLabel(14002).GetLabel()
+    if (ver.find('0.')==0):
+        return False
+    else:
+        return True
+
