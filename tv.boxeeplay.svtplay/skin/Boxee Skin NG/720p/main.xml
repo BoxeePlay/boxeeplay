@@ -31,7 +31,7 @@
         	<posx>160</posx>
 			<width>90</width>
 			<height>30</height>
-			<label>(X) BETA3</label>
+			<label>(X) BETA4</label>
 			<font>font14</font>
 			<textcolor>ffbcbdc0</textcolor>
 			<focusedcolor>white</focusedcolor>
@@ -128,7 +128,7 @@
 				<onclick lang="python"><![CDATA[actions.activeButton(1004)]]></onclick>
          	</control>
 			<control type="togglebutton" id="1005">
-				<width>200</width>
+				<width>220</width>
 				<height>40</height>
 				<label>SAMHÄLLE & FAKTA</label>
 				<font>font21</font>
@@ -206,7 +206,7 @@
 	<description>Programs</description>
 	<posx>25</posx>
 	<posy>135</posy>
-	<width>250</width>
+	<width>350</width>
 	<height>550</height>
 	<visible>true</visible>
 	<onup>1000</onup>
@@ -219,44 +219,58 @@ actions.listEpisodes()
 
    <viewtype label="3D list">list</viewtype>
    <orientation>vertical</orientation>
-   <pagecontrol>25</pagecontrol>
    <scrolltime>200</scrolltime>
-   <itemlayout width="250" height="30">
+   <itemlayout width="350" height="70">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>100</width>
+			<height>70</height>
+			<info>ListItem.Icon</info>
+		</control>
       <control type="label">
-         <posx>30</posx>
+         <posx>120</posx>
          <posy>0</posy>
-         <width>300</width>
-         <height>30</height>
-         <font>font16</font>
+         <width>230</width>
+         <height>70</height>
+         <font>font18</font>
          <aligny>center</aligny>
-         <selectedcolor>yellow</selectedcolor>
+         <selectedcolor>white</selectedcolor>
          <align>left</align>
          <info>ListItem.Label</info>
       </control>
    </itemlayout>
-   <focusedlayout height="30" width="250">
+   <focusedlayout height="70" width="350">
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>30</width>
-			<height>30</height>
-			<texture>arrow.png</texture>
+			<width>100</width>
+			<height>70</height>
+			<info>ListItem.Icon</info>
 		</control>
 		<control type="image">
-			<posx>25</posx>
-			<posy>0</posy>
-			<width>225</width>
-			<height>30</height>
+			<posx>110</posx>
+			<posy>15</posy>
+			<width>240</width>
+			<height>40</height>
+			<texture>button.png</texture>
+			<visible>Control.HasFocus(2000)</visible>
+		</control>
+		<control type="image">
+			<posx>110</posx>
+			<posy>15</posy>
+			<width>240</width>
+			<height>40</height>
 			<texture>button_alt.png</texture>
 		</control>
       <control type="label">
-         <posx>30</posx>
+         <posx>120</posx>
          <posy>0</posy>
-         <width>300</width>
-         <height>30</height>
-         <font>font16</font>
+         <width>230</width>
+         <height>70</height>
+         <font>font18</font>
          <aligny>center</aligny>
-         <selectedcolor>green</selectedcolor>
+         <selectedcolor>white</selectedcolor>
          <align>left</align>
          <info>ListItem.Label</info>
       </control>
@@ -264,7 +278,7 @@ actions.listEpisodes()
 </control>
 
 	<control type="panel" id="3001">
-			<posx>300</posx>
+			<posx>400</posx>
 			<posy>135</posy>
 			<height>592</height>
 			<width>900</width>

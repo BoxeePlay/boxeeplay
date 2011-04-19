@@ -61,12 +61,13 @@ def getPrograms(url):
     pagecount = int(re.compile('<ul class="list {pagenum:(\d+)[^"]*">[\W\w]+?</ul>').findall(data, re.DOTALL)[0])
     items = mc.ListItems()
     for ul in uls:
-		programs = re.compile('<li class="[^"]*"\W*>\W+<a href="([^"]+)"[^>]+title="([^"]*)"[^>]+>\W+<img[^>]+src="[^"]+[^>]+>\W+(<!--[^/]+/span -->\W+){0,1}<span[^>]*>([^<]+)</span>').findall(ul, re.DOTALL)
-		for purl, desc, x, title in programs:
+		programs = re.compile('<li class="[^"]*"\W*>\W+<a href="([^"]+)"[^>]+title="([^"]*)"[^>]+>\W+<img[^>]+src="([^"]*)"[^>]+>\W+(<!--[^/]+/span -->\W+){0,1}<span[^>]*>([^<]+)</span>').findall(ul, re.DOTALL)
+		for purl, desc, img, x, title in programs:
 			if (len(title)>1):
 				i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
 				i.SetLabel(title)
 				i.SetPath(purl)
+				i.SetThumbnail(img)
 				i.SetDescription(desc)
 				items.append(i)
     
