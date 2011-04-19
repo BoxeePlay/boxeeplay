@@ -2,6 +2,11 @@ import svtplay
 import mc
 from urllib import quote_plus, urlencode
 
+def dialogQuality():
+    config = mc.GetLocalConfig()
+    selection = mc.ShowDialogSelect("Vï¿½lj kvalitet pï¿½ sï¿½ndningen:", ["HD-kvalitet, 720p, 2400 kbs", "Hï¿½g kvalitet, 1400 kbs","Medelkvalitet, 850 kbs","Lï¿½g kvalitet, 340 kbs"])
+    config.SetValue("quality",selection)
+
 def focusCategory():
     control = mc.GetActiveWindow().GetControl(1000)
     control.SetFocus()
@@ -16,8 +21,6 @@ def listPrograms(url):
     mc.HideDialogWait()
     
 def listEpisodes():
-
-
     listP = mc.GetActiveWindow().GetList(2000)
     focused = listP.GetItem(listP.GetFocusedItem()) 
     url = focused.GetPath()
@@ -36,28 +39,20 @@ def listEpisodes():
     if (focused.GetProperty('type')=='startitem'):
         items = svtplay.getStartEpisodes(url)
     else:
-        url = svtplay.getProgramRSS(url)
+        #url = svtplay.getProgramRSS(url)
         items = mc.GetDirectory(url)
-    
-    #Trockla genom listan och sŠtt bilder!
-    for item in items:
-        item.SetLabel(item.GetLabel().replace(ptitle+" - ",""))
-        item = svtplay.defineVideo(item)
     
     mc.HideDialogWait()
     
     if (len(items)>0):
         mc.GetActiveWindow().GetList(3001).SetItems(items)
-        mc.GetActiveWindow().GetList(3001).SetFocusedItem(0)
-        mc.GetActiveWindow().GetList(3001).SetFocus()
 
-    mc.GetActiveWindow().GetList(2000).SetFocusedItem(1000)
 
     #for item in mc.GetActiveWindow().GetList(3001).GetItems():
     
 def activeButton(numb):
     window = mc.GetWindow(14000)
-    window.GetToggleButton(1001).SetSelected(False)
+    #window.GetToggleButton(1001).SetSelected(False)
     window.GetToggleButton(1002).SetSelected(False)
     window.GetToggleButton(1003).SetSelected(False)
     window.GetToggleButton(1004).SetSelected(False)
@@ -72,20 +67,22 @@ def redefineVideos():
     focused = listP.GetItem(listP.GetFocusedItem()) 
     ptitle = focused.GetLabel()
     items = mc.GetActiveWindow().GetList(3001).GetItems()
-    #Trockla genom listan och sŠtt bilder!
+    #Trockla genom listan och sï¿½tt bilder!
     for item in items:
         item = svtplay.defineVideo(item)
         item.SetLabel(item.GetLabel().replace(ptitle+" - ",""))
     
 def home():
-    activeButton(1001)
+    activeButton(1002)
+    listPrograms('/c/96251/barn')
     list = mc.GetActiveWindow().GetList(2000)
-    items = svtplay.getStart()
-    list.SetItems(items)
-    list.SetFocus()
     list.SetFocusedItem(0)
     listEpisodes()
-    redefineVideos()
+
+def playVideo():
+    listP = mc.GetActiveWindow().GetList(3001)
+    focused = listP.GetItem(listP.GetFocusedItem())
+    svtplay.playItem(focused)
     
     
 

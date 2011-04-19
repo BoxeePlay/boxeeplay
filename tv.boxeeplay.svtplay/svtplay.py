@@ -64,13 +64,19 @@ def getPrograms(url):
 		programs = re.compile('<li class="[^"]*"\W*>\W+<a href="([^"]+)"[^>]+title="([^"]*)"[^>]+>\W+<img[^>]+src="([^"]*)"[^>]+>\W+(<!--[^/]+/span -->\W+){0,1}<span[^>]*>([^<]+)</span>').findall(ul, re.DOTALL)
 		for purl, desc, img, x, title in programs:
 			if (len(title)>1):
+				mc.LogInfo('******** ' + title + '=' + purl)
 				i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
 				i.SetLabel(title)
-				i.SetPath(purl)
+				xurl = purl.replace('/t/','')
+				vId = xurl[0:xurl.find('/')]
+				#Denna fungerar ej :-(
+				#vId = re.compile('([0-9]+)').findall(purl, re.DOTALL)[0]
+				newUrl = 'rss://xml.svtplay.se/v1/video/list/'+vId+'?expression=full'
+				i.SetPath(newUrl)
 				i.SetThumbnail(img)
 				i.SetDescription(desc)
 				items.append(i)
-    
+
     if (pagecount>1):
 		next = re.compile('<ul class="pagination program">[\W\w]+?<li class="next "><a href="([^"]+)"').findall(data, re.DOTALL)[0]
 		i = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
@@ -143,4 +149,28 @@ def defineVideo(item):
 	#item.SetJSactions(quote_plus('http://bartsidee.nl/boxee/apps/js/flow.js'))
 	
 	return item
+
+def playItem(item):
+
+    
+    #mc.ShowDialogOk("platform",mc.GetActiveWindow().GetLabel(14002).GetLabel())
+
+    try:
+        url = 'url:' + item.GetPath()
+        play = re.compile('url:(.*?)\.mp4', re.DOTALL + re.IGNORECASE).search(str(url)).group(1)
+        domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
+        id = re.compile('_definst_/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(play)).group(1)
+        url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id) + '.mp4'
+        url = url + '&bx-jsactions=http://boxeeplay.tv/flowplayer/flow.js'
+        #Funkar inte i 0.9 men kanske i >1?
+
+        #url = 'flash://boxeeplay.tv/src=' + quote_plus(url)
+        item.SetPath(url)
+        #item.SetReportToServer(False)
+
+        player = mc.GetPlayer()
+        player.Play(item)
+    except:
+        mc.ShowDialogOk("Betaversion", "Den här videon har ett format vi inte klarar i betaversionen. Välj ett annat avsnitt!")
+
 
