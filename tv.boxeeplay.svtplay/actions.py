@@ -1,17 +1,24 @@
 import svtplay
 import mc
+import logger
 from urllib import quote_plus, urlencode
+from logger import BPLog,BPTraceEnter,BPTraceExit
 
 def dialogQuality():
+    BPTraceEnter()
     config = mc.GetLocalConfig()
     selection = mc.ShowDialogSelect("V�lj kvalitet p� s�ndningen:", ["HD-kvalitet, 720p, 2400 kbs", "H�g kvalitet, 1400 kbs","Medelkvalitet, 850 kbs","L�g kvalitet, 340 kbs"])
     config.SetValue("quality",selection)
+    BPTraceExit()
 
 def focusCategory():
+    BPTraceEnter()
     control = mc.GetActiveWindow().GetControl(1000)
     control.SetFocus()
+    BPTraceExit()
 
 def listPrograms(url):
+    BPTraceEnter(url)
     mc.ShowDialogWait()
     list = mc.GetActiveWindow().GetList(2000)
     items = svtplay.getPrograms(url)
@@ -19,8 +26,10 @@ def listPrograms(url):
     list.Refresh()
     list.SetFocus()
     mc.HideDialogWait()
+    BPTraceExit(url)
     
 def listEpisodes():
+    BPTraceEnter()
     listP = mc.GetActiveWindow().GetList(2000)
     focused = listP.GetItem(listP.GetFocusedItem()) 
     url = focused.GetPath()
@@ -49,8 +58,10 @@ def listEpisodes():
 
 
     #for item in mc.GetActiveWindow().GetList(3001).GetItems():
+    BPTraceExit()
     
 def activeButton(numb):
+    BPTraceEnter(numb)
     window = mc.GetWindow(14000)
     #window.GetToggleButton(1001).SetSelected(False)
     window.GetToggleButton(1002).SetSelected(False)
@@ -61,8 +72,10 @@ def activeButton(numb):
     window.GetToggleButton(1007).SetSelected(False)
     window.GetToggleButton(1008).SetSelected(False)
     window.GetToggleButton(numb).SetSelected(True)
+    BPTraceExit(numb)
 
 def redefineVideos():
+    BPTraceEnter()
     listP = mc.GetActiveWindow().GetList(2000)
     focused = listP.GetItem(listP.GetFocusedItem()) 
     ptitle = focused.GetLabel()
@@ -71,19 +84,21 @@ def redefineVideos():
     for item in items:
         item = svtplay.defineVideo(item)
         item.SetLabel(item.GetLabel().replace(ptitle+" - ",""))
+    BPTraceExit()
     
 def home():
+    BPTraceEnter()
     activeButton(1002)
     listPrograms('/c/96251/barn')
     list = mc.GetActiveWindow().GetList(2000)
     list.SetFocusedItem(0)
     listEpisodes()
+    BPTraceExit()
 
 def playVideo():
+    BPTraceEnter()
     listP = mc.GetActiveWindow().GetList(3001)
     focused = listP.GetItem(listP.GetFocusedItem())
     svtplay.playItem(focused)
-    
-    
-
+    BPTraceExit()
 

@@ -1,4 +1,4 @@
-import mc
+import mc, inspect
 
 ''' --------------------------------------------------------------
 Andreas Pehrson, 20110419
@@ -101,7 +101,9 @@ def BPLog(msg, lvl=Level.INFO):
                  }
 
     if IsEnabled(lvl):
-       # Prepend log message if necessary
+
+#        msg = "Name:" + __name__ + ",Module:" + __module__ + ",File:" + __file__ + " :: " + msg
+        # Prepend log message if necessary
         if lvl in logPrepend:
             msg = logPrepend[lvl] + msg
 
@@ -126,14 +128,41 @@ def BPLog(msg, lvl=Level.INFO):
         BPLog("UNDEFINED LOG LEVEL: " + str(lvl) + 
               ", with message: " + msg, Level.ERROR)
 
-def BPTraceEnter(fName):
+def BPTraceEnter(msg=""):
     '''Sugar for BPLog with level TRACEIN.
-    Give this function a function name when
-    entering a function to keep trace.'''
-    BPLog(fName, Level.TRACEIN)
+    An optional message (no need for it to be a string)
+    may be provided. For instance the arguments provided
+    to the traced function.'''
+    BPTrace(msg, Level.TRACEIN)
 
-def BPTraceExit(fName):
+def BPTraceExit(msg=""):
     '''Sugar for BPLog with level TRACEOUT.
-    Give this function a function name when
-    exiting a function to keep trace.'''
-    BPLog(fName, Level.TRACEOUT)
+    An optional message (no need for it to be a string)
+    may be provided. For instance the arguments provided
+    to the traced function.'''
+    BPTrace(msg, Level.TRACEOUT)
+
+def BPTrace(msg, level):
+    '''BPTrace will inspect the call stack to see which
+    function that called us and pass this on to the log.'''
+    s = inspect.stack()
+    if len(s) >= 2 and s[1][3].startswith('BPTrace'):
+        depth = 2
+    else:
+        depth = 1
+    called = len(s) >= depth + 2 #called at depth, caller at depth + 1
+    
+    f     = s[depth]
+    fFile = str(f[1]).rsplit('\\')[-1]
+    fRow  = str(f[2])
+    fName = str(f[3])
+    trace = "%s at %s:%s" % (fName, fFile, fRow)
+
+    if called:
+        caller   = s[depth + 1]
+        callFile = str(caller[1]).rsplit('\\')[-1]
+        callRow  = str(caller[2])
+        callName = str(caller[3])
+        trace += " called from %s at %s:%s" % (callName, callFile, callRow)
+    BPLog("%s -> %s" % (trace, msg), level)
+
