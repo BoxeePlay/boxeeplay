@@ -93,7 +93,6 @@ def BPLog(msg, lvl=Level.INFO):
                  }
     logPrepend = { Level.TRACEIN : "TRACE, Entering scope of "
                  , Level.TRACEOUT: "TRACE, Exiting scope of "
-                 , Level.NOTICE  : "NOTICE, "
                  , Level.DEBUG   : "DEBUG, "
                  , Level.INFO    : "INFO, "
                  , Level.WARNING : "WARNING, "
@@ -146,24 +145,25 @@ def BPTraceExit(msg=""):
 def BPTrace(msg, level):
     '''BPTrace will inspect the call stack to see which
     function that called us and pass this on to the log.'''
-    s = inspect.stack()
-    if len(s) >= 2 and s[1][3].startswith('BPTrace'):
-        depth = 2
-    else:
-        depth = 1
-    called = len(s) >= depth + 2 #called at depth, caller at depth + 1
-    
-    f     = s[depth]
-    fFile = str(f[1]).rsplit('\\')[-1]
-    fRow  = str(f[2])
-    fName = str(f[3])
-    trace = "%s at %s:%s" % (fName, fFile, fRow)
+    if IsEnabled(level):
+      s = inspect.stack()
+      if len(s) >= 2 and s[1][3].startswith('BPTrace'):
+          depth = 2
+      else:
+          depth = 1
+      called = len(s) >= depth + 2 #called at depth, caller at depth + 1
+      
+      f     = s[depth]
+      fFile = str(f[1]).rsplit('\\')[-1]
+      fRow  = str(f[2])
+      fName = str(f[3])
+      trace = "%s at %s:%s" % (fName, fFile, fRow)
 
-    if called:
-        caller   = s[depth + 1]
-        callFile = str(caller[1]).rsplit('\\')[-1]
-        callRow  = str(caller[2])
-        callName = str(caller[3])
-        trace += " called from %s at %s:%s" % (callName, callFile, callRow)
-    BPLog("%s -> %s" % (trace, msg), level)
+      if called:
+          caller   = s[depth + 1]
+          callFile = str(caller[1]).rsplit('\\')[-1]
+          callRow  = str(caller[2])
+          callName = str(caller[3])
+          trace += " called from %s at %s:%s" % (callName, callFile, callRow)
+      BPLog("%s -> %s" % (trace, msg), level)
 
