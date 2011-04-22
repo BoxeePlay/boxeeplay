@@ -1,14 +1,15 @@
 import mc, inspect
 
 ''' --------------------------------------------------------------
-Andreas Pehrson, 20110419
+Andreas Pehrson, 20110422
 
 -- A simple logger facility for Boxee.
 
 Handles file logging and notification passing to Boxee.
 
 Level description:
-    TRACE   | Only BoxeeLog:Debug, prepended with "TRACE". Function entry-exit.
+    TRACEIN | Only BoxeeLog:Debug, prepended with "TRACEIN". Not intended to be used directly. Use BPTraceEnter instead.
+    TRACEOUT| Only BoxeeLog:Debug, prepended with "TRACEOUT". Not intended to be used directly. Use BPTraceExit instead.
     NOTICE  | Only user notification.
     DEBUG   | UserNotification and BoxeeLog:Debug.
     INFO    | UserNotification and BoxeeLog:Info.
