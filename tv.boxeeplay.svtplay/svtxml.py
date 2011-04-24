@@ -86,7 +86,6 @@ def AddItem(items, node):
 		SetAlternatePaths(item, node)
 
 		items.append(item)
-		item.Dump()
 	except:
 		mc.LogError("svtxml: List item creation failed, url=" + item.GetPath())
 
@@ -95,12 +94,25 @@ def SetAlternatePaths(item, node):
 	for mediaGroup in node.getElementsByTagName("media:group"):
 		mediaNodes = mediaGroup.getElementsByTagName("media:content")
 		AddRtmpPaths(item, mediaNodes)
+	DumpAlternateMediaPaths(item, node)
+		
+def DumpAlternateMediaPaths(item, node):
+	if item.GetProperty("replacedPath") == "0":
+		for mediaGroup in node.getElementsByTagName("media:group"):
+			mediaNodes = mediaGroup.getElementsByTagName("media:content")
+			if (len(mediaNodes) > 0):
+				mc.LogInfo("svtxml: No playable media path was found! Alternative paths listed below.")
+				for mediaNode in mediaNodes:	
+					mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
+					mediaPath = mediaNode.getAttribute("url").encode("utf-8")
+					mediaType = mediaNode.getAttribute("type").encode("utf-8")
+					mc.LogInfo("svtxml: " + mediaLabel + " - " + mediaType + " - " + mediaPath)
 		
 def AddRtmpPaths(item, mediaNodes):
 	AddRtmpPath(item, mediaNodes, "mp4-e-v1", "HD-kvalitet, 720p, 2400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-hd-webb-tv.gif")
-	AddRtmpPath(item, mediaNodes, "mp4-c-v1", "Hög kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
+	AddRtmpPath(item, mediaNodes, "mp4-c-v1", "HÃ¶g kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
 	AddRtmpPath(item, mediaNodes, "mp4-b-v1", "Medelkvalitet, 850 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-medium-webb-tv.gif")
-	AddRtmpPath(item, mediaNodes, "mp4-a-v1", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
+	AddRtmpPath(item, mediaNodes, "mp4-a-v1", "LÃ¥g kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
 	
 def CreateRtmpPath(path):
 	domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)

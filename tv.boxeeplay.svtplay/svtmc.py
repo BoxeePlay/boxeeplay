@@ -98,3 +98,21 @@ def SearchEpisodes(searchTerm, id="96238", maxItems=100) :
 
 def SearchSamples(searchTerm, id="96238", maxItems=100) :
 	return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/search/" + str(id) + "?expression=sample&num=100&q=" + quote_plus(searchTerm), maxItems)
+
+def DumpAllEpisodes():
+	categories = GetCategories()
+	for category in categories:
+		categoryId = GetCategoryId(category)
+		titles = GetTitles(categoryId)
+		for title in titles:
+			titleId = GetTitleId(title)
+			episodes = GetEpisodes(titleId, 100)
+
+def DumpAllClips():
+	categories = GetCategories()
+	for category in categories:
+		categoryId = GetCategoryId(category)
+		titles = GetTitles(categoryId)
+		for title in titles:
+			titleId = GetTitleId(title)
+			episodes = GetClips(titleId, 100)
