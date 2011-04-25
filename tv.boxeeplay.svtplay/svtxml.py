@@ -98,7 +98,6 @@ def AddItem(items, node):
         SetAlternatePaths(item, node)
 
         items.append(item)
-        item.Dump()
     except:
         #mc.LogError("svtxml: List item creation failed, url=" + item.GetPath())
         BPLog("svtxml: List item creation failed, url =%s" % item.GetPath(), Level.ERROR)
@@ -110,6 +109,23 @@ def SetAlternatePaths(item, node):
     for mediaGroup in node.getElementsByTagName("media:group"):
         mediaNodes = mediaGroup.getElementsByTagName("media:content")
         AddRtmpPaths(item, mediaNodes)
+    DumpAlternateMediaPaths(item, node)
+    BPTraceExit()
+		
+def DumpAlternateMediaPaths(item, node):
+    BPTraceEnter("%s, %s" %(item, node))
+    if item.GetProperty("replacedPath") == "0":
+        for mediaGroup in node.getElementsByTagName("media:group"):
+            mediaNodes = mediaGroup.getElementsByTagName("media:content")
+            if (len(mediaNodes) > 0):
+                #mc.LogInfo("svtxml: No playable media path was found! Alternative paths listed below.")
+                BPLog("svtxml: No playable media path was found! Alternative paths listed below.")
+                for mediaNode in mediaNodes:	
+                    mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
+                    mediaPath = mediaNode.getAttribute("url").encode("utf-8")
+                    mediaType = mediaNode.getAttribute("type").encode("utf-8")
+                    #mc.LogInfo("svtxml: " + mediaLabel + " - " + mediaType + " - " + mediaPath)
+                    BPLog("svtxml: %s - %s - %s" %(mediaLabel, mediaType, mediaPath))
     BPTraceExit()
         
 def AddRtmpPaths(item, mediaNodes):
