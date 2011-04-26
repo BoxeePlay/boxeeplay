@@ -104,13 +104,13 @@ def SearchSamples(searchTerm, id="96238", maxItems=100) :
 
 def DumpAllEpisodes():
     BPTraceEnter()
-	categories = GetCategories()
-	for category in categories:
-		categoryId = GetCategoryId(category)
-		titles = GetTitles(categoryId)
-		for title in titles:
-			titleId = GetTitleId(title)
-			episodes = GetEpisodes(titleId, 100)
+    categories = GetCategories()
+    for category in categories:
+        categoryId = GetCategoryId(category)
+        titles = GetTitles(categoryId)
+        for title in titles:
+            titleId = GetTitleId(title)
+            episodes = GetEpisodes(titleId, 100)
     BPTraceExit()
 
 def DumpAllClips():

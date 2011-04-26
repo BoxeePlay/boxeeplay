@@ -190,21 +190,21 @@ def RetrieveXmlStream(url):
         return  root
 
 def GetElementData(node, name):
-    BPTraceEnter("%s, %s" % (node, name))
+    #BPTraceEnter("%s, %s" % (node, name))
     try:
-        BPTraceExit()
+        #BPTraceExit()
         return node.getElementsByTagName(name)[0].childNodes[0].data.encode("utf-8")
     except:
-        BPTraceExit()
+        #BPTraceExit()
         return str("")
 
 def GetElementAttribute(node, name, attribute):
-    BPTraceEnter("%s, %s, %s" % (node, name, attribute))
+    #BPTraceEnter("%s, %s, %s" % (node, name, attribute))
     try:
-        BPTraceExit()
+        #BPTraceExit()
         return node.getElementsByTagName(name)[0].getAttribute(attribute).encode("utf-8")
     except:
-        BPTraceExit()
+        #BPTraceExit()
         return str("")
 
 def LookupCategory(id):
