@@ -28,7 +28,6 @@ def loadPrograms():
     BPTraceEnter()
     mc.ShowDialogWait()
     cList = mc.GetWindow(14000).GetList(1000)
-    target = mc.GetWindow(14000).GetList(2000)
     try:
         cItem = cList.GetItem(cList.GetFocusedItem())
         cId   = svt.GetCategoryId(cItem)
@@ -37,8 +36,7 @@ def loadPrograms():
         BPLog("Laddning av program misslyckades", Level.ERROR)
         cId = -1
         programs = mc.ListItems() #Empty..
-    target.SetItems(programs)
-    target.SetFocus()
+    setPrograms(programs)
     mc.HideDialogWait()
     BPLog("Finished loading programs in category %s." %cId, Level.DEBUG)
     BPTraceExit()
@@ -47,7 +45,6 @@ def loadEpisodes():
     BPTraceEnter()
     mc.ShowDialogWait()
     pList = mc.GetWindow(14000).GetList(2000)
-    target = mc.GetWindow(14000).GetList(3001)
     try:
         pItem = pList.GetItem(pList.GetFocusedItem())
         pId   = svt.GetTitleId(pItem)
@@ -56,8 +53,32 @@ def loadEpisodes():
         BPLog("Laddning av avsnitt misslyckades.", Level.ERROR)
         pId = -1
         episodes = mc.ListItems() #Empty
-    target.SetItems(episodes)
-    target.SetFocus()
+    setEpisodes(episodes)
     mc.HideDialogWait()
     BPLog("Finished loading episodes in category %s." %pId, Level.DEBUG)
+    BPTraceExit()
+
+def setPrograms(items):
+    BPTraceEnter()
+    target = mc.GetWindow(14000).GetList(2000)
+    target.SetItems(items)
+    target.SetFocus()
+    BPTraceExit()
+
+def setEpisodes(items):
+    BPTraceEnter()
+    target = mc.GetWindow(14000).GetList(3001)
+    target.SetItems(items)
+    target.SetFocus()
+    BPTraceExit()
+
+def search():
+    BPTraceEnter()
+    mc.ShowDialogWait()
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
+    searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
+    searchTerm = searchTerm.decode("utf-8").encode("latin1")
+    setEpisodes(svt.SearchEpisodes(searchTerm))
+    mc.HideDialogWait()
     BPTraceExit()

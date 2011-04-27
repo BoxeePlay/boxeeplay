@@ -43,7 +43,7 @@
                 <height>30</height>
                 <label>InstÃ¤llningar</label>
                 <font>font14</font>
-                <textcolor>ffbcbdc0</textcolor>
+                <textcolor>white</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
                 <align>center</align>
@@ -56,10 +56,42 @@
                 <!--onclick>ActivateWindow(15000)</onclick-->
                 <visible>False</visible>
             </control>
-
+            <control type="edit" id="110">
+                <ondown>1000</ondown>
+                <onright>111</onright>
+                <posy>23</posy>
+                <posx>200</posx>
+                <width>700</width>
+                <height>30</height>
+                <textcolor>white</textcolor>
+                <texturefocus>ba_overlay.png</texturefocus>
+                <texturenofocus>ba_overlay2.png</texturenofocus>
+            </control>
+            <control type="button" id="111">
+                <ondown>1000</ondown>
+                <onleft>110</onleft>
+                <onright>199</onright>
+                <posy>18</posy>
+                <posx>920</posx>
+                <width>200</width>
+                <height>40</height>
+                <label>Sök Avsnitt</label>
+                <font>font20</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.search()]]></onclick>
+            </control>
             <control type="button" id="199">
                 <ondown>1000</ondown>
-                <onleft>101</onleft>
+                <onleft>111</onleft>
                 <posy>23</posy>
                 <posx>1170</posx>
                 <width>90</width>
@@ -88,7 +120,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>101</onup>
+                <onup>110</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
