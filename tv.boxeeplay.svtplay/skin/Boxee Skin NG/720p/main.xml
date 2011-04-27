@@ -64,7 +64,7 @@
                 <posx>1170</posx>
                 <width>90</width>
                 <height>30</height>
-                <label>(X) BETA6</label>
+                <label>(X) BETA7</label>
                 <font>font14</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
@@ -109,10 +109,11 @@
                             <width>190</width>
                             <height>40</height>
                             <posx>100</posx>
-                            <posy>0</posy>
+                            <posy>4</posy>
                             <align>center</align>
                             <aligny>top</aligny>
                             <textcolor>white</textcolor>
+                            <font>font20</font>
                             <info>ListItem.Label</info>
                         </control>
                     </control>
@@ -140,10 +141,11 @@
                             <width>190</width>
                             <height>40</height>
                             <posx>100</posx>
-                            <posy>0</posy>
+                            <posy>4</posy>
                             <align>center</align>
                             <aligny>top</aligny>
                             <textcolor>white</textcolor>
+                            <font>font20</font>
                             <info>ListItem.Label</info>
                         </control>
                     </control>
