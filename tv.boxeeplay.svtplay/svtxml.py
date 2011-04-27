@@ -1,4 +1,4 @@
-#encoding:utf-8
+﻿#encoding:utf-8
 #author:Mats Boisen
 #project:boxeeplay
 #repository:https://bitbucket.org/hesapesa/boxeeplay
@@ -21,7 +21,6 @@ def GetDirectory(url, maxResults=0):
     if (maxResults <= 0):
         maxResults = 9999
     
-    #mc.LogDebug("svtxml:" + url)
     BPLog("svtxml: %s" % url, Level.DEBUG)
     root = RetrieveXmlStream(url)
     
@@ -40,7 +39,6 @@ def GetDirectory(url, maxResults=0):
         for pageListItem in pageListItems:
             listItems.append(pageListItem)
         
-    #mc.LogDebug("svtxml: Loaded " + str(len(listItems)) + " items:")
     BPLog("svtxml: Loaded %s items." % str(len(listItems)), Level.DEBUG)
     BPTraceExit("Returning %s" % listItems)
     return listItems
@@ -57,7 +55,6 @@ def ProcessDirectoryPage(root) :
 
 def GetDirectoryPage(url) :
     BPTraceEnter(url)
-    #mc.LogDebug("svtxml:" + url)
     BPLog("svtxml: %s" %url, Level.DEBUG)
     root = RetrieveXmlStream(url)
     r = ProcessDirectoryPage(root)
@@ -99,7 +96,6 @@ def AddItem(items, node):
 
         items.append(item)
     except:
-        #mc.LogError("svtxml: List item creation failed, url=" + item.GetPath())
         BPLog("svtxml: List item creation failed, url =%s" % item.GetPath(), Level.ERROR)
     BPTraceExit()
 
@@ -108,7 +104,7 @@ def SetAlternatePaths(item, node):
     item.SetProperty("replacedPath", "0")
     for mediaGroup in node.getElementsByTagName("media:group"):
         mediaNodes = mediaGroup.getElementsByTagName("media:content")
-        AddRtmpPaths(item, mediaNodes)
+        AddFlowplayerPaths(item, mediaNodes)
     DumpAlternateMediaPaths(item, node)
     BPTraceExit()
 		
@@ -118,22 +114,19 @@ def DumpAlternateMediaPaths(item, node):
         for mediaGroup in node.getElementsByTagName("media:group"):
             mediaNodes = mediaGroup.getElementsByTagName("media:content")
             if (len(mediaNodes) > 0):
-                #mc.LogInfo("svtxml: No playable media path was found! Alternative paths listed below.")
                 BPLog("svtxml: No playable media path was found! Alternative paths listed below.")
                 for mediaNode in mediaNodes:	
                     mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
                     mediaPath = mediaNode.getAttribute("url").encode("utf-8")
                     mediaType = mediaNode.getAttribute("type").encode("utf-8")
-                    #mc.LogInfo("svtxml: " + mediaLabel + " - " + mediaType + " - " + mediaPath)
                     BPLog("svtxml: %s - %s - %s" %(mediaLabel, mediaType, mediaPath))
     BPTraceExit()
         
-def AddRtmpPaths(item, mediaNodes):
+def AddFlowplayerPaths(item, mediaNodes):
     BPTraceEnter("%s, %s" %(item, mediaNodes))
-    AddRtmpPath(item, mediaNodes, "mp4-e-v1", "HD-kvalitet, 720p, 2400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-hd-webb-tv.gif")
-    AddRtmpPath(item, mediaNodes, "mp4-c-v1", "H�g kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
-    AddRtmpPath(item, mediaNodes, "mp4-b-v1", "Medelkvalitet, 850 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-medium-webb-tv.gif")
-    AddRtmpPath(item, mediaNodes, "mp4-a-v1", "L�g kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
+    AddFlowplayerPath(item, mediaNodes, "mp4-e-v1", "HD-kvalitet, 720p, 2400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-hd-webb-tv.gif")
+    AddFlowplayerPath(item, mediaNodes, "mp4-c-v1", "Hög kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
+    AddDirectPath(item, mediaNodes, "wmv-a-v1", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     BPTraceExit()
     
 def CreateRtmpPath(path):
@@ -142,14 +135,13 @@ def CreateRtmpPath(path):
     id = re.compile(domain + '/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
     url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id)
     url = quote_plus(url)
-    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/flow.js')
+    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/control.js')
     path = 'flash://boxeeplay.tv/src=' + str(url) + '&bx-jsactions=' + str(jsActions)
-    #mc.LogDebug("svtxml: Media path converted to: " + path)
     BPLog("svtxml: Media path converted to: %s" % path, Level.DEBUG)
     BPTraceExit("Returning %s" % path)
     return path
     
-def AddRtmpPath(item, mediaNodes, label, title, thumbnailPath):
+def AddFlowplayerPath(item, mediaNodes, label, title, thumbnailPath):
     BPTraceEnter("%s, %s, %s, %s, %s" % (item, mediaNodes, label, title, thumbnailPath))
     for mediaNode in mediaNodes:
         mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
@@ -172,6 +164,28 @@ def AddRtmpPath(item, mediaNodes, label, title, thumbnailPath):
                     item.SetPath(str(mediaPath))
     BPTraceExit()
                 
+def AddDirectPath(item, mediaNodes, label, title, thumbnailPath):
+    BPTraceEnter("%s, %s, %s, %s, %s" % (item, mediaNodes, label, title, thumbnailPath))
+    for mediaNode in mediaNodes:
+        mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
+        mediaPath = mediaNode.getAttribute("url").encode("utf-8")
+        mediaType = mediaNode.getAttribute("type").encode("utf-8")
+        if mediaLabel == label:
+			item.AddAlternativePath(title, mediaPath, mediaType, thumbnailPath) 
+			try:
+				duration =  int(mediaNode.getAttribute("duration").encode("utf-8"))
+			except:
+				duration = 0
+			if duration > 0:
+				item.SetDuration(duration)
+			item.SetReportToServer(True)
+			item.SetAddToHistory(True)
+			if item.GetProperty("replacedPath") == "0":
+				item.SetProperty("replacedPath", "1")
+				item.SetPath(str(mediaPath))
+				item.SetContentType(mediaType)
+    BPTraceExit()
+
 def RetrieveXmlStream(url):
     BPTraceEnter(url)
     try:
@@ -184,7 +198,6 @@ def RetrieveXmlStream(url):
         return root
     except:
         root = xml.dom.minidom.parseString("<error>error</error>")
-        #mc.LogError("svtxml: http download failed, url=" + url)
         BPLog("svtxml: http download failed, url=%s" % url, Level.ERROR)
         BPTraceExit("Returning %s" % root)
         return  root
@@ -230,7 +243,7 @@ def LookupCategory(id):
     elif (id == "98382"):
         r = "Öppet arkiv"
     else:
-        r = "Ökand (" + str(id) + ")"
+        r = "Okänd (" + str(id) + ")"
     BPTraceExit("Returning %s" % r)
     return r
         
@@ -269,6 +282,5 @@ def SetDate(item, node):
         
         item.SetDate(int(year), int(month), int(day))
     except:
-        #mc.LogError("svtxml: Failed to set item date")
         BPLog("svtxml: Failed to set item date" ,Level.ERROR)
     BPTraceExit()
