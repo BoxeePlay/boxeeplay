@@ -113,7 +113,7 @@ def DumpAllEpisodes():
             episodes = GetEpisodes(titleId, 100)
     BPTraceExit()
 
-def DumpAllClips():
+def DumpAllSamples():
     BPTraceEnter()
     categories = GetCategories()
     for category in categories:
@@ -121,5 +121,5 @@ def DumpAllClips():
         titles = GetTitles(categoryId)
         for title in titles:
             titleId = GetTitleId(title)
-            episodes = GetClips(titleId, 100)
+            episodes = GetSamples(titleId, 100)
     BPTraceExit()

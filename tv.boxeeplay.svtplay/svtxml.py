@@ -60,6 +60,20 @@ def GetDirectoryPage(url) :
     r = ProcessDirectoryPage(root)
     BPTraceExit("Returning %s" % r)
     return r
+
+def SetItemImages(node, item) :
+    BPTraceEnter("%s, %s" % (node, item))
+    imageNo = 0
+    mediaContentNodes = node.getElementsByTagName("media:content")
+    for mediaContentNode in mediaContentNodes:
+        if (mediaContentNode.getAttribute("medium").encode("utf-8") == "image"):
+            imageUrl = mediaContentNode.getAttribute("url").encode("utf-8")
+            if (imageNo == 0):
+                item.SetIcon(imageUrl)
+                item.SetThumbnail(imageUrl)
+            item.SetImage(imageNo, imageUrl)
+            imageNo = imageNo + 1
+    BPTraceExit()
     
 def AddItem(items, node):
     BPTraceEnter("%s, %s" % (items, node))
@@ -83,6 +97,7 @@ def AddItem(items, node):
         item.SetProviderSource(GetElementData(node, "svtplay:broadcastChannel"))
         item.SetThumbnail(GetElementAttribute(node, "media:thumbnail", "url"))
         item.SetIcon(GetElementData(node, "svtplay:logotype"))
+        SetItemImages(node, item)
         item.SetProperty("id", GetElementData(node, "svtplay:titleId"))
         item.SetGenre(LookupCategory(str(GetElementData(node, "svtplay:category"))))
         item.SetReportToServer(False)
@@ -125,7 +140,8 @@ def DumpAlternateMediaPaths(item, node):
 def AddFlowplayerPaths(item, mediaNodes):
     BPTraceEnter("%s, %s" %(item, mediaNodes))
     AddFlowplayerPath(item, mediaNodes, "mp4-e-v1", "HD-kvalitet, 720p, 2400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-hd-webb-tv.gif")
-    AddFlowplayerPath(item, mediaNodes, "mp4-c-v1", "Hög kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
+    AddFlowplayerPath(item, mediaNodes, "mp4-d-v1", "Hög kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
+    AddFlowplayerPath(item, mediaNodes, "mp4-c-v1", "Medelkvalitet, 850 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-medium-webb-tv.gif")
     AddDirectPath(item, mediaNodes, "wmv-a-v1", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     AddDirectPath(item, mediaNodes, "video/x-ms-asf", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     BPTraceExit()
