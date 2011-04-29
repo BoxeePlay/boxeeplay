@@ -97,9 +97,13 @@ def GetSamples(id=96238, maxItems=100) :
     return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", maxItems)
 
 def SearchEpisodes(searchTerm, id="96238", maxItems=100) :
+    if (len(searchTerm) == 0):
+        return mc.ListItems()
     return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/search/" + str(id) + "?expression=full&num=100&q=" + quote_plus(searchTerm), maxItems)
 
 def SearchSamples(searchTerm, id="96238", maxItems=100) :
+    if (len(searchTerm) == 0):
+        return mc.ListItems()
     return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/search/" + str(id) + "?expression=sample&num=100&q=" + quote_plus(searchTerm), maxItems)
 
 def DumpAllEpisodes():
