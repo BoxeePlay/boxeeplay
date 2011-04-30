@@ -59,13 +59,15 @@
             <control type="edit" id="110">
                 <ondown>1000</ondown>
                 <onright>111</onright>
-                <posy>23</posy>
+                <posy>13</posy>
                 <posx>200</posx>
                 <width>700</width>
-                <height>30</height>
-                <textcolor>white</textcolor>
-                <texturefocus>ba_overlay.png</texturefocus>
-                <texturenofocus>ba_overlay2.png</texturenofocus>
+                <height>50</height>
+                <shadowcolor>gray</shadowcolor>
+                <textcolor>grey</textcolor>
+                <focusedcolor>black</focusedcolor>
+                <texturefocus border="15">searchbar.png</texturefocus>
+                <texturenofocus border="15">searchbar_nofocus.png</texturenofocus>
             </control>
             <control type="button" id="111">
                 <ondown>1000</ondown>
