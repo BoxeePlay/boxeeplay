@@ -82,3 +82,8 @@ def search():
     setEpisodes(svt.SearchEpisodes(searchTerm))
     mc.HideDialogWait()
     BPTraceExit()
+
+def playVideo():
+    pList = mc.GetWindow(14000).GetList(3001)
+    item = pList.GetFocusedItem()
+    mc.Player().PlayWithActionMenu(item)
