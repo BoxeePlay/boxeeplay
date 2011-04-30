@@ -77,8 +77,14 @@ def search():
     mc.ShowDialogWait()
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
-    searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
-    searchTerm = searchTerm.decode("utf-8").encode("latin1")
-    setEpisodes(svt.SearchEpisodes(searchTerm))
+    try:
+        searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
+        try:
+            searchTerm = searchTerm.decode("utf-8").encode("latin1")
+            setEpisodes(svt.SearchEpisodes(searchTerm))
+        except Exception, e:
+            BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
+    except Exception, e:
+        BPLog("Could not search: %s" %e, Level.ERROR)
     mc.HideDialogWait()
     BPTraceExit()
