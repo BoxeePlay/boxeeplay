@@ -152,7 +152,7 @@ def CreateRtmpPath(path):
     id = re.compile(domain + '/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
     url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id)
     url = quote_plus(url)
-    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/control.js')
+    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/flow.js')
     path = 'flash://boxeeplay.tv/src=' + str(url) + '&bx-jsactions=' + str(jsActions)
     BPLog("svtxml: Media path converted to: %s" % path, Level.DEBUG)
     BPTraceExit("Returning %s" % path)
