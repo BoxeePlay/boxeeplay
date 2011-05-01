@@ -11,10 +11,10 @@ Level description:
     TRACEIN | Only BoxeeLog:Debug, prepended with "TRACEIN". Not intended to be used directly. Use BPTraceEnter instead.
     TRACEOUT| Only BoxeeLog:Debug, prepended with "TRACEOUT". Not intended to be used directly. Use BPTraceExit instead.
     NOTICE  | Only user notification.
-    DEBUG   | UserNotification and BoxeeLog:Debug.
-    INFO    | UserNotification and BoxeeLog:Info.
+    DEBUG   | Only BoxeeLog:Debug, prepended with "DEBUG".
+    INFO    | UserNotification and BoxeeLog:Info, prepended with "INFO".
     WARNING | UserNotification and BoxeeLog:Info, prepended with "WARNING".
-    ERROR   | UserNotification and BoxeeLog:Error.
+    ERROR   | UserNotification and BoxeeLog:Error, prepended with "ERROR".
     FATAL   | Immediate app termination and BoxeeLog:Error, prepended with "FATAL".
 
 
@@ -78,7 +78,7 @@ def BPLog(msg, lvl=Level.INFO):
     BPLog meaning BoxeePlayLogger.
     '''
     noteIcon   = { Level.NOTICE  : "noteNotice.png"
-                 , Level.DEBUG   : "noteDebug.png"
+                 #, Level.DEBUG   : "noteDebug.png"
                  , Level.INFO    : "noteInfo.png"
                  , Level.WARNING : "noteWarn.png"
                  , Level.ERROR   : "noteError.png"

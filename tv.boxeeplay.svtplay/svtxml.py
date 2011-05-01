@@ -10,7 +10,8 @@ from urllib import quote_plus
 import urllib2
 import xml.dom.minidom
 import re
-import datetime
+import time
+import calendar
 import mc
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
@@ -89,9 +90,13 @@ def AddItem(items, node):
     try:
         item.SetPath(GetElementData(node, "link"))
         item.SetContentType("text/html")
-        item.SetTitle(GetElementData(node, "title"))
-        item.SetTVShowTitle(GetElementData(node, "svtplay:titleName"))
-        item.SetLabel(GetElementData(node, "title"))
+        title = GetElementData(node, "title")
+        item.SetTitle(title)
+        item.SetLabel(title)
+        show = GetElementData(node, "svtplay:titleName")
+        item.SetTVShowTitle(show)
+        if len(show) > 0:
+            item.SetLabel("%s - %s" %(show,title))
         item.SetDescription(GetElementData(node, "description"))
         item.SetAuthor(GetElementData(node, "author"))
         item.SetProviderSource(GetElementData(node, "svtplay:broadcastChannel"))
@@ -102,16 +107,18 @@ def AddItem(items, node):
         item.SetGenre(LookupCategory(str(GetElementData(node, "svtplay:category"))))
         item.SetReportToServer(False)
         item.SetAddToHistory(False)
-        if episode > 0:
-            item.SetEpisode(episode)
+        #if episode > 0:
+        #    item.SetEpisode(episode) #Funkar dåligt i Boxees interface med SVT
 
         SetDate(item, node)
 
         SetAlternatePaths(item, node)
 
+        SetGuiInfo(item)
+
         items.append(item)
-    except:
-        BPLog("svtxml: List item creation failed, url =%s" % item.GetPath(), Level.ERROR)
+    except Exception, e:
+        BPLog("svtxml: List item creation failed, url =%s, Exception: %s" % (item.GetPath(),str(e)), Level.ERROR)
     BPTraceExit()
 
 def SetAlternatePaths(item, node):
@@ -120,7 +127,7 @@ def SetAlternatePaths(item, node):
     for mediaGroup in node.getElementsByTagName("media:group"):
         mediaNodes = mediaGroup.getElementsByTagName("media:content")
         AddFlowplayerPaths(item, mediaNodes)
-    DumpAlternateMediaPaths(item, node)
+    #DumpAlternateMediaPaths(item, node)
     BPTraceExit()
 		
 def DumpAlternateMediaPaths(item, node):
@@ -174,6 +181,7 @@ def AddFlowplayerPath(item, mediaNodes, label, title, thumbnailPath):
                     duration = 0
                 if duration > 0:
                     item.SetDuration(duration)
+                    item.SetProperty("duration",str(duration)) #forall GetDuration() == 0 ...
                 item.SetReportToServer(True)
                 item.SetAddToHistory(True)
                 if item.GetProperty("replacedPath") == "0":
@@ -195,6 +203,7 @@ def AddDirectPath(item, mediaNodes, label, title, thumbnailPath):
 				duration = 0
 			if duration > 0:
 				item.SetDuration(duration)
+                                item.SetProperty("duration", str(duration)) #forall GetDuration() == 0 ...
 			item.SetReportToServer(True)
 			item.SetAddToHistory(True)
 			if item.GetProperty("replacedPath") == "0":
@@ -268,36 +277,109 @@ def SetDate(item, node):
     BPTraceEnter("%s, %s" % (item, node))
     try:
         dateString = GetElementData(node, "pubDate")
+        dayString = dateString[0:3]
         day = dateString[5:7]
         monthString = dateString[8:11]
         year = dateString[12:16]
+
+        dayNrMap   = { "Mon" : 0
+                     , "Tue" : 1
+                     , "Wed" : 2
+                     , "Thu" : 3
+                     , "Fri" : 4
+                     , "Sat" : 5
+                     , "Sun" : 6
+                     }
+
+        daySEMap   = ["måndag"
+                     ,"tisdag"
+                     ,"onsdag"
+                     ,"torsdag"
+                     ,"fredag"
+                     ,"lördag"
+                     ,"söndag"
+                     ]
+
+        monthNrMap = { "Jan" : 1
+                     , "Feb" : 2
+                     , "Mar" : 3
+                     , "Apr" : 4
+                     , "May" : 5
+                     , "Jun" : 6
+                     , "Jul" : 7
+                     , "Aug" : 8
+                     , "Sep" : 9
+                     , "Oct" : 10
+                     , "Nov" : 11
+                     , "Dec" : 12
+                     }
+
+        monthSEMap = ["undefined"
+                     ,"januari"
+                     ,"februari"
+                     ,"mars"
+                     ,"april"
+                     ,"maj"
+                     ,"juni"
+                     ,"juli"
+                     ,"augusti"
+                     ,"september"
+                     ,"oktober"
+                     ,"november"
+                     ,"december"
+                     ]
+
+        item.SetDate(int(year), monthNrMap[monthString], int(day))
         
-        if monthString == "Jan":
-            month = 1
-        elif monthString == "Feb":
-            month = 2
-        elif monthString == "Mar":
-            month = 3
-        elif monthString == "Apr":
-            month = 4
-        elif monthString == "May":
-            month = 5
-        elif monthString == "Jun":
-            month = 6
-        elif monthString == "Jul":
-            month = 7
-        elif monthString == "Aug":
-            month = 8
-        elif monthString == "Sep":
-            month = 9
-        elif monthString == "Oct":
-            month = 10
-        elif monthString == "Nov":
-            month = 11
-        elif monthString == "Dec":
-            month = 12
-        
-        item.SetDate(int(year), int(month), int(day))
-    except:
-        BPLog("svtxml: Failed to set item date" ,Level.ERROR)
+        try:
+            hour = dateString[17:19]
+            minute = dateString[20:22]
+            second = dateString[23:25]
+            tstruct = time.struct_time((int(year)
+                                      , monthNrMap[monthString]
+                                      , int(day)
+                                      , int(hour)
+                                      , int(minute)
+                                      , int(second)
+                                      , dayNrMap[dayString]
+                                      , 0
+                                      , -1
+                                      ))
+            t = calendar.timegm(tstruct)
+            lt = time.localtime(t)
+       
+            
+            #Fulhack för GUI -.-
+            #Format: "Sändes måndag den 2 april, 17:30"
+            item.SetProperty("airtime-se","Sändes %s den %d %s, %02d:%02d"
+                %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], lt.tm_hour, lt.tm_min))
+        except Exception, e:
+            BPLog("svtxml: Failed to set GUI air date. Exception: %s" %e, Level.ERROR)
+    except Exception, e:
+        BPLog("svtxml: Failed to set item date. Exception: %s" %e ,Level.ERROR)
+    BPTraceExit()
+
+def SetGuiInfo(item):
+    BPTraceEnter()
+    try:
+        info = ""
+        airtime = item.GetProperty("airtime-se")
+        if len(airtime) > 0:
+            info += airtime + '\n'
+        cat = item.GetGenre()
+        chan = item.GetProviderSource()
+        if len(cat) > 0:
+            info += "Kategori: %s" %cat
+            if len(chan) > 0:
+                info += ", "
+        if len(chan) > 0:
+            info += "Kanal: %s" %chan
+        if len(cat) or len(chan):
+            info += '\n'
+        dur = item.GetProperty("duration")
+        if len(dur) > 0:
+            info += "Längd: %s minuter" %(int(dur)//60)
+        item.SetStudio(info)
+    except Exception, e:
+        BPLog("svtxml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
     BPTraceExit()

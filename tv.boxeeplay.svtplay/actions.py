@@ -88,3 +88,10 @@ def search():
         BPLog("Could not search: %s" %e, Level.ERROR)
     mc.HideDialogWait()
     BPTraceExit()
+
+def playVideo():
+    BPTraceEnter()
+    l = mc.GetWindow(14000).GetList(3001)
+    item = l.GetItem(l.GetFocusedItem())
+    mc.GetPlayer().Play(item)
+    BPTraceExit()
