@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <window type="window" id="14000">
     <defaultcontrol always="true">1000</defaultcontrol>
     <allowoverlay>no</allowoverlay>
@@ -8,9 +8,9 @@
     </onload>
     <controls>
         <control type="group">
-            <animation type="WindowOpen">
+            <!--animation type="WindowOpen">
                 <effect type="fade" start="0" end="100" time="200" />
-            </animation>
+            </animation-->
             <control type="image">
                 <width>1280</width>
                 <height>720</height>
@@ -58,15 +58,15 @@
             </control>
             <control type="edit" id="110">
                 <ondown>1000</ondown>
+                <onup>121</onup>
                 <onright>111</onright>
                 <posy>23</posy>
                 <posx>626</posx>
                 <width>390</width>
                 <height>30</height>
-                <shadowcolor>lightgrey</shadowcolor>
                 <font>font14</font>
-                <textcolor>grey</textcolor>
-                <focusedcolor>black</focusedcolor>
+                <textcolor>FF000000</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
                 <texturefocus border="15">searchbar.png</texturefocus>
                 <texturenofocus border="15">searchbar_nofocus.png</texturenofocus>
             </control>
@@ -78,7 +78,7 @@
                 <posx>1026</posx>
                 <width>100</width>
                 <height>30</height>
-                <label>S�k avsnitt</label>
+                <label>Sök avsnitt</label>
                 <font>font14</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
@@ -91,6 +91,71 @@
                 <alttexturefocus border="10">button.png</alttexturefocus>
                 <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
                 <onclick lang="python"><![CDATA[actions.search()]]></onclick>
+            </control>
+            <control type="button" id="120">
+                <description>Svenskt å</description>
+                <ondown>110</ondown>
+                <onright>121</onright>
+                <posy>3</posy>
+                <posx>958</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>å</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('å')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
+            </control>
+            <control type="button" id="121">
+                <description>Svenskt ä</description>
+                <ondown>110</ondown>
+                <onleft>120</onleft>
+                <onright>122</onright>
+                <posy>3</posy>
+                <posx>978</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>ä</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('ä')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
+            </control>
+            <control type="button" id="122">
+                <description>Svenskt ö</description>
+                <ondown>110</ondown>
+                <onleft>121</onleft>
+                <onright>111</onright>
+                <posy>3</posy>
+                <posx>998</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>ö</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('ö')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
             </control>
             <control type="button" id="199">
                 <ondown>1000</ondown>

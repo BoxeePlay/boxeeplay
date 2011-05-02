@@ -89,6 +89,15 @@ def search():
     mc.HideDialogWait()
     BPTraceExit()
 
+def appendSearch(str):
+    BPTraceEnter()
+    try:
+        searchBar = mc.GetWindow(14000).GetEdit(110)
+        searchBar.SetText(searchBar.GetText()+str)
+    except Exception, e:
+        BPLog("Could not append searchbar with %s. Exception: %s" %(str,e), Level.ERROR)
+    BPTraceExit()
+
 def playVideo():
     BPTraceEnter()
     l = mc.GetWindow(14000).GetList(3001)
