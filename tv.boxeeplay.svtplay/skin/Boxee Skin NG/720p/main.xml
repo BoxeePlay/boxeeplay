@@ -74,6 +74,7 @@
                 <ondown>1000</ondown>
                 <onleft>110</onleft>
                 <onright>199</onright>
+                <onup>111</onup>
                 <posy>23</posy>
                 <posx>1026</posx>
                 <width>100</width>
@@ -118,6 +119,7 @@
                 <ondown>110</ondown>
                 <onleft>120</onleft>
                 <onright>122</onright>
+                <onup>121</onup>
                 <posy>3</posy>
                 <posx>978</posx>
                 <width>18</width>
@@ -139,7 +141,7 @@
                 <description>Svenskt ö</description>
                 <ondown>110</ondown>
                 <onleft>121</onleft>
-                <onright>111</onright>
+                <onup>122</onup>
                 <posy>3</posy>
                 <posx>998</posx>
                 <width>18</width>
