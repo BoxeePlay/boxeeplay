@@ -1,8 +1,7 @@
 <html> 
 	<head> 
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
-		<meta name="boxee-control" content="control.js" /> 
-		<script type="text/javascript" src="flowplayer-3.2.4.min.js"></script> 
+		<script type="text/javascript" src="flowplayer-3.2.6.min.js"></script>
  
 		<!-- some minimal styling, can be removed --> 
 		<style type="text/css"> 
@@ -13,7 +12,7 @@
 			}
 			#error {
 				position:absolute;
-				top:0px;
+				top:100px;
 				left:0px;
 				right:0px;
 				bottom:0px;
@@ -23,49 +22,148 @@
 			}
 		</style> 
  
-		<!-- page title --> 
 		<title>Flow Player Boxee</title> 
-		<!--rtmpe://cp24805.edgefcs.net/ondemand/mtviestor/_!/intlod/MTVInternational/emi_int/gb0401/000161/GB0401000161_256x144_300.mp4--> 
 		<script> 
-			<!--rvar url ="mp4:kluster/20110118/IN-2011-0118-1915ABC-mp4-c-v1.mp4";-->
-			<!--rvar netUrl ="rtmp://fl11.c91005.cdn.qbrick.com/91005/_definst_";-->
+			//var url    = "mp4:kluster/20110414/PG-1155078-002A-ACCUSED1-01-mp4-e-v1.mp4";
+			//var url1   = "mp4:kluster/20110414/PG-1155078-002A-ACCUSED1-01-mp4-c-v1.mp4";
+			//var netUrl = "rtmpe://fl11.c90909.cdn.qbrick.com/90909/_definst_";
 			
-			var url = gup('id');
-			var netUrl = gup('net');
+			var bitrates = gatherStreams();
+			var netUrl   = gup('net');
 			function doLoad(){
-				if (typeof(url) == 'undefined') {
- 
-					document.getElementById("error").style.display = "block";
-					document.getElementById("fms").style.display = "none";
+				if (  typeof(bitrates)    == 'undefined'
+				   || typeof(bitrates[0]) == 'undefined'
+				   || typeof(netUrl)      == 'undefined'
+				   || netUrl              == ''
+				   )
+				{
+					bplog("Error found in streams. Streams obj: ");
+					bplog(bitrates);
+					setError();
  
 					return false;
 				} else {
  
-					$f("fms", "http://releases.flowplayer.org/swf/flowplayer-3.2.5.swf", {
+					$f("fms", "flowplayer-3.2.7.swf", {
  
 						clip: {
-							url: url,
-							// configure clip to use influxis as our provider, it uses our rtmp plugin
-							provider: 'influxis'
+							urlResolvers: 'bwcheck',
+							//url: url,
+							bitrates: bitrates,
+							provider: 'rtmp',
+							scaling: 'fit'
 						},
  
 						// streaming plugins are configured under the plugins node
 						plugins: {
  
 							// here is our rtpm plugin configuration
-							influxis: {
+							rtmp: {
 								url: 'flowplayer.rtmp-3.2.3.swf',
 								dynamicBuffer: true,
 								// netConnectionUrl defines where the streams are found
 								netConnectionUrl: netUrl
 							},
+							// bwcheck handles dynamic stream switching
+							bwcheck: {
+								url: 'flowplayer.bwcheck-3.2.5.swf',
+								dynamic: true,
+								qos: ['bwUp','bwDown','buffer'],
+								serverType: 'fms',
+								netConnectionUrl: netUrl,
+		
+								// show the selected file in the content box. This is not used in real installations.
+								onStreamSwitchBegin: function (newItem, currentItem) {
+									bplog("Will switch stream to: " + newItem.streamName + " from " + currentItem.streamName);
+									//$f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + 
+									//" from " + currentItem.streamName);
+								},
+								onStreamSwitch: function (newItem) {
+									bplog("Switched stream to: " + newItem.streamName);
+									notifyBoxee("Ändrade överföringshastighet till " + newItem.bitrate + "kbps.");
+								}
+							}/*,
+
+							// Mainly for debugging purposes on Boxee 0.9
+							content: {
+								url: 'flowplayer.content-3.2.0.swf',
+								top: 0, left: 0, width: 250, height: 150,
+								backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+								textDecoration: 'outline', 
+								style: {  
+									body: {  
+										fontSize: 14,
+										fontFamily: 'Arial', 
+										textAlign: 'center', 
+										color: '#ffffff' 
+									}  
+								}  		
+							}*/,
 							controls: null
+						},
+
+						onBegin: function() {
+							//bplog("onBegin");
+						},
+						onBeforeBegin: function() {
+							//bplog("onBeforeBegin");
+						},
+						onStart: function() {
+							//bplog("onStart");
+							//notifyBoxee("Uppspelning startade.");
+						},
+						onBeforeFinish: function() {
+							//notifyBoxee("Uppspelning slut!");
+							if (typeof(boxee) != 'undefined')
+								boxee.exec('boxee.notifyPlaybackEnded();');
 						}
+						
 					});
  
+					bplog("Redo. Startar uppspelning...");
+					//setError(); //debug
 					flowplayer().play();
 					}
  
+			}
+
+			function setError()
+			{
+				var errDiv = document.getElementById("error")
+				errDiv.style.display = "block";
+				document.getElementById("fms").style.display = "none";
+
+				errDiv.innerHTML += "<p>Net: '" + netUrl + "'</p>";
+				for (n in bitrates) {
+					errDiv.innerHTML += "<h3>-- Stream " + n + " --</h3><p>";
+					for (k in bitrates[n]) {
+						errDiv.innerHTML += k + ": '" + bitrates[n][k] + "'<br/>";
+					}
+					errDiv.innerHTML += "</p>";
+				}
+			}
+
+			function bplog(str)
+			{
+				if (typeof(console) != 'undefined')
+					console.log(str);
+				var dbg = document.getElementById("debug");
+				if (dbg != null)
+					dbg.innerHTML += "<br/>" + str;
+				if (typeof(window.$f) == 'function' && typeof($f()) != 'undefined') {
+					var content = $f().getPlugin('content');
+					if (typeof(content) != 'undefined' && typeof(content.setHtml) == 'function')
+						content.setHtml(str);
+				}
+				if (typeof(boxee) != 'undefined')
+					boxee.exec('boxee.log("'+str+'");');
+			}
+
+			function notifyBoxee(str)
+			{
+				bplog("Notifying Boxee with string: " + str + " - boxee object is of type: " + typeof(boxee));
+				if (typeof(boxee) != 'undefined')
+					boxee.exec('boxee.log("'+str+'");boxee.showNotification("' + str + '", "noteNotice.png", 2);');
 			}
 			
 			function gup( name )
@@ -78,6 +176,35 @@
 					return "";
 				else
 					return results[1];
+			}
+
+			function gatherStreams()
+			{
+				var stream = gup("id");
+				var bitrate = parseInt(gup("bitrate"),10);
+				if (isNaN(bitrate))
+					bitrate = 0;
+				bplog("Set default stream to: '" + stream + "', of " + bitrate + "kbps.");
+				var brates = [ { url: stream, bitrate: bitrate, isDefault: true } ];
+				var i = 0;
+				while(true)
+				{
+					stream = gup("stream-"+i);
+					if (stream == "")
+						break;
+					bitrate = parseInt(gup("bitrate-"+i),10);
+					if (isNaN(bitrate))
+						bitrate = 0;
+					brates.push({ url: stream, bitrate: bitrate });
+					bplog("Added alternative stream: " + stream + ", " + bitrate);
+					i++;
+				}
+				// LOG BITRATES
+				for (b in brates)
+					bplog("Found stream: '" + brates[b].url + "', of " + brates[b].bitrate + "kbps.");
+
+				// RETURN
+				return brates;
 			}
  
  
@@ -108,9 +235,9 @@
  
 	</head> 
  
-	<body onload="doLoad();"> 
+	<body onload="doLoad();">
  
-		<p id="debugWin" style="background-color:white;display:none;">Debug window</p> 
+		<p id="debug" style="background-color:white;display:none;">Debug window</p> 
  
 		<a class="player" id="fms"> 
  
@@ -124,7 +251,7 @@
 			<br/> 
 			<br/> 
 			<br/> 
-			<center style="font-size:32pt;">An error occured when openingthe document.</center> 
+			<center style="font-size:32pt;">Ett fel intr&auml;ffade vid laddning av filmklipp. </center> 
  
 		</div> 
  

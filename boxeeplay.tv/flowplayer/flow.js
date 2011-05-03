@@ -1,158 +1,108 @@
-﻿boxee.enableLog(true);
-boxee.renderBrowser = true;
-boxee.autoChoosePlayer = false;
-boxee.notifyPlaybackResumed()
-
-hasActive = false;
-hasSet = false;
-
-var duration = 0;
-/*
-duration = Math.round(Number(browser.execute('$f().getClip().duration')));
-boxee.setDuration(parseFloat(duration);
-*/
-
-/*
-//player = 'document.ep_player[0]';
-duration = 0;
- 
-function checkPlayerEnd() {
-   if (duration > 0) {
-       ctime = Math.round(Number(browser.execute(player+'.getCurrentTime()')));
-       if (ctime >= duration) { boxee.notifyPlaybackEnded(); }
-       progress = Math.round((ctime/duration)*100);
-       boxee.notifyCurrentTime(ctime);
-       boxee.notifyCurrentProgress(progress);
-   }
-   else {
-       browser.execute(player+'.playVideo();');
-       duration = Number(browser.execute(player+'.getVideoDuration()'));
-       boxee.setDuration(duration);
-   }
-   setTimeout(checkPlayerEnd,500);
+﻿boxee.onDocumentLoaded = function()
+{
+	boxeeLoadCommon();
+	if (boxee.getVersion() >= 7)
+		boxeeLoadNew();
+	else
+		boxeeLoadOld();
 }
-*/
 
+function boxeeLoadCommon()
+{
+	boxee.log("Loading common boxee configuration.");
+	//boxee.showNotification("Loading common boxee configuration.", ".", 2);
+	boxee.enableLog(true);
+	boxee.renderBrowser = true;
+	boxee.autoChoosePlayer = false;
+	browser.execute('$f().setVolume(100);');
+
+	boxee.onPause = function()
+	{
+		browser.execute("$f().pause()");
+	}
+	 
+	boxee.onPlay = function()
+	{
+		browser.execute("$f().play()");
+	}
+	 
+	//Standard short Boxee seek time is 30 seconds
+	boxee.onSkip = function() {
+		browser.execute('$f().seek($f().getTime()+30)')
+		sendProgress()
+	}
+	
+	//Standard long Boxee seek time is 10 minutes
+	boxee.onBigSkip = function() {
+		browser.execute('$f().seek($f().getTime()+600)')
+		sendProgress()
+	}
+	 
+	boxee.onBack = function() {
+		browser.execute('$f().seek($f().getTime()-30)')
+		sendProgress()
+	}
+	 
+	boxee.onBigBack = function() {
+		browser.execute('$f().seek($f().getTime()-600)')
+		sendProgress()
+	   
+	}
+	boxee.log("Finished loading common boxee configuration.");
+	//boxee.showNotification("Finished loading common boxee configuration.", ".", 2);
+}
+
+function boxeeLoadNew()
+{
+	boxee.log("Loading configuration for boxee >= 1.0.");
+	boxee.showOSDOnStartup = false;
+	//boxee.showNotification("Loading configuration for boxee >= 1.0.", ".", 2);
+	boxee.apiMinVersion = 7.0;
+	boxee.setMode(boxee.LOCKED_PLAYER_MODE);
+	boxee.realFullScreen = true;
+	playerState.canPause = true;
+	playerState.canSeek = true;
+	boxee.onUpdateState = function()
+	{
+		playerState.isPaused = browser.execute('$f().isPaused()') == 'true';
+		playerState.time     = parseFloat(Number(browser.execute('$f().getTime();')));
+		playerState.duration = parseFloat(Number(browser.execute('$f().getClip().fullDuration;')));
+	}
+	boxee.isPaused = false;
+	boxee.log("Finished loading configuration for boxee >= 1.0.");
+	//boxee.showNotification("Finished loading configuration for boxee >= 1.0.", ".", 2);
+}
+
+function boxeeLoadOld()
+{
+	boxee.log("Loading configuration for boxee < 1.0.");
+	//boxee.showNotification("Loading configuration for boxee < 1.0.", ".", 2);
+	boxee.setCanSetVolume(true);
+	boxee.setCanSkip(true);
+	boxee.setCanPause(true);
+	boxee.notifyPlaybackResumed();
+	 
+	boxee.onSetVolume = function(vol)
+	{
+	//Not OK TEST more
+	   //var vol = volume/100;
+	   browser.execute('$f().setVolume('+vol+');');
+	   //browser.execute('$f().setVolume(100);');
+	   
+	}
+	doUpdates();
+	boxee.log("Finished loading configuration for boxee < 1.0.");
+	//boxee.showNotification("Finished loading configuration for boxee < 1.0.", ".", 2);
+}
 
 function doUpdates() {
-	//duration = Math.round(Number(browser.execute('$f().getTime()')));
-	
-    ctime = Math.round(Number(browser.execute('$f().getTime()')));
-    //if (ctime >= duration) { boxee.notifyPlaybackEnded(); }
-    progress = Math.round((ctime/duration)*100);
+	duration = parseFloat(Number(browser.execute('$f().getClip().fullDuration')));
+    ctime = parseFloat(Number(browser.execute('$f().getTime()')));
+    if (parseInt(ctime) >= parseInt(duration)-1) //-1 because of the polling delay
+		boxee.notifyPlaybackEnded();
+	boxee.setDuration(duration);
     boxee.notifyCurrentTime(ctime);
-    boxee.notifyCurrentProgress(progress);
+	boxee.notifyCurrentProgress(Math.round(ctime/duration*100));
     setTimeout(doUpdates,500);
 }
 
-function sendProgress() {
-    ctime = Math.round(Number(browser.execute('$f().getTime()')));
-    if (ctime >= duration) { boxee.notifyPlaybackEnded(); }
-    progress = Math.round((ctime/duration)*100);
-    boxee.notifyCurrentTime(ctime);
-    boxee.notifyCurrentProgress(progress);
-}
-
-function checkForLoad() {
-	var check = browser.execute("checkIfLoaded();");
-	
-	browser.execute('document.getElementById("debugWin").innerHTML = "'+check+'";');
-	
-	if (check == "yes") {
-
-		duration = Number(browser.execute('$f().getClip().duration'));
-		if (duration>0) {
-			boxee.setDuration(parseFloat(duration));
-			doUpdates();
-		} else {
-			setTimeout(checkForLoad,1000);
-		}
-		
-		browser.execute('document.getElementById("debugWin").innerHTML = "'+duration+'";');
-		
-	} else {
-		setTimeout(checkForLoad,1000);
-		
-	}
-	
-}
-
-_findPlayer = setInterval(function()
-{
-   if (!hasSet)
-   {
-      boxee.getWidgets().forEach(function(widget)
-      {
-         if (widget.getAttribute("id") == 'fms_api')
-         {
-            boxee.renderBrowser=false;
-            widget.setCrop(0, 0, 0, 31);
-            boxee.notifyConfigChange(widget.width, widget.height-31);
-            widget.setActive(true);
-            boxee.setCanPause(true);
-            boxee.setCanSkip(true);
-            boxee.setCanSetVolume(true);
-			hasSet = true;
-            clearInterval(_findPlayer);
-         }
-      });
-   }
-}, 1000);
-
-
-
-setTimeout(function(){
-	browser.execute('document.getElementById("debugWin").innerHTML = "Calling Load";');
-	checkForLoad();
-},1000);
-
-
-
-//Init check for load
-//setTimeout("checkForLoad();",2000);
-
-boxee.onPause = function()
-{
-//OK
-   browser.execute("$f().pause()");
-}
- 
-boxee.onPlay = function()
-{
-//OK
-   browser.execute("$f().play()");
-}
- 
-boxee.onSkip = function() {
-   //OK
-   browser.execute('$f().seek($f().getTime()+60)')
-   sendProgress()
-}
- 
-boxee.onBigSkip = function() {
-   //OK
-	browser.execute('$f().seek($f().getTime()+60)')
-	sendProgress()
-}
- 
-boxee.onBack = function() {
-	//OK
-   browser.execute('$f().seek($f().getTime()-60)')
-   sendProgress()
-}
- 
-boxee.onBigBack = function() {
-   //OK
-	browser.execute('$f().seek($f().getTime()-60)')
-	sendProgress()
-   
-}
- 
-boxee.onSetVolume = function(vol)
-{
-//Not OK TEST more
-   //var vol = volume/100;
-   browser.execute('$f().setVolume('+vol+');');
-   //browser.execute('$f().setVolume(100);');
-   
-}
