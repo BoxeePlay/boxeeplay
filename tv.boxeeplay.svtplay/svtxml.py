@@ -33,6 +33,8 @@ def GetDirectory(url, maxResults=0):
 
     noOfItems = len(listItems)
     start = start + noOfItems
+    # A bit dangerous this loop,
+    # If an exception is caught inside and items are not added as they should..
     while (start <= totalResults):
         pageUrl = url + "&start=" + str(start)
         pageListItems = GetDirectoryPage(pageUrl)
@@ -113,12 +115,17 @@ def AddItem(items, node):
         SetDate(item, node)
 
         SetAlternatePaths(item, node)
+        jsActions = quote_plus('http://boxeeplay.tv/flowplayer/flow.js')
+        p = item.GetPath()
+        if p.startswith("flash://"):
+            item.SetPath(p + "&bx-jsactions=" + jsActions)
 
         SetGuiInfo(item)
 
         items.append(item)
     except Exception, e:
-        BPLog("svtxml: List item creation failed, url =%s, Exception: %s" % (item.GetPath(),str(e)), Level.ERROR)
+        BPLog("svtxml: AddItem failed to load item, url =%s, Exception: %s" % (item.GetPath(),str(e)), Level.ERROR)
+        items.append(mc.ListItem())
     BPTraceExit()
 
 def SetAlternatePaths(item, node):
@@ -128,6 +135,8 @@ def SetAlternatePaths(item, node):
         mediaNodes = mediaGroup.getElementsByTagName("media:content")
         AddFlowplayerPaths(item, mediaNodes)
     #DumpAlternateMediaPaths(item, node)
+    if item.GetProperty("replacedPath") == "1":
+        AddRtmpAlternatives(item)
     BPTraceExit()
 		
 def DumpAlternateMediaPaths(item, node):
@@ -143,6 +152,63 @@ def DumpAlternateMediaPaths(item, node):
                     mediaType = mediaNode.getAttribute("type").encode("utf-8")
                     BPLog("svtxml: %s - %s - %s" %(mediaLabel, mediaType, mediaPath))
     BPTraceExit()
+
+def CreateRtmpDomain(path):
+    return re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
+    
+def CreateRtmpId(path):
+    return 'mp4:' + re.compile('^.*/_definst_/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
+
+def CreateRtmpPath(domain, id, bitrate):
+    BPTraceEnter("domain: %s, id: %s" %(domain,id))
+    url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=' + str(id) + '&bitrate=' + str(bitrate)
+    url = quote_plus(url)
+    path = 'flash://boxeeplay.tv/src=' + str(url)
+    BPLog("svtxml: Media path converted to: %s" % path, Level.DEBUG)
+    BPTraceExit()
+    return path
+
+def AddRtmpAlternatives(item):
+    '''Run this function only when you have finished building the ListItem
+    with path and alternative paths. It uses properties stored in the item.
+    Properties needed:
+        alt-paths            | Nr of alternative paths (indexing starts at 0)
+        alt-path-[i]-type    | Type of alt-path with index i "video/mp4" is used
+        alt-path-[i]-stream  | Stream path of alt-path, complete with protocol (rtmpe:// is used)
+        alt-path-[i]-bitrate | Bitrate of alt-path with index i. Used by the player.
+    '''
+    BPTraceEnter()
+    try:
+        amount = int(item.GetProperty("alt-paths"))
+    except:
+        item.Dump()
+        BPLog("svtxml: Could not parse number of alt-paths. Check item dump above.", Level.ERROR)
+        amount = 0
+
+    path = item.GetPath()
+    if not path.startswith("flash://"):
+        return
+
+    try:
+        alternatives = [ ( n
+                         , item.GetProperty("alt-path-%s-type" %n)
+                         , item.GetProperty("alt-path-%s-stream" %n)
+                         , int(item.GetProperty("alt-path-%s-bitrate" %n))
+                         ) for n in range(amount)
+                       ]
+    except Exception, e:
+        item.Dump()
+        BPLog("svtxml: Error when reading alternative paths from item %s: %s" %(item.GetLabel(),e), Level.ERROR)
+        alternatives = []
+
+    for (i,type,stream,bits) in alternatives:
+        if type == "video/mp4" and stream.startswith("rtmpe://"):
+            path += quote_plus("&stream-%s=%s" %(i,CreateRtmpId(stream)))
+            path += quote_plus("&bitrate-%s=%s" %(i,bits))
+        else:
+            BPLog("svtxml: Ignoring stream as rtmpe alternative: %s" %stream, Level.DEBUG)
+    item.SetPath(path)
+    BPTraceExit()
         
 def AddFlowplayerPaths(item, mediaNodes):
     BPTraceEnter("%s, %s" %(item, mediaNodes))
@@ -152,29 +218,31 @@ def AddFlowplayerPaths(item, mediaNodes):
     AddDirectPath(item, mediaNodes, "wmv-a-v1", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     AddDirectPath(item, mediaNodes, "video/x-ms-asf", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     BPTraceExit()
-    
-def CreateRtmpPath(path):
-    BPTraceEnter(path)
-    domain = re.compile('^(.*?)/kluster', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
-    id = re.compile(domain + '/(.*?)$', re.DOTALL + re.IGNORECASE).search(str(path)).group(1)
-    url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=mp4:' + str(id)
-    url = quote_plus(url)
-    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/flow.js')
-    path = 'flash://boxeeplay.tv/src=' + str(url) + '&bx-jsactions=' + str(jsActions)
-    BPLog("svtxml: Media path converted to: %s" % path, Level.DEBUG)
-    BPTraceExit("Returning %s" % path)
-    return path
+
+def AddAlternativeStream(item, type, stream, bitrate):
+    BPTraceEnter("item: %s, type: %s, stream: %s, bitrate: %s" %(item.GetLabel(), type, stream, bitrate))
+    try:
+        i = int(item.GetProperty("alt-paths"))
+    except Exception, e:
+        BPLog("Nr of alternative paths not set for item %s: %s" %(item.GetLabel(), item.GetProperty("alt-paths")), Level.DEBUG)
+        i = 0
+    item.SetProperty("alt-path-%s-type" %i, str(type))
+    item.SetProperty("alt-path-%s-stream" %i, str(stream))
+    item.SetProperty("alt-path-%s-bitrate" %i, str(bitrate))
+    i += 1
+    item.SetProperty("alt-paths", str(i))
+    BPTraceExit()
     
 def AddFlowplayerPath(item, mediaNodes, label, title, thumbnailPath):
-    BPTraceEnter("%s, %s, %s, %s, %s" % (item, mediaNodes, label, title, thumbnailPath))
+    BPTraceEnter("%s, %s, %s, %s" % (item.GetLabel(), label, title, thumbnailPath))
     for mediaNode in mediaNodes:
         mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
         mediaPath = mediaNode.getAttribute("url").encode("utf-8")
         mediaType = mediaNode.getAttribute("type").encode("utf-8")
+        BPLog("Attempting to add alternative path. item: %s, type: %s, path: %s" %(item.GetLabel(), mediaType, mediaPath), Level.DEBUG)
         if mediaType == "video/mp4" and mediaLabel == label:
             if mediaPath[:5] == "rtmp:" or mediaPath[:6] == "rtmpe:":
-                mediaPath = CreateRtmpPath(mediaPath)
-                item.AddAlternativePath(title, mediaPath, "text/html", thumbnailPath) 
+                #item.AddAlternativePath(title, mediaPath, "text/html", thumbnailPath) 
                 try:
                     duration =  int(mediaNode.getAttribute("duration").encode("utf-8"))
                 except:
@@ -184,9 +252,17 @@ def AddFlowplayerPath(item, mediaNodes, label, title, thumbnailPath):
                     item.SetProperty("duration",str(duration)) #forall GetDuration() == 0 ...
                 item.SetReportToServer(True)
                 item.SetAddToHistory(True)
+                try:
+                    bitrate = int(float(mediaNode.getAttribute("bitrate").encode("utf-8")))
+                except:
+                    BPLog("bitrate could not be found/parsed")
+                    bitrate = 0
                 if item.GetProperty("replacedPath") == "0":
                     item.SetProperty("replacedPath", "1")
-                    item.SetPath(str(mediaPath))
+                    item.SetPath(CreateRtmpPath(CreateRtmpDomain(mediaPath),CreateRtmpId(mediaPath),bitrate))
+                else:
+                    BPLog("Adding alternative stream: %s for item %s" %(mediaPath, item.GetLabel()), Level.DEBUG)
+                    AddAlternativeStream(item, mediaType, mediaPath, bitrate)
     BPTraceExit()
                 
 def AddDirectPath(item, mediaNodes, label, title, thumbnailPath):
@@ -196,20 +272,27 @@ def AddDirectPath(item, mediaNodes, label, title, thumbnailPath):
         mediaPath = mediaNode.getAttribute("url").encode("utf-8")
         mediaType = mediaNode.getAttribute("type").encode("utf-8")
         if mediaLabel == label:
-			item.AddAlternativePath(title, mediaPath, mediaType, thumbnailPath) 
-			try:
-				duration =  int(mediaNode.getAttribute("duration").encode("utf-8"))
-			except:
-				duration = 0
-			if duration > 0:
-				item.SetDuration(duration)
-                                item.SetProperty("duration", str(duration)) #forall GetDuration() == 0 ...
-			item.SetReportToServer(True)
-			item.SetAddToHistory(True)
-			if item.GetProperty("replacedPath") == "0":
-				item.SetProperty("replacedPath", "1")
-				item.SetPath(str(mediaPath))
-				item.SetContentType(mediaType)
+            #item.AddAlternativePath(title, mediaPath, mediaType, thumbnailPath) 
+            try:
+                duration =  int(mediaNode.getAttribute("duration").encode("utf-8"))
+            except:
+                duration = 0
+            if duration > 0:
+                item.SetDuration(duration)
+                item.SetProperty("duration", str(duration)) #forall GetDuration() == 0 ...
+            item.SetReportToServer(True)
+            item.SetAddToHistory(True)
+            try:
+                bitrate = int(float(mediaNode.getAttribute("bitrate").encode("utf-8")))
+            except:
+                BPLog("bitrate could not be found/parsed")
+                bitrate = 0
+            if item.GetProperty("replacedPath") == "0":
+                item.SetProperty("replacedPath", "1")
+                item.SetPath(str(mediaPath))
+                item.SetContentType(mediaType)
+            else:
+                AddAlternativeStream(item, mediaType, mediaPath, bitrate)
     BPTraceExit()
 
 def RetrieveXmlStream(url):
