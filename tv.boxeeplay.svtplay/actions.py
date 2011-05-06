@@ -5,13 +5,13 @@ from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 def initiate():
     BPTraceEnter()
     loadCategories()
-    programs = mc.GetWindow(14000).GetList(2000).GetItems()
-    if len(programs) == 0:
-        BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
-        loadPrograms()
-        loadEpisodes()
-    else:
-        mc.GetWindow(14000).GetList(1000).SetFocus()
+    #programs = mc.GetWindow(14000).GetList(2000).GetItems()
+    #if len(programs) == 0:
+    #    BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
+    #    loadPrograms()
+    #    loadEpisodes()
+    #else:
+    mc.GetWindow(14000).GetList(1000).SetFocus()
     BPTraceExit()
 
 def loadCategories():
@@ -19,7 +19,6 @@ def loadCategories():
     mc.ShowDialogWait()
     target = mc.GetWindow(14000).GetList(1000)
     target.SetItems(svt.GetCategories())
-    target.Refresh()
     mc.HideDialogWait()
     BPLog("Successfully loaded all categories.", Level.DEBUG)
     BPTraceExit()

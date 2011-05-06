@@ -2,10 +2,7 @@
 <window type="window" id="14000">
     <defaultcontrol always="true">1000</defaultcontrol>
     <allowoverlay>no</allowoverlay>
-    <onload lang="python">
-<![CDATA[
-]]>
-    </onload>
+    <onload>RestoreWindowState</onload>
     <controls>
         <control type="group">
             <!--animation type="WindowOpen">
@@ -25,9 +22,9 @@
                 <posx>0</posx>
                 <posy>0</posy>
                 <font>font18</font>
-                <aligny>center</aligny>
+                <aligny>top</aligny>
                 <align>left</align>
-                <textcolor>black</textcolor>
+                <textcolor>grey</textcolor>
                 <info>System.BuildVersion</info>
             </control>
         </control>
@@ -69,7 +66,30 @@
                 <texturefocus border="10">button.png</texturefocus>
                 <alttexturefocus border="10">button.png</alttexturefocus>
                 <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick>SaveWindowState</onclick>
                 <onclick lang="python"><![CDATA[actions.search()]]></onclick>
+            </control>
+            <control type="button" id="199">
+                <onleft>111</onleft>
+                <ondown>1000</ondown>
+                <posx>1150</posx>
+                <posy>23</posy>
+                <width>100</width>
+                <height>40</height>
+                <font>font22</font>
+                <align>center</align>
+                <aligny>top</aligny>
+                <label>Unload</label>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <visible>true</visible>
+                <onclick>RestoreWindowState</onclick>
+                <!--onclick lang="python"><![CDATA[mc.GetApp().Close()]]></onclick-->
             </control>
             <control type="button" id="120">
                 <description>Svenskt å</description>
@@ -146,9 +166,10 @@
                 <width>1200</width>
                 <height>40</height>
                 <orientation>horizontal</orientation>
-                <ondown>2000</ondown>
+                <!--ondown>2000</ondown-->
                 <onup>110</onup>
                 <content type="action">
+                    <onclick>SaveWindowState</onclick>
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
                     </onclick>
@@ -218,10 +239,13 @@
                 <width>370</width>
                 <height>550</height>
                 <visible>true</visible>
-                <onup>1000</onup>
+                <!--onup>1000</onup>
                 <onleft>1000</onleft>
-                <onright>3001</onright>
+                <onright>3001</onright-->
+                <onnext>3001</onnext>
+                <onprev>1000</onprev>
                 <content type="action">
+                    <onclick>SaveWindowState</onclick>
                     <onclick lang="python">
                         <![CDATA[actions.loadEpisodes()]]>
                     </onclick>
@@ -294,9 +318,10 @@
                 <width>820</width>
                 <scrolltime>200</scrolltime>
                 <orientation>vertical</orientation>
-                <onleft>2000</onleft>
-                <onup>1000</onup>
+                <!--onleft>2000</onleft>
+                <onup>1000</onup-->
                 <content type="action">
+                    <onclick>SaveWindowState</onclick>
                     <onclick lang="python">
                          <![CDATA[actions.playVideo()]]>
                     </onclick>
