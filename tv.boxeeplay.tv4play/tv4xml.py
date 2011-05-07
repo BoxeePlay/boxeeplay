@@ -222,8 +222,57 @@ def GetTitles(categoryId):
                     return items
     return items
 
+def GetEpisodes(titleId):
+    items = mc.ListItems()
+    data = RetrieveStream("http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0")
+    data = "<root>" + data + "</root>"
+    root = xml.dom.minidom.parseString(data)
+    for divElement in root.getElementsByTagName("div"):
+        className = divElement.getAttribute("class").encode("utf-8")
+        if (className == "module-content"):
+            sectionElement = divElement.getElementsByTagName("section")[0]
+            ulElement = sectionElement.getElementsByTagName("ul")[0]
+            for liElement in ulElement.getElementsByTagName("li"):
+                item = mc.ListItem(mc.ListItem.MEDIA_VIDEO_EPISODE)
+                item.SetContentType("text/html")
+                pElement = liElement.getElementsByTagName("p")[0]
+                aElement = pElement.getElementsByTagName("a")[0]	
+                path = aElement.getAttribute("href").encode("utf-8")				
+                item.SetPath(path)			
+                #id should be just the last part after the =					
+                item.SetProperty("id", path)
+                item.SetThumbnail(GetElementAttribute(aElement, "img", "src"))
+                item.SetTitle(GetElementAttribute(aElement, "img", "alt"))
+                item.SetLabel(GetElementAttribute(aElement, "img", "alt"))
+                innerDivElement = liElement.getElementsByTagName("div")[0]
+                for innerPElement in innerDivElement.getElementsByTagName("p"):
+                    className = innerPElement.getAttribute("class").encode("utf-8")
+                    if (className == "program-format"):
+                        item.SetTVShowTitle(GetElementAttribute(innerPElement, "a", "title"))
+                    if (className == "video-description"):
+                        try:
+                            item.SetDescription(innerPElement.childNodes[0].data.encode("utf-8"))
+                        except:
+                            item.SetDescription("")
+                for innerMostDivElement in innerDivElement.getElementsByTagName("div"):
+                    className = innerMostDivElement.getAttribute("class").encode("utf-8")
+                    if (className == "video-meta"):
+                        item.SetProperty("airtime", GetElementData(innerMostDivElement, "p"))
+                item.SetProviderSource("TV4")
+                item.SetGenre("TOBESET")
+                item.SetReportToServer(True)
+                item.SetAddToHistory(True)
+                items.append(item)
+                item.Dump()
+    return items                        
 
 
+
+  
+       
+
+   
+   
 	
 def GetDirectory(url, maxResults=0):
     BPTraceEnter(url)
