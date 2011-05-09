@@ -4,14 +4,10 @@ from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
 def initiate():
     BPTraceEnter()
-    loadCategories()
-    programs = mc.GetWindow(14000).GetList(2000).GetItems()
-    if len(programs) == 0:
-        BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
-        loadPrograms()
-        loadEpisodes()
-    else:
-        mc.GetWindow(14000).GetList(1000).SetFocus()
+    #loadCategories()
+    cats = svt.GetCategories()
+    target = mc.GetWindow(14000).GetList(20)
+    target.SetItems(cats)
     BPTraceExit()
 
 def loadCategories():
@@ -92,7 +88,7 @@ def search():
 def appendSearch(str):
     BPTraceEnter()
     try:
-        searchBar = mc.GetWindow(14000).GetEdit(110)
+        searchBar = mc.GetWindow(14000).GetEdit(10)
         searchBar.SetText(searchBar.GetText()+str)
     except Exception, e:
         BPLog("Could not append searchbar with %s. Exception: %s" %(str,e), Level.ERROR)
