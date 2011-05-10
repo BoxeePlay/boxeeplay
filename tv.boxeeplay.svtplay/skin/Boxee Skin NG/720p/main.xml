@@ -197,6 +197,18 @@
                 <onright>-</onright>
                 <ondown>-</ondown>
                 <orientation>vertical</orientation>
+                <content type="action">
+                    <onclick lang="python">
+                        <![CDATA[
+params = mc.Parameters()
+list = mc.GetWindow(14000).GetList(20)
+item = list.GetItem(list.GetFocusedItem())
+params["category"] = item.GetLabel()
+params["categoryId"] = item.GetProperty("id")
+mc.GetApp().ActivateWindow(14010,params)
+]]>
+                    </onclick>
+                </content>
                 <itemlayout width="250" height="212">
                     <control type="group">
                         <posx>25</posx>
