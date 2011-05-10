@@ -4,7 +4,7 @@ from logger import BPLog, Level
 
 __author__ = 'Pehrsons'
 
-class browser:
+class Browser:
     def __init__(self):
         self.Left = 0  #amount
         self.Right = 0 #amount
