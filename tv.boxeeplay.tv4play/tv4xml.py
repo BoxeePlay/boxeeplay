@@ -252,8 +252,8 @@ def GetEpisodes(titleId):
                 pElement = liElement.getElementsByTagName("p")[0]
                 aElement = pElement.getElementsByTagName("a")[0]	
                 path = aElement.getAttribute("href").encode("utf-8")				
-                item.SetPath("http://www.tv4play.se" + path)
-                #id should be just the last part after the =					
+                videoId = path.split("videoid=")[1]
+                item.SetPath("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
                 item.SetProperty("id", path)
                 item.SetThumbnail(GetElementAttribute(aElement, "img", "src"))
                 item.SetTitle(GetElementAttribute(aElement, "img", "alt"))
