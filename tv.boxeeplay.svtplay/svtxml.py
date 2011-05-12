@@ -135,7 +135,7 @@ def SetAlternatePaths(item, node):
         mediaNodes = mediaGroup.getElementsByTagName("media:content")
         AddFlowplayerPaths(item, mediaNodes)
     #DumpAlternateMediaPaths(item, node)
-    if item.GetProperty("replacedPath") == "1":
+    if item.GetProperty("replacedPath") == "1" and item.GetPath().startswith("flash://"):
         AddRtmpAlternatives(item)
     BPTraceExit()
 		
@@ -174,7 +174,7 @@ def AddRtmpAlternatives(item):
     Properties needed:
         alt-paths            | Nr of alternative paths (indexing starts at 0)
         alt-path-[i]-type    | Type of alt-path with index i "video/mp4" is used
-        alt-path-[i]-stream  | Stream path of alt-path, complete with protocol (rtmpe:// is used)
+        alt-path-[i]-stream  | Stream path of alt-path, complete with protocol (rtmpe:// and rtmp:// may occur)
         alt-path-[i]-bitrate | Bitrate of alt-path with index i. Used by the player.
     '''
     BPTraceEnter()
@@ -189,6 +189,15 @@ def AddRtmpAlternatives(item):
     if not path.startswith("flash://"):
         return
 
+    protMatch = re.match(".*(rtmp|rtmpe)%3A",path)
+    if protMatch:
+        protocol = protMatch.group(1) + "://"
+        BPLog("Matches: " + protMatch.group(0), Level.DEBUG)
+        BPLog("Flowplayer streaming protocol matched to: " + protocol, Level.DEBUG)
+    else:
+        BPLog("No match on streaming protocol.")
+        protocol = "rtmpe://"
+
     try:
         alternatives = [ ( n
                          , item.GetProperty("alt-path-%s-type" %n)
@@ -202,11 +211,11 @@ def AddRtmpAlternatives(item):
         alternatives = []
 
     for (i,type,stream,bits) in alternatives:
-        if type == "video/mp4" and stream.startswith("rtmpe://"):
+        if type == "video/mp4" and stream.startswith(protocol):
             path += quote_plus("&stream-%s=%s" %(i,CreateRtmpId(stream)))
             path += quote_plus("&bitrate-%s=%s" %(i,bits))
         else:
-            BPLog("svtxml: Ignoring stream as rtmpe alternative: %s" %stream, Level.DEBUG)
+            BPLog("svtxml: Ignoring stream as rtmp(e) alternative: %s" %stream, Level.DEBUG)
     item.SetPath(path)
     BPTraceExit()
         
