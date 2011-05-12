@@ -26,12 +26,15 @@ def GetEpisodes(id) :
     return tv4xml.GetEpisodes(id)
 
 def GetSamples(id) :
+    #TODO Create Get Samples
     return 0
 
 def SearchEpisodes(searchTerm) :
+    #TODO Create search
     return mc.ListItems()
 
 def SearchSamples(searchTerm) :
+    #TODO Create Search
     return mc.ListItems()
 
 def DumpAllEpisodes():
