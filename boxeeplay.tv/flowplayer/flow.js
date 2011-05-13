@@ -26,25 +26,27 @@ function boxeeLoadCommon()
 		browser.execute("$f().play()");
 	}
 	 
-	//Standard short Boxee seek time is 30 seconds
+	//Standard short Boxee MOVIE seek time is 30 seconds
+        //Short SHOW seek time seems to be 10 seconds, let's use that
 	boxee.onSkip = function() {
-		browser.execute('$f().seek($f().getTime()+30)')
+		browser.execute('$f().seek($f().getTime()+10)')
 		sendProgress()
 	}
 	
-	//Standard long Boxee seek time is 10 minutes
+	//Standard long Boxee MOVIE seek time is 10 minutes
+        //Long SHOW seek time seems to be 3 minutes, let's use that
 	boxee.onBigSkip = function() {
-		browser.execute('$f().seek($f().getTime()+600)')
+		browser.execute('$f().seek($f().getTime()+180)')
 		sendProgress()
 	}
 	 
 	boxee.onBack = function() {
-		browser.execute('$f().seek($f().getTime()-30)')
+		browser.execute('$f().seek($f().getTime()-10)')
 		sendProgress()
 	}
 	 
 	boxee.onBigBack = function() {
-		browser.execute('$f().seek($f().getTime()-600)')
+		browser.execute('$f().seek($f().getTime()-180)')
 		sendProgress()
 	   
 	}
@@ -55,9 +57,9 @@ function boxeeLoadCommon()
 function boxeeLoadNew()
 {
 	boxee.log("Loading configuration for boxee >= 1.0.");
-	boxee.showOSDOnStartup = false;
 	//boxee.showNotification("Loading configuration for boxee >= 1.0.", ".", 2);
 	boxee.apiMinVersion = 7.0;
+	boxee.showOSDOnStartup = false;
 	boxee.setMode(boxee.LOCKED_PLAYER_MODE);
 	boxee.realFullScreen = true;
 	playerState.canPause = true;
