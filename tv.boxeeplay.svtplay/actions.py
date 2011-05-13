@@ -102,5 +102,6 @@ def playVideo():
     BPTraceEnter()
     l = mc.GetWindow(14000).GetList(3001)
     item = l.GetItem(l.GetFocusedItem())
+    BPLog("Playing clip \"%s\" with path \"%s\" and bitrate %s." %(item.GetLabel(), item.GetPath(), item.GetProperty("bitrate")))
     mc.GetPlayer().Play(item)
     BPTraceExit()

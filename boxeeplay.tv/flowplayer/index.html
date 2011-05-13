@@ -116,6 +116,10 @@
 							//notifyBoxee("Uppspelning slut!");
 							if (typeof(boxee) != 'undefined')
 								boxee.exec('boxee.notifyPlaybackEnded();');
+						},
+						onError: function(code, msg) {
+							bplog("Error " + code + msg);
+							setError(code + msg);
 						}
 						
 					});
@@ -127,12 +131,15 @@
  
 			}
 
-			function setError()
+			function setError(msg)
 			{
 				var errDiv = document.getElementById("error")
 				errDiv.style.display = "block";
 				document.getElementById("fms").style.display = "none";
 
+				if (typeof(msg) != 'undefined') {
+					errDiv.innerHTML += "<p>Error: " + msg + "</p>";
+				}
 				errDiv.innerHTML += "<p>Net: '" + netUrl + "'</p>";
 				for (n in bitrates) {
 					errDiv.innerHTML += "<h3>-- Stream " + n + " --</h3><p>";
