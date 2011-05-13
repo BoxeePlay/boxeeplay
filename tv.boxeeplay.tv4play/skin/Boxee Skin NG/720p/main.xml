@@ -5,20 +5,16 @@
 import mc
 import tv4mc
 
-app = mc.GetApp()
-config = app.GetLocalConfig()
+mc.ShowDialogWait()
 
-parameters = app.GetLaunchedWindowParameters() 
+app = mc.GetApp()
+parameters = app.GetLaunchedWindowParameters()
 list = mc.GetActiveWindow().GetList(120)
 id = parameters["id"]
-mc.LogInfo("main:1")
-if (config.GetValue("CategoryId") != id) or len(list.GetItems()) == 0:
-	mc.LogInfo("main:2")
-	items = tv4mc.GetTitles(id)
-	mc.LogInfo("main:3")
-	list.SetItems(items)
-	mc.LogInfo("main:4")
-	config.SetValue("CategoryId", id)
+items = tv4mc.GetTitles(id)
+list.SetItems(items)
+
+mc.HideDialogWait()
 
 ]]>
 	</onload>
@@ -75,7 +71,7 @@ mc.HideDialogWait()
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 				<control type="label">
 					<posx>16</posx>
@@ -104,7 +100,7 @@ mc.HideDialogWait()
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 				<control type="label">
 					<posx>16</posx>

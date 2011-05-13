@@ -8,15 +8,12 @@ import tv4mc
 mc.ShowDialogWait()
 
 app = mc.GetApp()
-config = app.GetLocalConfig()
 
-parameters = app.GetLaunchedWindowParameters() 
+parameters = app.GetLaunchedWindowParameters()
 list = mc.GetActiveWindow().GetList(121)
 id = parameters["id"]
-if (config.GetValue("TitleId") != id or len(list.GetItems()) == 0):
-	items = tv4mc.GetEpisodes(id)
-	list.SetItems(items)
-	config.SetValue("TitleId", id)
+items = tv4mc.GetEpisodes(id)
+list.SetItems(items)
 
 mc.HideDialogWait()
 ]]>
@@ -44,7 +41,6 @@ list = mc.GetActiveWindow().GetList(121)
 index = list.GetFocusedItem()
 item = list.GetItem(index)
 
-#bart.Play(item.GetPath(), item.GetLabel())
 mc.GetPlayer().Play(item)
 ]]>
 				</onclick>
@@ -68,7 +64,7 @@ mc.GetPlayer().Play(item)
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 				<control type="label">
 					<posx>16</posx>
@@ -97,7 +93,7 @@ mc.GetPlayer().Play(item)
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 				<control type="label">
 					<posx>16</posx>

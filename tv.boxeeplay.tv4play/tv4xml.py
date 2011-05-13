@@ -184,9 +184,9 @@ def GetCategories():
                 name = categoryElement.getAttribute("name").encode("utf-8")
                 id = categoryElement.getAttribute("id").encode("utf-8")
                 item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
-                item.SetContentType("text/xml")
+                item.SetContentType("text/html")
                 item.SetLabel(name)
-                item.SetPath("http://xml.tv4play.se")
+                item.SetPath("http://www.tv4play.se")
                 item.SetAuthor("TV4")
                 item.SetProperty("id", id)
                 item.SetReportToServer(False)
@@ -195,7 +195,6 @@ def GetCategories():
     return items
 
 def GetTitles(categoryId):
-    #TODO Should we list each season separately?
     #TODO Why is the same image listed for all titles?
     #TODO How to get the titles sorted alphabetically
     #TODO Why do the same titles appear for different categories?
@@ -208,6 +207,8 @@ def GetTitles(categoryId):
                 categoryName = categoryElement.getAttribute("name").encode("utf-8")
                 id = categoryElement.getAttribute("id").encode("utf-8")
                 if id == categoryId:
+                    mc.LogInfo("tv4xml: categoryId: " + categoryId)
+                    mc.LogInfo("tv4xml: id: " + id)
                     for programFormatElement in categoryElement.getElementsByTagName("programformat"):
                         item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
                         item.SetContentType("text/xml")
@@ -237,6 +238,8 @@ def GetTitles(categoryId):
     return items
 
 def GetEpisodes(titleId):
+    #TODO Set the same custom attributes as for SVT Play
+    #TODO Is it possible to load episodes through xml.tv4play.se?
     items = mc.ListItems()
 
     root = GetXmlTv4Play()
@@ -263,12 +266,15 @@ def GetEpisodes(titleId):
     for liElement in root.getElementsByTagName("li"):
         className = liElement.getAttribute("class").encode("utf-8")
         if className[:11] == "video-panel":
+            premiumSkip = False
             item = mc.ListItem(mc.ListItem.MEDIA_VIDEO_EPISODE)
             item.SetContentType("text/html")
             for imgElement in liElement.getElementsByTagName("img"):
                 item.SetThumbnail(imgElement.getAttribute("src").encode("utf-8"))
             for pElement in liElement.getElementsByTagName("p"):
                 className = pElement.getAttribute("class").encode("utf-8")
+                if className == "premium":
+                    premiumSkip = True
                 if className == "date":
                     item.SetProperty("airtime", pElement.childNodes[0].data.encode("utf-8"))
                 if className == "video-description":
@@ -289,11 +295,13 @@ def GetEpisodes(titleId):
             item.SetTVShowTitle(showTitle)
             item.SetProviderSource(channel)
             item.SetGenre(categoryName)
+            item.SetProperty("premium", premium)
             item.SetReportToServer(True)
             item.SetAddToHistory(True)
-            items.append(item)
-            item.Dump()
-    return items                        
+            if premiumSkip == False:
+                items.append(item)
+                item.Dump()
+    return items
 
 
 

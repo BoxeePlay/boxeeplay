@@ -31,6 +31,8 @@ mc.GetActiveWindow().GetList(120).SetItems(tv4mc.GetCategories())
 list = mc.GetActiveWindow().GetList(120)
 index = list.GetFocusedItem()
 item = list.GetItem(index)
+mc.LogInfo("tv4xml: selected item")
+item.Dump()
 
 app = mc.GetApp()
 params = mc.Parameters()
@@ -58,7 +60,7 @@ app.ActivateWindow(14000, params)
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 		<control type="label">
 					<posx>16</posx>
@@ -87,7 +89,7 @@ app.ActivateWindow(14000, params)
                     <align>center</align>
                     <aligny>center</aligny>
                     <aspectratio align="left">keep</aspectratio>
-                    <texture>$INFO[ListItem.Thumb]</texture>
+                    <info>ListItem.Thumb</info>
                 </control>
 				<control type="label">
 					<posx>16</posx>
