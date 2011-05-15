@@ -5,22 +5,12 @@
 #license:Creative Commons GNU GPL v2
 # (http://creativecommons.org/license/GPL/2.0/)
 
-# TODO
-# Gör en sajt och branda den
-# app-ikon
-# Spela upp program - via flowplayer? Direkt men med kontrollscript?
-# Se till att alla episoder laddas (pokemon laddar 6*17 men ej 170)
-# Sätt episodattribut på samma sätt som för svt
-# Alla titlar har samma bild?
-# Episoder - Postis Per - blir fel i inläsningen i avsnitt 6
-#
+#TODO - Brand the site
+#TODO Real app-icon in descriptor.xml
 
-import threading
 from urllib import quote_plus
 import urllib2
 import xml.dom.minidom
-import re
-import datetime
 import mc
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
@@ -181,23 +171,23 @@ def GetCategories():
         name = topCategoryElement.getAttribute("name").encode("utf-8")
         if name == "tv4playnew.se":
             for categoryElement in topCategoryElement.getElementsByTagName("category"):
-                name = categoryElement.getAttribute("name").encode("utf-8")
-                id = categoryElement.getAttribute("id").encode("utf-8")
-                item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
-                item.SetContentType("text/html")
-                item.SetLabel(name)
-                item.SetPath("http://www.tv4play.se")
-                item.SetAuthor("TV4")
-                item.SetProperty("id", id)
-                item.SetReportToServer(False)
-                item.SetAddToHistory(False)
-                items.append(item)
+                if categoryElement.getAttribute("listable").encode("utf-8") == "true" :
+                    name = categoryElement.getAttribute("name").encode("utf-8")
+                    id = categoryElement.getAttribute("id").encode("utf-8")
+                    item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
+                    item.SetContentType("text/html")
+                    item.SetLabel(name)
+                    item.SetPath("http://www.tv4play.se")
+                    item.SetAuthor("TV4")
+                    item.SetProperty("id", id)
+                    item.SetReportToServer(False)
+                    item.SetAddToHistory(False)
+                    items.append(item)
     return items
 
 def GetTitles(categoryId):
     #TODO Why is the same image listed for all titles?
     #TODO How to get the titles sorted alphabetically
-    #TODO Why do the same titles appear for different categories?
     items = mc.ListItems()
     root = GetXmlTv4Play()
     for topCategoryElement in root.getElementsByTagName("category"):
@@ -207,38 +197,36 @@ def GetTitles(categoryId):
                 categoryName = categoryElement.getAttribute("name").encode("utf-8")
                 id = categoryElement.getAttribute("id").encode("utf-8")
                 if id == categoryId:
-                    mc.LogInfo("tv4xml: categoryId: " + categoryId)
-                    mc.LogInfo("tv4xml: id: " + id)
                     for programFormatElement in categoryElement.getElementsByTagName("programformat"):
-                        item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
-                        item.SetContentType("text/xml")
-                        name = programFormatElement.getAttribute("name").encode("utf-8")
-                        item.SetLabel(name)
-                        item.SetTitle(name)
-                        item.SetTVShowTitle(name)
-                        item.SetProperty("id", programFormatElement.getAttribute("id").encode("utf-8"))
-                        item.SetDescription(GetElementData(programFormatElement, "text"))
-                        item.SetProviderSource(GetElementData(programFormatElement, "channel"))
-                        item.SetProperty("premium", GetElementData(programFormatElement, "premium"))
-                        item.SetProperty("airtime", GetElementData(programFormatElement, "airtime"))
-                        imageUrl = ""
-                        for largeImageElement in programFormatElement.getElementsByTagName("largeimage"):
-                            imageUrl = largeImageElement.childNodes[0].data.encode("utf-8")
-                        if len(imageUrl) > 0:
-                            item.SetThumbnail(imageUrl)
-                            item.SetIcon(imageUrl)
-                        item.SetGenre(categoryName)
-                        item.SetReportToServer(False)
-                        item.SetAddToHistory(False)
-                        item.SetPath("http://xml.tv4play.se")
-                        item.SetAuthor("TV4")
-                        items.append(item)
-                        item.Dump()
+                        if programFormatElement.getAttribute("listable").encode("utf-8") == "true" :
+                            item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
+                            item.SetContentType("text/xml")
+                            name = programFormatElement.getAttribute("name").encode("utf-8")
+                            item.SetLabel(name)
+                            item.SetTitle(name)
+                            item.SetTVShowTitle(name)
+                            item.SetProperty("id", programFormatElement.getAttribute("id").encode("utf-8"))
+                            item.SetDescription(GetElementData(programFormatElement, "text"))
+                            item.SetProviderSource(GetElementData(programFormatElement, "channel"))
+                            item.SetProperty("premium", GetElementData(programFormatElement, "premium"))
+                            item.SetProperty("airtime-se", GetElementData(programFormatElement, "airtime"))
+                            imageUrl = ""
+                            for largeImageElement in programFormatElement.getElementsByTagName("largeimage"):
+                                imageUrl = largeImageElement.childNodes[0].data.encode("utf-8")
+                            if len(imageUrl) > 0:
+                                item.SetThumbnail(imageUrl)
+                                item.SetIcon(imageUrl)
+                            item.SetGenre(categoryName)
+                            item.SetReportToServer(False)
+                            item.SetAddToHistory(False)
+                            item.SetPath("http://xml.tv4play.se")
+                            item.SetAuthor("TV4")
+                            items.append(item)
+                            item.Dump()
                     return items
     return items
 
-def GetEpisodes(titleId):
-    #TODO Set the same custom attributes as for SVT Play
+def GetEpisodes(titleId, loadSamples = False):
     #TODO Is it possible to load episodes through xml.tv4play.se?
     items = mc.ListItems()
 
@@ -260,7 +248,14 @@ def GetEpisodes(titleId):
                     break
 
     #TODO How to load all episodes, pokemon is 172
-    data = RetrieveStream("http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0")
+    # Load season per season, loop module, check showprograms=true and showclips=true
+    # Add season title to ShowTitle (if not "Hela program")
+    searchUrl = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0&video_types="
+    if loadSamples == True:
+        searchUrl = searchUrl + "clips"
+    else:
+        searchUrl = searchUrl + "programs"
+    data = RetrieveStream(searchUrl)
     data = "<root>" + data + "</root>"
     root = xml.dom.minidom.parseString(data)
     for liElement in root.getElementsByTagName("li"):
@@ -276,7 +271,7 @@ def GetEpisodes(titleId):
                 if className == "premium":
                     premiumSkip = True
                 if className == "date":
-                    item.SetProperty("airtime", pElement.childNodes[0].data.encode("utf-8"))
+                    item.SetProperty("airtime-se", pElement.childNodes[0].data.encode("utf-8"))
                 if className == "video-description":
                     try:
                         item.SetDescription(pElement.childNodes[0].data.encode("utf-8"))
@@ -290,7 +285,15 @@ def GetEpisodes(titleId):
                     path = GetElementAttribute(h3Element, "a", "href")
                     videoId = path.split("videoid=")[1]
                     #TODO A control-script should be used
-                    item.SetPath("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
+                    # F- full screen
+                    # Space - play/pause
+                    # Arrow left/right - fast forward
+                    # Arrow up/down - volume
+                    # Esc - leave full screen
+                    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
+                    jsActions = quote_plus("http://boisen.hobby-site.com/website/tv4play/tv4play.js")
+                    url = "flash://www.tv4play.se/src="+  path + "&bx-jsactions=" + jsActions
+                    item.SetPath(url)
                     item.SetProperty("id", videoId)
             item.SetTVShowTitle(showTitle)
             item.SetProviderSource(channel)
@@ -299,60 +302,32 @@ def GetEpisodes(titleId):
             item.SetReportToServer(True)
             item.SetAddToHistory(True)
             if premiumSkip == False:
+                SetGuiInfo(item)
                 items.append(item)
                 item.Dump()
     return items
 
-
-
-  
-       
-
-
-def GetDirectory(url, maxResults=0):
-    BPTraceEnter(url)
-    start = 1
-    
-    if maxResults <= 0:
-        maxResults = 9999
-    
-    BPLog("svtxml: %s" % url, Level.DEBUG)
-    root = RetrieveXmlStream(url)
-    
-    totalResults = int(root.getElementsByTagName("opensearch:totalResults")[0].childNodes[0].data)
-    if totalResults > maxResults:
-        totalResults = maxResults
-        
-    listItems = ProcessDirectoryPage(root)
-
-    noOfItems = len(listItems)
-    start = start + noOfItems
-    while start <= totalResults:
-        pageUrl = url + "&start=" + str(start)
-        pageListItems = GetDirectoryPage(pageUrl)
-        start = start + len(pageListItems)
-        for pageListItem in pageListItems:
-            listItems.append(pageListItem)
-        
-    BPLog("svtxml: Loaded %s items." % str(len(listItems)), Level.DEBUG)
-    BPTraceExit("Returning %s" % listItems)
-    return listItems
-        
-def ProcessDirectoryPage(root) :
-    BPTraceEnter(root)
-    items = mc.ListItems()
-        
-    for node in root.getElementsByTagName("item"):
-        item = AddItem(items, node)
-
-    BPTraceExit("Returning %s" % items)
-    return items
-
-def GetDirectoryPage(url) :
-    BPTraceEnter(url)
-    BPLog("svtxml: %s" %url, Level.DEBUG)
-    root = RetrieveXmlStream(url)
-    r = ProcessDirectoryPage(root)
-    BPTraceExit("Returning %s" % r)
-    return r
-
+def SetGuiInfo(item):
+    BPTraceEnter()
+    try:
+        info = ""
+        airtime = item.GetProperty("airtime-se")
+        if len(airtime) > 0:
+            info += airtime + '\n'
+        cat = item.GetGenre()
+        chan = item.GetProviderSource()
+        if len(cat) > 0:
+            info += "Kategori: %s" %cat
+            if len(chan) > 0:
+                info += ", "
+        if len(chan) > 0:
+            info += "Kanal: %s" %chan
+        if len(cat) or len(chan):
+            info += '\n'
+        dur = item.GetProperty("duration")
+        if len(dur) > 0:
+            info += "Längd: %s minuter" %(int(dur)//60)
+        item.SetStudio(info)
+    except Exception, e:
+        BPLog("tv4xml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
+    BPTraceExit()
