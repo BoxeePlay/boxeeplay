@@ -1,9 +1,9 @@
 <app>
   <id>tv.boxeeplay.tv4play</id>
   <name>TV4Play</name>
-  <version>0.01</version>
-  <description>TV4Play i din Boxee - ALFA 1</description>
-  <thumb>http://www.tv4play.se/images/skeleton/header-logo.png?embed=true</thumb>
+  <version>0.02</version>
+  <description>TV4Play i din Boxee - ALFA 2</description>
+  <thumb>http://www.boxeeplay.tv/images/stv4play.png</thumb>
   <repository>http://www.boxeeplay.tv/apps</repository>
   <media>video</media>
   <copyright>none</copyright>

@@ -5,9 +5,6 @@
 #license:Creative Commons GNU GPL v2
 # (http://creativecommons.org/license/GPL/2.0/)
 
-#TODO - Brand the site
-#TODO Real app-icon in descriptor.xml
-
 from urllib import quote_plus
 import urllib2
 import xml.dom.minidom
@@ -186,8 +183,6 @@ def GetCategories():
     return items
 
 def GetTitles(categoryId):
-    #TODO Why is the same image listed for all titles?
-    #TODO How to get the titles sorted alphabetically
     items = mc.ListItems()
     root = GetXmlTv4Play()
     for topCategoryElement in root.getElementsByTagName("category"):
@@ -197,7 +192,7 @@ def GetTitles(categoryId):
                 categoryName = categoryElement.getAttribute("name").encode("utf-8")
                 id = categoryElement.getAttribute("id").encode("utf-8")
                 if id == categoryId:
-                    for programFormatElement in categoryElement.getElementsByTagName("programformat"):
+                    for programFormatElement in sorted(categoryElement.getElementsByTagName("programformat"), key=lambda x: x.getAttribute("name").encode("utf-8")):
                         if programFormatElement.getAttribute("listable").encode("utf-8") == "true" :
                             item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
                             item.SetContentType("text/xml")
@@ -205,7 +200,8 @@ def GetTitles(categoryId):
                             item.SetLabel(name)
                             item.SetTitle(name)
                             item.SetTVShowTitle(name)
-                            item.SetProperty("id", programFormatElement.getAttribute("id").encode("utf-8"))
+                            titleId = programFormatElement.getAttribute("id").encode("utf-8")
+                            item.SetProperty("id", titleId)
                             item.SetDescription(GetElementData(programFormatElement, "text"))
                             item.SetProviderSource(GetElementData(programFormatElement, "channel"))
                             item.SetProperty("premium", GetElementData(programFormatElement, "premium"))
@@ -213,13 +209,21 @@ def GetTitles(categoryId):
                             imageUrl = ""
                             for largeImageElement in programFormatElement.getElementsByTagName("largeimage"):
                                 imageUrl = largeImageElement.childNodes[0].data.encode("utf-8")
+                            if len(imageUrl) == 0:
+                                for imageElement in programFormatElement.getElementsByTagName("image"):
+                                    imageUrl = imageElement.childNodes[0].data.encode("utf-8")
                             if len(imageUrl) > 0:
                                 item.SetThumbnail(imageUrl)
-                                item.SetIcon(imageUrl)
+                            smallImageUrl = ""
+                            for smallImageElement in programFormatElement.getElementsByTagName("smallformatimage"):
+                                smallImageUrl = smallImageElement.childNodes[0].data.encode("utf-8")
+                            if len(smallImageUrl) > 0:
+                                item.SetIcon(smallImageUrl)
                             item.SetGenre(categoryName)
                             item.SetReportToServer(False)
                             item.SetAddToHistory(False)
-                            item.SetPath("http://xml.tv4play.se")
+                            url = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0&video_types="
+                            item.SetPath(url)
                             item.SetAuthor("TV4")
                             items.append(item)
                             item.Dump()
@@ -228,6 +232,7 @@ def GetTitles(categoryId):
 
 def GetEpisodes(titleId, loadSamples = False):
     #TODO Is it possible to load episodes through xml.tv4play.se?
+    #as in http://xml.tv4play.se/1.1215984?selection=1.1062581
     items = mc.ListItems()
 
     root = GetXmlTv4Play()
@@ -248,8 +253,8 @@ def GetEpisodes(titleId, loadSamples = False):
                     break
 
     #TODO How to load all episodes, pokemon is 172
-    # Load season per season, loop module, check showprograms=true and showclips=true
-    # Add season title to ShowTitle (if not "Hela program")
+    #TODO Load season per season, loop module, check showprograms=true and showclips=true
+    #TODO Add season title to ShowTitle (if not "Hela program")
     searchUrl = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0&video_types="
     if loadSamples == True:
         searchUrl = searchUrl + "clips"
@@ -284,15 +289,9 @@ def GetEpisodes(titleId, loadSamples = False):
                     item.SetLabel(GetElementAttribute(h3Element, "a", "title"))
                     path = GetElementAttribute(h3Element, "a", "href")
                     videoId = path.split("videoid=")[1]
-                    #TODO A control-script should be used
-                    # F- full screen
-                    # Space - play/pause
-                    # Arrow left/right - fast forward
-                    # Arrow up/down - volume
-                    # Esc - leave full screen
                     path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
-                    jsActions = quote_plus("http://boisen.hobby-site.com/website/tv4play/tv4play.js")
-                    url = "flash://www.tv4play.se/src="+  path + "&bx-jsactions=" + jsActions
+                    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
+                    url = "flash://boxeeplay.tv/src="+  path + "&bx-jsactions=" + jsActions
                     item.SetPath(url)
                     item.SetProperty("id", videoId)
             item.SetTVShowTitle(showTitle)
@@ -304,7 +303,56 @@ def GetEpisodes(titleId, loadSamples = False):
             if premiumSkip == False:
                 SetGuiInfo(item)
                 items.append(item)
-                item.Dump()
+    return items
+
+def SearchEpisodes(searchTerm, loadSamples = False):
+    items = mc.ListItems()
+
+    searchUrl = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=2.76225&sorttype=date&start=0&video_types="
+    if loadSamples == True:
+        searchUrl = searchUrl + "clips"
+    else:
+        searchUrl = searchUrl + "programs"
+    searchUrl = searchUrl + "&text=" + quote_plus(searchTerm)
+    data = RetrieveStream(searchUrl)
+    data = "<root>" + data + "</root>"
+    root = xml.dom.minidom.parseString(data)
+    for liElement in root.getElementsByTagName("li"):
+        className = liElement.getAttribute("class").encode("utf-8")
+        if className[:11] == "video-panel":
+            premiumSkip = False
+            item = mc.ListItem(mc.ListItem.MEDIA_VIDEO_EPISODE)
+            item.SetContentType("text/html")
+            for imgElement in liElement.getElementsByTagName("img"):
+                item.SetThumbnail(imgElement.getAttribute("src").encode("utf-8"))
+            for pElement in liElement.getElementsByTagName("p"):
+                className = pElement.getAttribute("class").encode("utf-8")
+                if className == "premium":
+                    premiumSkip = True
+                if className == "date":
+                    item.SetProperty("airtime-se", pElement.childNodes[0].data.encode("utf-8"))
+                if className == "video-description":
+                    try:
+                        item.SetDescription(pElement.childNodes[0].data.encode("utf-8"))
+                    except:
+                        item.SetDescription("")
+            for h3Element in liElement.getElementsByTagName("h3"):
+                className = h3Element.getAttribute("class").encode("utf-8")
+                if className == "video-title":
+                    item.SetTitle(GetElementAttribute(h3Element, "a", "title"))
+                    item.SetLabel(GetElementAttribute(h3Element, "a", "title"))
+                    path = GetElementAttribute(h3Element, "a", "href")
+                    videoId = path.split("videoid=")[1]
+                    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
+                    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
+                    url = "flash://boxeeplay.tv/src="+  path + "&bx-jsactions=" + jsActions
+                    item.SetPath(url)
+                    item.SetProperty("id", videoId)
+            item.SetReportToServer(True)
+            item.SetAddToHistory(True)
+            if premiumSkip == False:
+                SetGuiInfo(item)
+                items.append(item)
     return items
 
 def SetGuiInfo(item):

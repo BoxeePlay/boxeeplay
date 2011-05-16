@@ -1,14 +1,7 @@
 ﻿import mc, logger
-import tv4xml
+import tv4xml, tv4mc
 
 logger.EnablePlus(logger.Level.DEBUG)
 
-#categories = tv4xml.GetCategories()
-#categoryId = categories[1].GetProperty("id")
-#titles = tv4xml.GetTitles(categoryId)
-episodes = tv4xml.GetEpisodes("1.1844489")
-#item = mc.ListItem(mc.ListItem.MEDIA_VIDEO_EPISODE)
-#item.SetLabel("Example")
-#item.SetContentType("text/html")
-#item.SetPath(tv4xml.GetVideoPath("1182789"))
-#mc.GetPlayer().Play(item)
+items = tv4mc.SearchEpisodes("tintin")
+mc.ShowDialogOk("hits", str(len(items)))

@@ -5,7 +5,9 @@
 import tv4mc
 import mc
 
-mc.GetActiveWindow().GetList(120).SetItems(tv4mc.GetCategories())
+list = mc.GetActiveWindow().GetList(120)
+if len(list.GetItems()) == 0:
+    mc.GetActiveWindow().GetList(120).SetItems(tv4mc.GetCategories())
 
 ]]>
 	</onload>

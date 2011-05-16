@@ -8,14 +8,17 @@ import tv4mc
 mc.ShowDialogWait()
 
 app = mc.GetApp()
+config = app.GetLocalConfig()
+
 parameters = app.GetLaunchedWindowParameters()
 list = mc.GetActiveWindow().GetList(120)
 id = parameters["id"]
-items = tv4mc.GetTitles(id)
-list.SetItems(items)
+if (config.GetValue("CategoryId") != id) or len(list.GetItems()) == 0:
+    items = tv4mc.GetTitles(id)
+    list.SetItems(items)
+    config.SetValue("CategoryId", id)
 
 mc.HideDialogWait()
-
 ]]>
 	</onload>
     <defaultcontrol always="true">120</defaultcontrol>

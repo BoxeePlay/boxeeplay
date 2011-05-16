@@ -23,19 +23,16 @@ def GetTitleId(item) :
     return item.GetProperty("id")
 
 def GetEpisodes(id) :
-    return tv4xml.GetEpisodes(id)
+    return tv4xml.GetEpisodes(id, False)
 
 def GetSamples(id) :
-    #TODO Create Get Samples
-    return 0
+    return tv4xml.GetEpisodes(id, True)
 
 def SearchEpisodes(searchTerm) :
-    #TODO Create search
-    return mc.ListItems()
+    return tv4xml.SearchEpisodes(searchTerm, False)
 
 def SearchSamples(searchTerm) :
-    #TODO Create Search
-    return mc.ListItems()
+    return tv4xml.SearchEpisodes(searchTerm, True)
 
 def DumpAllEpisodes():
     BPTraceEnter()

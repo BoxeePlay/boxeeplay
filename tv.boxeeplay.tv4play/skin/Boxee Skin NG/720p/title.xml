@@ -6,15 +6,19 @@ import mc
 import tv4mc
 
 mc.ShowDialogWait()
-
 app = mc.GetApp()
+config = app.GetLocalConfig()
 
 parameters = app.GetLaunchedWindowParameters()
 list = mc.GetActiveWindow().GetList(121)
 id = parameters["id"]
-items = tv4mc.GetEpisodes(id)
-list.SetItems(items)
+if (config.GetValue("TitleId") != id or len(list.GetItems()) == 0):
+    items = tv4mc.GetEpisodes(id)
+    list.SetItems(items)
+    config.SetValue("TitleId", id)
 
+    if len(items) == 0:
+        mc.ShowDialogOk("Det finns inga episoder", "Förmodligen är alla episoder premium-innehåll och kan inte visas.")
 mc.HideDialogWait()
 ]]>
 	</onload>
@@ -116,10 +120,9 @@ mc.GetPlayer().Play(item)
                 <width>1200</width>
                 <height>70</height>
                 <textcolor>grey</textcolor>
-                <label>[B]$INFO[Container(121).ListItem.Label][/B] ($INFO[Container(121).ListItem.Date]) $INFO[Container(121).ListItem.property(description)]</label>
+                <label>[B]$INFO[Container(121).ListItem.Label][/B] $INFO[Container(121).ListItem.property(description)]</label>
                 <wrapmultiline>true</wrapmultiline>
             </control>
-
     </controls>
 </window>
 
