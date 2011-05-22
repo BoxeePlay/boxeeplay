@@ -193,7 +193,7 @@ def GetTitles(categoryId):
                 id = categoryElement.getAttribute("id").encode("utf-8")
                 if id == categoryId:
                     for programFormatElement in sorted(categoryElement.getElementsByTagName("programformat"), key=lambda x: x.getAttribute("name").encode("utf-8")):
-                        if programFormatElement.getAttribute("listable").encode("utf-8") == "true" :
+                        if programFormatElement.getAttribute("listable").encode("utf-8") == "true" and GetElementData(programFormatElement, "premium") != "true" :
                             item = mc.ListItem(mc.ListItem.MEDIA_UNKNOWN)
                             item.SetContentType("text/xml")
                             name = programFormatElement.getAttribute("name").encode("utf-8")
