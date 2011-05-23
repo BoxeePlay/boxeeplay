@@ -41,117 +41,23 @@ def RetrieveXmlStream(url):
         return  root
 
 def GetElementData(node, name):
-    #BPTraceEnter("%s, %s" % (node, name))
     try:
-        #BPTraceExit()
         return node.getElementsByTagName(name)[0].childNodes[0].data.encode("utf-8")
     except:
-        #BPTraceExit()
         return str("")
 
 def GetElementAttribute(node, name, attribute):
-    #BPTraceEnter("%s, %s, %s" % (node, name, attribute))
     try:
-        #BPTraceExit()
         return node.getElementsByTagName(name)[0].getAttribute(attribute).encode("utf-8")
     except:
-        #BPTraceExit()
         return str("")
-
-def CreateRtmpPath(domain, url):
-    BPTraceEnter("%s, %s" % (domain, url))
-    url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=' + str(url)
-    mc.LogInfo("tv4xml: url:" + url)
-    url = quote_plus(url)
-    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/control.js')
-    path = 'flash://boxeeplay.tv/src=' + str(url) + '&bx-jsactions=' + str(jsActions)
-    BPLog("tv4xml: Media path converted to: %s" % path, Level.DEBUG)
-    BPTraceExit("Returning %s" % path)
-    return path
-
-def GetVideoPath(videoId):
-    BPTraceEnter(videoId)
-	
-    base = str("")
-    source = str("")
-    bestBitRate = 0
-
-    root = RetrieveXmlStream("http://anytime.tv4.se/webtv/metafileFlash.smil?p=" + str(videoId) + "&bw=1000&emulate=true&sl=true")
-
-    headElement = root.getElementsByTagName("head")[0]
-    for metaElement in headElement.getElementsByTagName("meta"):
-        baseAttribute = metaElement.getAttribute("base").encode("utf-8")
-        if len(str(baseAttribute)) > 0:
-            base = baseAttribute			
-            mc.LogInfo("tv4xml: base: " + base) 
-
-    bodyElement = root.getElementsByTagName("body")[0]
-    switchElement = bodyElement.getElementsByTagName("switch")[0]
-    for videoElement in switchElement.getElementsByTagName("video"):
-        src = videoElement.getAttribute("src").encode("utf-8")
-        systemBitRate = videoElement.getAttribute("system-bitrate").encode("utf-8")
-        bitRate = int(systemBitRate)
-        if bitRate > bestBitRate:
-            bestBitRate = bitRate
-            mc.LogInfo("tv4xml: bitrate: " + str(bitRate)) 
-            source = src
-            mc.LogInfo("tv4xml: source: " + source) 
-    path = CreateRtmpPath(base, source)
-    mc.LogInfo("tv4xml: path: " + path)
-    BPTraceExit("Returning %s" % path)
-    return path
-
-def GetPremiumVideoPath(videoId):
-    BPTraceEnter(videoId)
-    path2500 = str("")
-    path1500 = str("")
-    path800 = str("")
-    path300 = str("")
-    root = RetrieveXmlStream("http://premium.tv4play.se/api/web/asset/" + str(videoId) + "/play")
-    for itemsElement in root.getElementsByTagName("items"):
-        for itemElement in itemsElement.getElementsByTagName("item"):
-            bitrate = GetElementData(itemElement, "bitrate")
-            mc.LogInfo("tv4xml: bitrate: " + bitrate) 
-            mediaFormat = GetElementData(itemElement, "mediaFormat")
-            mc.LogInfo("tv4xml: mediaFormat: " + mediaFormat)
-            scheme = GetElementData(itemElement, "scheme")
-            mc.LogInfo("tv4xml: scheme: " + scheme)
-            domain = GetElementData(itemElement, "base")
-            mc.LogInfo("tv4xml: domain: " + domain)
-            url = GetElementData(itemElement, "url")
-            mc.LogInfo("tv4xml: url: " + url)
-            if mediaFormat == "mp4":
-                if scheme == "rtmp" or scheme == "rtmpe":
-                    if bitrate == "2500":
-                        path2500 = CreateRtmpPath(domain, url)
-                        mc.LogInfo("tv4xml: path: " + path2500)
-                    if bitrate == "1500":
-                        path1500 = CreateRtmpPath(domain, url)
-                        mc.LogInfo("tv4xml: path: " + path1500)
-                    if bitrate == "800":
-                        path800 = CreateRtmpPath(domain, url)
-                        mc.LogInfo("tv4xml: path: " + path800)
-                    if bitrate == "300":
-                        path300 = CreateRtmpPath(domain, url)
-                        mc.LogInfo("tv4xml: path: " + path300)
-    path = path300
-    if len(path800) > 0:
-        path = path800
-    if len(path1500) > 0:
-        path = path1500
-    if len(path2500) > 0:
-        path = path2500
-    mc.LogInfo("tv4xml: path: " + path)
-    BPTraceExit("Returning %s" % path)
-    return path
 
 # Holding the xml.tv4play minidom structure
 xmlTv4Play = None
 
 def LoadXmlTv4Play():
     global xmlTv4Play
-    data = RetrieveStream("http://xml.tv4play.se")
-    xmlTv4Play = xml.dom.minidom.parseString(data)
+    xmlTv4Play = RetrieveXmlStream("http://xml.tv4play.se")
     return
 
 def GetXmlTv4Play():
@@ -235,6 +141,10 @@ def GetEpisodes(titleId, loadSamples = False):
     #as in http://xml.tv4play.se/1.1215984?selection=1.1062581
     items = mc.ListItems()
 
+    showTitle = ""
+    channel = ""
+    premium = "false"
+    categoryName = ""
     root = GetXmlTv4Play()
     titleFound = False
     for topCategoryElement in root.getElementsByTagName("category"):
@@ -249,17 +159,17 @@ def GetEpisodes(titleId, loadSamples = False):
                         premium = GetElementData(programFormatElement, "premium")
                         titleFound = True;
                         break
-                if titleFound == True:
+                if titleFound:
                     break
 
-    #TODO How to load all episodes, pokemon is 172
+    #TODO How to load all episodes, pokemon is 172?
     #TODO Load season per season, loop module, check showprograms=true and showclips=true
     #TODO Add season title to ShowTitle (if not "Hela program")
     searchUrl = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=" + titleId + "&sorttype=date&start=0&video_types="
-    if loadSamples == True:
-        searchUrl = searchUrl + "clips"
+    if loadSamples:
+        searchUrl += "clips"
     else:
-        searchUrl = searchUrl + "programs"
+        searchUrl += "programs"
     data = RetrieveStream(searchUrl)
     data = "<root>" + data + "</root>"
     root = xml.dom.minidom.parseString(data)
@@ -289,30 +199,34 @@ def GetEpisodes(titleId, loadSamples = False):
                     item.SetLabel(GetElementAttribute(h3Element, "a", "title"))
                     path = GetElementAttribute(h3Element, "a", "href")
                     videoId = path.split("videoid=")[1]
-                    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
-                    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
-                    url = "flash://boxeeplay.tv/src="+  path + "&bx-jsactions=" + jsActions
+                    url = CreateFlashUrl(videoId)
                     item.SetPath(url)
                     item.SetProperty("id", videoId)
-            item.SetTVShowTitle(showTitle)
-            item.SetProviderSource(channel)
-            item.SetGenre(categoryName)
-            item.SetProperty("premium", premium)
-            item.SetReportToServer(True)
-            item.SetAddToHistory(True)
-            if premiumSkip == False:
+            if not premiumSkip:
+                item.SetTVShowTitle(showTitle)
+                item.SetProviderSource(channel)
+                item.SetGenre(categoryName)
+                item.SetProperty("premium", premium)
+                item.SetReportToServer(True)
+                item.SetAddToHistory(True)
                 SetGuiInfo(item)
                 items.append(item)
     return items
+
+def CreateFlashUrl(videoId):
+    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
+    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
+    url = "flash://boxeeplay.tv/src=" + path + "&bx-jsactions=" + jsActions
+    return url
 
 def SearchEpisodes(searchTerm, loadSamples = False):
     items = mc.ListItems()
 
     searchUrl = "http://www.tv4play.se/search/search?rows=200&order=desc&categoryids=2.76225&sorttype=date&start=0&video_types="
-    if loadSamples == True:
-        searchUrl = searchUrl + "clips"
+    if loadSamples:
+        searchUrl += "clips"
     else:
-        searchUrl = searchUrl + "programs"
+        searchUrl += "programs"
     searchUrl = searchUrl + "&text=" + quote_plus(searchTerm)
     data = RetrieveStream(searchUrl)
     data = "<root>" + data + "</root>"
@@ -343,14 +257,12 @@ def SearchEpisodes(searchTerm, loadSamples = False):
                     item.SetLabel(GetElementAttribute(h3Element, "a", "title"))
                     path = GetElementAttribute(h3Element, "a", "href")
                     videoId = path.split("videoid=")[1]
-                    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
-                    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
-                    url = "flash://boxeeplay.tv/src="+  path + "&bx-jsactions=" + jsActions
+                    url = CreateFlashUrl(videoId)
                     item.SetPath(url)
                     item.SetProperty("id", videoId)
             item.SetReportToServer(True)
             item.SetAddToHistory(True)
-            if premiumSkip == False:
+            if not premiumSkip:
                 SetGuiInfo(item)
                 items.append(item)
     return items
@@ -379,3 +291,92 @@ def SetGuiInfo(item):
     except Exception, e:
         BPLog("tv4xml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
     BPTraceExit()
+
+#  -- This block of code is not currently used
+# -- but might be used if we decide to process the video streams our selves
+#def CreateRtmpPath(domain, url):
+#    BPTraceEnter("%s, %s" % (domain, url))
+#    url = 'http://boxeeplay.tv/flowplayer/index.html?net=' + str(domain) + '&id=' + str(url)
+#    mc.LogInfo("tv4xml: url:" + url)
+#    url = quote_plus(url)
+#    jsActions = quote_plus('http://boxeeplay.tv/flowplayer/control.js')
+#    path = 'flash://boxeeplay.tv/src=' + str(url) + '&bx-jsactions=' + str(jsActions)
+#    BPLog("tv4xml: Media path converted to: %s" % path, Level.DEBUG)
+#    BPTraceExit("Returning %s" % path)
+#    return path
+#
+#def GetVideoPath(videoId):
+#    BPTraceEnter(videoId)
+#
+#    base = str("")
+#    source = str("")
+#    bestBitRate = 0
+#
+#    root = RetrieveXmlStream("http://anytime.tv4.se/webtv/metafileFlash.smil?p=" + str(videoId) + "&bw=1000&emulate=true&sl=true")
+#
+#    headElement = root.getElementsByTagName("head")[0]
+#    for metaElement in headElement.getElementsByTagName("meta"):
+#        baseAttribute = metaElement.getAttribute("base").encode("utf-8")
+#        if len(str(baseAttribute)) > 0:
+#            base = baseAttribute
+#            mc.LogInfo("tv4xml: base: " + base)
+#
+#    bodyElement = root.getElementsByTagName("body")[0]
+#    switchElement = bodyElement.getElementsByTagName("switch")[0]
+#    for videoElement in switchElement.getElementsByTagName("video"):
+#        src = videoElement.getAttribute("src").encode("utf-8")
+#        systemBitRate = videoElement.getAttribute("system-bitrate").encode("utf-8")
+#        bitRate = int(systemBitRate)
+#        if bitRate > bestBitRate:
+#            bestBitRate = bitRate
+#            mc.LogInfo("tv4xml: bitrate: " + str(bitRate))
+#            source = src
+#            mc.LogInfo("tv4xml: source: " + source)
+#    path = CreateRtmpPath(base, source)
+#    mc.LogInfo("tv4xml: path: " + path)
+#    BPTraceExit("Returning %s" % path)
+#    return path
+#
+#def GetPremiumVideoPath(videoId):
+#    BPTraceEnter(videoId)
+#    path2500 = str("")
+#    path1500 = str("")
+#    path800 = str("")
+#    path300 = str("")
+#    root = RetrieveXmlStream("http://premium.tv4play.se/api/web/asset/" + str(videoId) + "/play")
+#    for itemsElement in root.getElementsByTagName("items"):
+#        for itemElement in itemsElement.getElementsByTagName("item"):
+#            bitrate = GetElementData(itemElement, "bitrate")
+#            mc.LogInfo("tv4xml: bitrate: " + bitrate)
+#            mediaFormat = GetElementData(itemElement, "mediaFormat")
+#            mc.LogInfo("tv4xml: mediaFormat: " + mediaFormat)
+#            scheme = GetElementData(itemElement, "scheme")
+#            mc.LogInfo("tv4xml: scheme: " + scheme)
+#            domain = GetElementData(itemElement, "base")
+#            mc.LogInfo("tv4xml: domain: " + domain)
+#            url = GetElementData(itemElement, "url")
+#            mc.LogInfo("tv4xml: url: " + url)
+#            if mediaFormat == "mp4":
+#                if scheme == "rtmp" or scheme == "rtmpe":
+#                    if bitrate == "2500":
+#                        path2500 = CreateRtmpPath(domain, url)
+#                        mc.LogInfo("tv4xml: path: " + path2500)
+#                    if bitrate == "1500":
+#                        path1500 = CreateRtmpPath(domain, url)
+#                        mc.LogInfo("tv4xml: path: " + path1500)
+#                    if bitrate == "800":
+#                        path800 = CreateRtmpPath(domain, url)
+#                        mc.LogInfo("tv4xml: path: " + path800)
+#                    if bitrate == "300":
+#                        path300 = CreateRtmpPath(domain, url)
+#                        mc.LogInfo("tv4xml: path: " + path300)
+#    path = path300
+#    if len(path800) > 0:
+#        path = path800
+#    if len(path1500) > 0:
+#        path = path1500
+#    if len(path2500) > 0:
+#        path = path2500
+#    mc.LogInfo("tv4xml: path: " + path)
+#    BPTraceExit("Returning %s" % path)
+#    return path
