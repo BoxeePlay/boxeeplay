@@ -144,21 +144,21 @@ def GetPremiumVideoPath(videoId):
     mc.LogInfo("tv4xml: path: " + path)
     BPTraceExit("Returning %s" % path)
     return path
-  
+
+# Holding the xml.tv4play minidom structure
+xmlTv4Play = None
+
 def LoadXmlTv4Play():
-    app = mc.GetApp()
-    config = app.GetLocalConfig()
+    global xmlTv4Play
     data = RetrieveStream("http://xml.tv4play.se")
-    config.SetValue("XmlTv4Play", data)
+    xmlTv4Play = xml.dom.minidom.parseString(data)
     return
 
 def GetXmlTv4Play():
-    app = mc.GetApp()
-    config = app.GetLocalConfig()
-    data = config.GetValue("XmlTv4Play")
-    root = xml.dom.minidom.parseString(data)
-    BPTraceExit("Returning %s" % root)
-    return root
+    global xmlTv4Play
+    if xmlTv4Play == None:
+        LoadXmlTv4Play()
+    return xmlTv4Play
 
 def GetCategories():
     items = mc.ListItems()
