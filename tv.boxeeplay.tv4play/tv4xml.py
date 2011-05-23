@@ -288,6 +288,7 @@ def SetGuiInfo(item):
         if len(dur) > 0:
             info += "Längd: %s minuter" %(int(dur)//60)
         item.SetStudio(info)
+        item.SetProperty("bitrate", "unknown")
     except Exception, e:
         BPLog("tv4xml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
     BPTraceExit()

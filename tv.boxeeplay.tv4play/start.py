@@ -1,7 +1,10 @@
-﻿import mc, logger
-import tv4xml, tv4mc
+﻿import mc, actions, logger
 
-logger.EnablePlus(logger.Level.DEBUG)
+'''
+here we can do some pre launch processing if we wish.
+checking authentication or pre-loading content, anything we need.
+'''
+#logger.EnablePlus(logger.Level.DEBUG)
 
-items = tv4mc.SearchEpisodes("tintin")
-mc.ShowDialogOk("hits", str(len(items)))
+mc.ActivateWindow(14000)
+actions.initiate()
