@@ -153,11 +153,11 @@
                         <![CDATA[actions.loadPrograms()]]>
                     </onclick>
                 </content>
-                <itemlayout width="200">
+                <itemlayout width="170">
                     <control type="group">
-                        <width>200</width>
+                        <width>170</width>
                         <control type="image">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
                             <posx>5</posx>
                             <posy>0</posy>
@@ -165,9 +165,9 @@
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
-                            <posx>100</posx>
+                            <posx>85</posx>
                             <posy>4</posy>
                             <align>center</align>
                             <aligny>top</aligny>
@@ -177,10 +177,10 @@
                         </control>
                     </control>
                 </itemlayout>
-                <focusedlayout width="200">
+                <focusedlayout width="170">
                     <control type="group">
                         <control type="image">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
                             <posx>5</posx>
                             <posy>0</posy>
@@ -189,7 +189,7 @@
                             <fadetime>100</fadetime>
                         </control>
                         <control type="image">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
                             <posx>5</posx>
                             <posy>0</posy>
@@ -197,9 +197,9 @@
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
-                            <posx>100</posx>
+                            <posx>85</posx>
                             <posy>4</posy>
                             <align>center</align>
                             <aligny>top</aligny>

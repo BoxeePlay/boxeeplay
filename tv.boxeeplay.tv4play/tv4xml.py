@@ -227,7 +227,17 @@ def SearchEpisodes(searchTerm, loadSamples = False):
         searchUrl += "clips"
     else:
         searchUrl += "programs"
-    searchUrl = searchUrl + "&text=" + quote_plus(searchTerm)
+    searchTerm = quote_plus(searchTerm)
+    # Manually fix åäö - not an optimal fix
+    searchTerm = searchTerm.replace("%E5", "%C3%A5") #å
+    searchTerm = searchTerm.replace("%E4", "%C3%A4") #ä
+    searchTerm = searchTerm.replace("%F6", "%C3%B6") #ö
+    searchTerm = searchTerm.replace("%C5", "%C3%85") #Å
+    searchTerm = searchTerm.replace("%C4", "%C3%84") #Ä
+    searchTerm = searchTerm.replace("%D6", "%C3%96") #Ö
+
+    searchUrl = searchUrl + "&text=" + searchTerm
+    mc.LogInfo("tv4play - search: " + searchUrl)
     data = RetrieveStream(searchUrl)
     data = "<root>" + data + "</root>"
     root = xml.dom.minidom.parseString(data)
