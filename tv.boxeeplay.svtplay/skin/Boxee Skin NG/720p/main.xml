@@ -3,8 +3,7 @@
     <defaultcontrol always="true">1000</defaultcontrol>
     <allowoverlay>no</allowoverlay>
     <onload lang="python">
-<![CDATA[
-]]>
+<![CDATA[actions.initiate()]]>
     </onload>
     <controls>
         <control type="group">
@@ -29,11 +28,13 @@
                 <align>left</align>
                 <textcolor>black</textcolor>
                 <info>System.BuildVersion</info>
+                <visible>false</visible>
             </control>
         </control>
 
 
         <control type="group" id="100" >
+            <posx>134</posx>
             <control type="edit" id="110">
                 <ondown>1000</ondown>
                 <onup>121</onup>
@@ -142,8 +143,8 @@
             <control type="list" id="1000">
                 <description>Categories</description>
                 <posy>73</posy>
-                <posx>20</posx>
-                <width>1200</width>
+                <posx>10</posx>
+                <width>1250</width>
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
@@ -153,58 +154,57 @@
                         <![CDATA[actions.loadPrograms()]]>
                     </onclick>
                 </content>
-                <itemlayout width="200">
+                <itemlayout width="170">
                     <control type="group">
-                        <width>200</width>
                         <control type="image">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
-                            <posx>5</posx>
+                            <posx>10</posx>
                             <posy>0</posy>
                             <texture>button_bg.png</texture>
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
-                            <width>190</width>
+                            <width>160</width>
                             <height>40</height>
-                            <posx>100</posx>
-                            <posy>4</posy>
+                            <posx>90</posx>
+                            <posy>0</posy>
                             <align>center</align>
-                            <aligny>top</aligny>
+                            <aligny>center</aligny>
                             <textcolor>white</textcolor>
-                            <font>font20</font>
+                            <font>font18</font>
                             <info>ListItem.Label</info>
                         </control>
                     </control>
                 </itemlayout>
-                <focusedlayout width="200">
+                <focusedlayout width="230">
                     <control type="group">
                         <control type="image">
-                            <width>190</width>
+                            <width>220</width>
                             <height>40</height>
-                            <posx>5</posx>
+                            <posx>10</posx>
                             <posy>0</posy>
                             <texture>button.png</texture>
                             <visible>Control.HasFocus(1000)</visible>
                             <fadetime>100</fadetime>
                         </control>
                         <control type="image">
-                            <width>190</width>
+                            <width>220</width>
                             <height>40</height>
-                            <posx>5</posx>
+                            <posx>10</posx>
                             <posy>0</posy>
                             <texture>button_alt.png</texture>
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
-                            <width>190</width>
+                            <width>220</width>
                             <height>40</height>
-                            <posx>100</posx>
-                            <posy>4</posy>
+                            <posx>120</posx>
+                            <posy>0</posy>
                             <align>center</align>
-                            <aligny>top</aligny>
+                            <aligny>center</aligny>
                             <textcolor>white</textcolor>
-                            <font>font20</font>
+                            <font>font22</font>
                             <info>ListItem.Label</info>
                         </control>
                     </control>
@@ -213,10 +213,10 @@
 
             <control type="list" id="2000">
                 <description>Programs</description>
-                <posx>25</posx>
-                <posy>135</posy>
-                <width>370</width>
-                <height>550</height>
+                <posx>20</posx>
+                <posy>120</posy>
+                <width>380</width>
+                <height>600</height>
                 <visible>true</visible>
                 <onup>1000</onup>
                 <onleft>1000</onleft>
@@ -226,11 +226,9 @@
                         <![CDATA[actions.loadEpisodes()]]>
                     </onclick>
                 </content>
-
-                <viewtype label="3D list">list</viewtype>
                 <orientation>vertical</orientation>
                 <scrolltime>200</scrolltime>
-                <itemlayout width="350" height="70">
+                <itemlayout width="380" height="70">
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
@@ -241,7 +239,7 @@
                     <control type="label">
                         <posx>120</posx>
                         <posy>0</posy>
-                        <width>260</width>
+                        <width>250</width>
                         <height>70</height>
                         <font>font20</font>
                         <aligny>center</aligny>
@@ -250,7 +248,7 @@
                         <info>ListItem.Label</info>
                     </control>
                 </itemlayout>
-                <focusedlayout height="70" width="350">
+                <focusedlayout width="380" height="70">
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
@@ -261,7 +259,7 @@
                     <control type="image">
                         <posx>110</posx>
                         <posy>15</posy>
-                        <width>260</width>
+                        <width>270</width>
                         <height>40</height>
                         <texture>button.png</texture>
                         <visible>Control.HasFocus(2000)</visible>
@@ -269,14 +267,14 @@
                     <control type="image">
                         <posx>110</posx>
                         <posy>15</posy>
-                        <width>260</width>
+                        <width>270</width>
                         <height>40</height>
                         <texture>button_alt.png</texture>
                     </control>
                     <control type="label">
                         <posx>120</posx>
                         <posy>0</posy>
-                        <width>260</width>
+                        <width>250</width>
                         <height>70</height>
                         <font>font20</font>
                         <aligny>center</aligny>
@@ -288,10 +286,10 @@
             </control>
 
             <control type="list" id="3001">
-                <posx>418</posx>
-                <posy>135</posy>
-                <height>592</height>
-                <width>820</width>
+                <posx>420</posx>
+                <posy>120</posy>
+                <height>600</height>
+                <width>860</width>
                 <scrolltime>200</scrolltime>
                 <orientation>vertical</orientation>
                 <onleft>2000</onleft>
@@ -301,18 +299,18 @@
                          <![CDATA[actions.playVideo()]]>
                     </onclick>
                 </content>
-                <itemlayout width="800" height="100">
+                <itemlayout width="840" height="100">
                     <control type="image">
                         <description>Item background</description>
-                        <posx>5</posx>
-                        <width>790</width>
+                        <posx>0</posx>
+                        <width>840</width>
                         <height>96</height>
                     </control>
                     <control type="image">
                         <description>No-image-image</description>
                         <visible>IsEmpty(ListItem.Thumb)</visible>
-                        <posx>8</posx>
-                        <posy>3</posy>
+                        <posx>5</posx>
+                        <posy>5</posy>
                         <width>160</width>
                         <height>90</height>
                         <aspectratio>scale</aspectratio>
@@ -321,8 +319,8 @@
                     <control type="image">
                         <description>Episode image</description>
                         <visible>!IsEmpty(ListItem.Thumb)</visible>
-                        <posx>8</posx>
-                        <posy>3</posy>
+                        <posx>5</posx>
+                        <posy>5</posy>
                         <width>160</width>
                         <height>90</height>
                         <aspectratio>scale</aspectratio>
@@ -331,9 +329,9 @@
                     </control>
                     <control type="label">
                         <description>Episode title</description>
-                        <posx>175</posx>
+                        <posx>180</posx>
                         <posy>8</posy>
-                        <width>590</width>
+                        <width>660</width>
                         <height>30</height>
                         <font>font20</font>
                         <textcolor>FF999999</textcolor>
@@ -341,9 +339,9 @@
                     </control>
                     <control type="label">
                         <description>Episode description</description>
-                        <posx>175</posx>
+                        <posx>180</posx>
                         <posy>40</posy>
-                        <width>590</width>
+                        <width>660</width>
                         <height>50</height>
                         <font>font14</font>
                         <textcolor>FF999999</textcolor>
@@ -351,21 +349,19 @@
                         <label>$INFO[ListItem.Plot]</label>
                     </control>
                 </itemlayout>
-                <focusedlayout width="800" height="260">
+                <focusedlayout width="840" height="260">
                     <control type="image">
-                        <posx>1</posx>
-                        <posy>1</posy>
                         <!--animation effect="fade" start="0" end="100" time="300" delay="0" reversable="true">Focus</animation>
                         <animation effect="fade" start="100" end="0" time="300" delay="0" reversable="true">UnFocus</animation-->
                         <visible>Control.HasFocus(3001)</visible>
-                        <width>798</width>
-                        <height>258</height>
+                        <width>840</width>
+                        <height>260</height>
                         <texture>video_search.png</texture>
                     </control>
                     <control type="image">
                         <posx>5</posx>
                         <posy>5</posy>
-                        <width>790</width>
+                        <width>830</width>
                         <height>250</height>
                         <texture>video_dark_bg.png</texture>
                     </control>
@@ -374,8 +370,8 @@
                         <visible>IsEmpty(ListItem.Thumb)</visible>
                         <posx>10</posx>
                         <posy>10</posy>
-                        <width>320</width>
-                        <height>180</height>
+                        <width>240</width>
+                        <height>135</height>
                         <aspectratio>scale</aspectratio>
                         <texture>video_nothumb.png</texture>
                     </control>
@@ -391,9 +387,9 @@
                     </control>
                     <control type="label">
                         <description>Show title</description>
-                        <posx>260</posx>
+                        <posx>270</posx>
                         <posy>5</posy>
-                        <width>430</width>
+                        <width>560</width>
                         <height>40</height>
                         <font>font30</font>
                         <textcolor>FFFFFFFF</textcolor>
@@ -401,9 +397,9 @@
                     </control>
                     <control type="label">
                         <description>Episode title</description>
-                        <posx>260</posx>
+                        <posx>270</posx>
                         <posy>40</posy>
-                        <width>430</width>
+                        <width>560</width>
                         <height>35</height>
                         <font>font20</font>
                         <textcolor>FFFFFFFF</textcolor>
@@ -411,9 +407,9 @@
                     </control>
                     <control type="label">
                         <description>Common information</description>
-                        <posx>260</posx>
+                        <posx>270</posx>
                         <posy>70</posy>
-                        <width>430</width>
+                        <width>560</width>
                         <height>100</height>
                         <font>font20</font>
                         <textcolor>FFAAAAAA</textcolor>
@@ -421,10 +417,10 @@
                     </control>
                     <control type="label">
                         <description>Episode description</description>
-                        <posx>10</posx>
-                        <posy>155</posy>
-                        <width>760</width>
-                        <height>100</height>
+                        <posx>15</posx>
+                        <posy>147</posy>
+                        <width>825</width>
+                        <height>110</height>
                         <font>font20</font>
                         <textcolor>white</textcolor>
                         <wrapmultiline>true</wrapmultiline>
