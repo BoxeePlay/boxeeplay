@@ -52,7 +52,7 @@ function boxeeSetup70()
 
     playerState.canSetFullScreen = true;
     playerState.canPause = true;
-    playerState.canSeek = false;
+    playerState.canSeek = true;
     playerState.canSeekTo = true;
  
 //    playerState.isPaused = false;
