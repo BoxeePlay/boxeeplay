@@ -1,5 +1,6 @@
 import mc
 import svtmc as svt
+import time
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
 def initiate():
@@ -8,6 +9,7 @@ def initiate():
     programs = mc.GetWindow(14000).GetList(2000).GetItems()
     if len(programs) == 0:
         BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
+        time.sleep(0.001) #Äckelfulhack
         loadPrograms()
         loadEpisodes()
     else:
@@ -19,7 +21,6 @@ def loadCategories():
     mc.ShowDialogWait()
     target = mc.GetWindow(14000).GetList(1000)
     target.SetItems(svt.GetCategories())
-    target.Refresh()
     mc.HideDialogWait()
     BPLog("Successfully loaded all categories.", Level.DEBUG)
     BPTraceExit()
@@ -32,8 +33,8 @@ def loadPrograms():
         cItem = cList.GetItem(cList.GetFocusedItem())
         cId   = svt.GetCategoryId(cItem)
         programs = svt.GetTitles(cId)
-    except:
-        BPLog("Laddning av program misslyckades", Level.ERROR)
+    except Exception, e:
+        BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         cId = -1
         programs = mc.ListItems() #Empty..
     setPrograms(programs)
@@ -62,14 +63,16 @@ def setPrograms(items):
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(2000)
     target.SetItems(items)
-    target.SetFocus()
+    if len(items) > 0:
+        target.SetFocus()
     BPTraceExit()
 
 def setEpisodes(items):
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(3001)
     target.SetItems(items)
-    target.SetFocus()
+    if len(items) > 0:
+        target.SetFocus()
     BPTraceExit()
 
 def search():
