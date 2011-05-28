@@ -1,9 +1,7 @@
 ﻿function bplog(str)
 {
-    if (true) {
-        boxee.log(str);
-        boxee.showNotification(str, ".", 2);
-    }
+    boxee.log(str);
+    //boxee.showNotification(str, ".", 2);
 }
 
 bplog("Loading Boxee control script.");
@@ -50,7 +48,6 @@ function boxeeSetup70()
 
     boxee.apiMinVersion = 7.0;
     boxee.setMode(boxee.LOCKED_PLAYER_MODE);
-    boxee.realFullScreen = true;
     boxee.showOSDOnStartup = false;
 
     playerState.canSetFullScreen = true;
@@ -105,13 +102,7 @@ function boxeeLoad40() {
     };
 
     boxee.onSkip = function() {
-        bplog("onSkip");
-        try {
-            browser.execute('player.seek(10,true,true);');
-        } catch(err) {
-            bplog(err);
-        }
-        bplog("onSkip klar");
+        browser.execute('player.seek(10,true,true);');
     };
     boxee.onBigSkip = function() {
         browser.execute('player.seek(120,true,true);');
@@ -128,7 +119,7 @@ function boxeeLoad40() {
 function boxeeLoad70() {
     bplog("Loading functionality for boxee 1.");
 
-    boxee.getWidgets()[1].setActive();
+    boxee.getWidgets()[1].setActive(true);
 
     boxee.onPlay = function() {
         boxee.getWidgets()[1].executeJS('this.resume()');
