@@ -1,0 +1,19 @@
+<app>
+  <id>tv.boxeeplay.tvseries</id>
+  <name>TV Series</name>
+  <version>0.01</version>
+  <description>Svenska TV Serier i din Boxee - ALFA 1</description>
+  <thumb>http://boxeeplay.tv/wp-content/uploads/2011/04/boxeeplay.png</thumb>
+  <repository>http://www.boxeeplay.tv/apps</repository>
+  <media>video</media>
+  <copyright>none</copyright>
+  <email>boxeeplay@hypernode.se</email>
+  <type>skin</type>
+  <startWindow>start</startWindow>
+  <platform>all</platform>
+  <minversion>0.9.21</minversion>
+  <test-app>true</test-app>
+
+</app>
+
+
