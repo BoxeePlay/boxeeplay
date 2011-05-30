@@ -1,12 +1,10 @@
-﻿import mc, tvseries, logger
+﻿import mc, actions, logger
 
-listItems = tvseries.GetChannels()
-listItems[0].Dump()
-url = tvseries.GetSeriesUrlForChannel(listItems[0])
-mc.LogInfo("tvseries: url- " + url)
-seriesItems = tvseries.GetSeries(url)
-seriesItems[0].Dump()
-url = tvseries.GetEpisodesUrlForSerie(seriesItems[0])
-mc.LogInfo("tvseries: url- " + url)
-episodeItems = tvseries.GetEpisodes(url)
-episodeItems[0].Dump()
+'''
+here we can do some pre launch processing if we wish.
+checking authentication or pre-loading content, anything we need.
+'''
+#logger.EnablePlus(logger.Level.DEBUG)
+
+mc.ActivateWindow(14000)
+actions.initiate()
