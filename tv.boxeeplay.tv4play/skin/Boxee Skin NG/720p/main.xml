@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="window" id="14000">
+    <defaultcontrol always="true">1000</defaultcontrol>
+    <allowoverlay>no</allowoverlay>
+    <onload lang="python">
+<![CDATA[actions.initiate()]]>
+    </onload>
+    <controls>
+        <control type="group">
+            <!--animation type="WindowOpen">
+                <effect type="fade" start="0" end="100" time="200" />
+            </animation-->
+            <control type="image">
+                <width>1280</width>
+                <height>720</height>
+                <texture>ba_background.png</texture>
+            </control>
+            <!--control type="image">
+                <width>1280</width>
+                <height>720</height>
+                <texture>debuggrid.png</texture>
+            </control-->
+            <control type="label" id="14002">
+                <posx>0</posx>
+                <posy>0</posy>
+                <font>font18</font>
+                <aligny>center</aligny>
+                <align>left</align>
+                <textcolor>black</textcolor>
+                <info>System.BuildVersion</info>
+                <visible>false</visible>
+            </control>
+        </control>
+
+
+        <control type="group" id="100" >
+            <posx>134</posx>
+            <control type="edit" id="110">
+                <ondown>1000</ondown>
+                <onup>121</onup>
+                <onright>111</onright>
+                <posy>23</posy>
+                <posx>626</posx>
+                <width>390</width>
+                <height>40</height>
+                <font>font14</font>
+                <textcolor>FF000000</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
+                <texturefocus border="15">searchbar.png</texturefocus>
+                <texturenofocus border="15">searchbar_nofocus.png</texturenofocus>
+            </control>
+            <control type="button" id="111">
+                <ondown>1000</ondown>
+                <onleft>110</onleft>
+                <onright>199</onright>
+                <onup>111</onup>
+                <posy>23</posy>
+                <posx>1026</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Sök avsnitt</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.search()]]></onclick>
+            </control>
+            <control type="button" id="120">
+                <description>Svenskt å</description>
+                <ondown>110</ondown>
+                <onright>121</onright>
+                <posy>3</posy>
+                <posx>958</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>å</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('å')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
+            </control>
+            <control type="button" id="121">
+                <description>Svenskt ä</description>
+                <ondown>110</ondown>
+                <onleft>120</onleft>
+                <onright>122</onright>
+                <onup>121</onup>
+                <posy>3</posy>
+                <posx>978</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>ä</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('ä')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
+            </control>
+            <control type="button" id="122">
+                <description>Svenskt ö</description>
+                <ondown>110</ondown>
+                <onleft>121</onleft>
+                <onup>122</onup>
+                <posy>3</posy>
+                <posx>998</posx>
+                <width>18</width>
+                <height>18</height>
+                <label>ö</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <texturenofocus>button_bg.png</texturenofocus>
+                <texturefocus>button.png</texturefocus>
+                <alttexturefocus>button.png</alttexturefocus>
+                <alttexturenofocus>button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.appendSearch('ö')]]></onclick>
+                <onclick>SetFocus(110)</onclick>
+            </control>
+        </control>
+        <control type="group" ID="999">
+            <control type="list" id="1000">
+                <description>Categories</description>
+                <posy>73</posy>
+                <posx>10</posx>
+                <width>1250</width>
+                <height>40</height>
+                <orientation>horizontal</orientation>
+                <ondown>2000</ondown>
+                <onup>110</onup>
+                <content type="action">
+                    <onclick lang="python">
+                        <![CDATA[actions.loadPrograms()]]>
+                    </onclick>
+                </content>
+                <itemlayout width="170">
+                    <control type="group">
+                        <control type="image">
+                            <width>160</width>
+                            <height>40</height>
+                            <posx>10</posx>
+                            <posy>0</posy>
+                            <texture>button_bg.png</texture>
+                            <fadetime>100</fadetime>
+                        </control>
+                        <control type="label">
+                            <width>160</width>
+                            <height>40</height>
+                            <posx>90</posx>
+                            <posy>0</posy>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                            <font>font18</font>
+                            <info>ListItem.Label</info>
+                        </control>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="230">
+                    <control type="group">
+                        <control type="image">
+                            <width>220</width>
+                            <height>40</height>
+                            <posx>10</posx>
+                            <posy>0</posy>
+                            <texture>button.png</texture>
+                            <visible>Control.HasFocus(1000)</visible>
+                            <fadetime>100</fadetime>
+                        </control>
+                        <control type="image">
+                            <width>220</width>
+                            <height>40</height>
+                            <posx>10</posx>
+                            <posy>0</posy>
+                            <texture>button_alt.png</texture>
+                            <fadetime>100</fadetime>
+                        </control>
+                        <control type="label">
+                            <width>220</width>
+                            <height>40</height>
+                            <posx>120</posx>
+                            <posy>0</posy>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                            <font>font22</font>
+                            <info>ListItem.Label</info>
+                        </control>
+                    </control>
+                </focusedlayout>
+            </control>
+
+            <control type="list" id="2000">
+                <description>Programs</description>
+                <posx>20</posx>
+                <posy>120</posy>
+                <width>380</width>
+                <height>600</height>
+                <visible>true</visible>
+                <onup>1000</onup>
+                <onleft>1000</onleft>
+                <onright>3001</onright>
+                <content type="action">
+                    <onclick lang="python">
+                        <![CDATA[actions.loadEpisodes()]]>
+                    </onclick>
+                </content>
+                <orientation>vertical</orientation>
+                <scrolltime>200</scrolltime>
+                <itemlayout width="380" height="70">
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>100</width>
+                        <height>70</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <posx>120</posx>
+                        <posy>0</posy>
+                        <width>250</width>
+                        <height>70</height>
+                        <font>font20</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>white</selectedcolor>
+                        <align>left</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="380" height="70">
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>100</width>
+                        <height>70</height>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="image">
+                        <posx>110</posx>
+                        <posy>15</posy>
+                        <width>270</width>
+                        <height>40</height>
+                        <texture>button.png</texture>
+                        <visible>Control.HasFocus(2000)</visible>
+                    </control>
+                    <control type="image">
+                        <posx>110</posx>
+                        <posy>15</posy>
+                        <width>270</width>
+                        <height>40</height>
+                        <texture>button_alt.png</texture>
+                    </control>
+                    <control type="label">
+                        <posx>120</posx>
+                        <posy>0</posy>
+                        <width>250</width>
+                        <height>70</height>
+                        <font>font20</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>white</selectedcolor>
+                        <align>left</align>
+                        <info>ListItem.Label</info>
+                    </control>
+                </focusedlayout>
+            </control>
+
+            <control type="list" id="3001">
+                <posx>420</posx>
+                <posy>120</posy>
+                <height>600</height>
+                <width>860</width>
+                <scrolltime>200</scrolltime>
+                <orientation>vertical</orientation>
+                <onleft>2000</onleft>
+                <onup>1000</onup>
+                <content type="action">
+                    <onclick lang="python">
+                         <![CDATA[actions.playVideo()]]>
+                    </onclick>
+                </content>
+                <itemlayout width="840" height="100">
+                    <control type="image">
+                        <description>Item background</description>
+                        <posx>0</posx>
+                        <width>840</width>
+                        <height>96</height>
+                    </control>
+                    <control type="image">
+                        <description>No-image-image</description>
+                        <visible>IsEmpty(ListItem.Thumb)</visible>
+                        <posx>5</posx>
+                        <posy>5</posy>
+                        <width>160</width>
+                        <height>90</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture>video_nothumb.png</texture>
+                    </control>
+                    <control type="image">
+                        <description>Episode image</description>
+                        <visible>!IsEmpty(ListItem.Thumb)</visible>
+                        <posx>5</posx>
+                        <posy>5</posy>
+                        <width>160</width>
+                        <height>90</height>
+                        <aspectratio>scale</aspectratio>
+                        <colordiffuse>FF858269</colordiffuse>
+                        <info>ListItem.Thumb</info>
+                    </control>
+                    <control type="label">
+                        <description>Episode title</description>
+                        <posx>180</posx>
+                        <posy>8</posy>
+                        <width>660</width>
+                        <height>30</height>
+                        <font>font20</font>
+                        <textcolor>FF999999</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                    </control>
+                    <control type="label">
+                        <description>Episode description</description>
+                        <posx>180</posx>
+                        <posy>40</posy>
+                        <width>660</width>
+                        <height>50</height>
+                        <font>font14</font>
+                        <textcolor>FF999999</textcolor>
+                        <wrapmultiline>true</wrapmultiline>
+                        <label>$INFO[ListItem.Plot]</label>
+                    </control>
+                </itemlayout>
+                <focusedlayout width="840" height="260">
+                    <control type="image">
+                        <!--animation effect="fade" start="0" end="100" time="300" delay="0" reversable="true">Focus</animation>
+                        <animation effect="fade" start="100" end="0" time="300" delay="0" reversable="true">UnFocus</animation-->
+                        <visible>Control.HasFocus(3001)</visible>
+                        <width>840</width>
+                        <height>260</height>
+                        <texture>video_search.png</texture>
+                    </control>
+                    <control type="image">
+                        <posx>5</posx>
+                        <posy>5</posy>
+                        <width>830</width>
+                        <height>250</height>
+                        <texture>video_dark_bg.png</texture>
+                    </control>
+                    <control type="image">
+                        <description>No-image-image</description>
+                        <visible>IsEmpty(ListItem.Thumb)</visible>
+                        <posx>10</posx>
+                        <posy>10</posy>
+                        <width>240</width>
+                        <height>135</height>
+                        <aspectratio>scale</aspectratio>
+                        <texture>video_nothumb.png</texture>
+                    </control>
+                    <control type="image">
+                        <description>Episode image</description>
+                        <visible>!IsEmpty(ListItem.Thumb)</visible>
+                        <posx>10</posx>
+                        <posy>10</posy>
+                        <width>240</width>
+                        <height>135</height>
+                        <aspectratio>scale</aspectratio>
+                        <info>ListItem.Icon</info>
+                    </control>
+                    <control type="label">
+                        <description>Show title</description>
+                        <posx>270</posx>
+                        <posy>5</posy>
+                        <width>560</width>
+                        <height>40</height>
+                        <font>font30</font>
+                        <textcolor>FFFFFFFF</textcolor>
+                        <info>ListItem.TVShowTitle</info>
+                    </control>
+                    <control type="label">
+                        <description>Episode title</description>
+                        <posx>270</posx>
+                        <posy>40</posy>
+                        <width>560</width>
+                        <height>35</height>
+                        <font>font20</font>
+                        <textcolor>FFFFFFFF</textcolor>
+                        <info>ListItem.Title</info>
+                    </control>
+                    <control type="label">
+                        <description>Common information</description>
+                        <posx>270</posx>
+                        <posy>70</posy>
+                        <width>560</width>
+                        <height>100</height>
+                        <font>font20</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <label>$INFO[ListItem.Studio]</label>
+                    </control>
+                    <control type="label">
+                        <description>Episode description</description>
+                        <posx>15</posx>
+                        <posy>147</posy>
+                        <width>825</width>
+                        <height>110</height>
+                        <font>font20</font>
+                        <textcolor>white</textcolor>
+                        <wrapmultiline>true</wrapmultiline>
+                        <label>$INFO[ListItem.Plot]</label>
+                    </control>
+                </focusedlayout>
+            </control>
+        </control>
+    </controls>
+</window>
+
