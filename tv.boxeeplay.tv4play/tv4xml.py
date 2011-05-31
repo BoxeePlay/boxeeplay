@@ -214,9 +214,10 @@ def GetEpisodes(titleId, loadSamples = False):
     return items
 
 def CreateFlashUrl(videoId):
-    path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
-    jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
-    url = "flash://boxeeplay.tv/src=" + path + "&bx-jsactions=" + jsActions
+    #path = quote_plus("http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId)
+    #jsActions = quote_plus("http://boxeeplay.tv/tv4play/tv4play.js")
+    #url = "flash://boxeeplay.tv/src=" + path + "&bx-jsactions=" + jsActions
+    url = "http://www.tv4play.se/flash%2ftv4play30Default_sa.swf?vid=" + videoId
     return url
 
 def SearchEpisodes(searchTerm, loadSamples = False):
