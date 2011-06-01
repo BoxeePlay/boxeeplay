@@ -6,14 +6,12 @@
   <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
   <repository>http://www.boxeeplay.tv/apps</repository>
   <media>video</media>
-  <copyright>none</copyright>
+  <copyright>boxeeplay</copyright>
   <email>dev@boxeeplay.tv</email>
   <type>skin</type>
   <startWindow>start</startWindow>
   <platform>all</platform>
   <minversion>0.9.21</minversion>
-  <test-app>true</test-app>
-
 </app>
 
 
