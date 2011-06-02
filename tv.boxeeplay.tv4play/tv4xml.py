@@ -141,6 +141,11 @@ def GetEpisodes(titleId, loadSamples = False):
     #as in http://xml.tv4play.se/1.1215984?selection=1.1062581
     items = mc.ListItems()
 
+    #testItems = mc.GetDirectory("http://boisen.hobby-site.com/website/boxee/data.xml")
+    #for i in testItems:
+    #    items.append(i)
+    #    i.Dump()
+    
     showTitle = ""
     channel = ""
     premium = "false"
