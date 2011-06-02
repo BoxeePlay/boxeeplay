@@ -16,5 +16,22 @@
        <platform>all</platform>
        <minversion>0.9.14</minversion>
     </app>
+    <app>
+       <id>tv.boxeeplay.tv4play</id>
+       <name>TV4Play</name>
+       <version>1.00</version>
+       <description>TV4Play i din Boxee</description>
+       <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
+       <repositoryid>tv.boxeeplay.www</repositoryid>
+       <repository>http://www.boxeeplay.tv/apps</repository>
+       <media>video</media>
+       <author>boxeeplay</author>
+       <copyright>boxeeplay.tv</copyright>
+       <email>dev@boxeeplay.tv</email>
+       <type>skin</type>
+       <startWindow>start</startWindow>
+       <platform>all</platform>
+       <minversion>0.9.14</minversion>
+    </app>
 </apps>
 

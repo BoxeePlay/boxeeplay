@@ -1,7 +1,7 @@
 <app>
   <id>tv.boxeeplay.tv4play</id>
   <name>TV4Play</name>
-  <version>0.01</version>
+  <version>1.00</version>
   <description>TV4Play i din Boxee - BETA 1</description>
   <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
   <repository>http://www.boxeeplay.tv/apps</repository>
@@ -12,7 +12,6 @@
   <startWindow>start</startWindow>
   <platform>all</platform>
   <minversion>0.9.21</minversion>
-  <test-app>true</test-app>
 </app>
 
 
