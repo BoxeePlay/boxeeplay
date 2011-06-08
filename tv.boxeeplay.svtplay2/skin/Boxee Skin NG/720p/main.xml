@@ -32,12 +32,33 @@
             </control>
         </control>
 
-
         <control type="group" id="100" >
             <posx>134</posx>
+            <control type="button" id="109">
+                <ondown>1000</ondown>
+                <onright>110</onright>
+                <posy>23</posy>
+                <posx>500</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Live</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.showLive()]]></onclick>
+            </control>
             <control type="edit" id="110">
                 <ondown>1000</ondown>
                 <onup>121</onup>
+                <onleft>109</onleft>
                 <onright>111</onright>
                 <posy>23</posy>
                 <posx>626</posx>

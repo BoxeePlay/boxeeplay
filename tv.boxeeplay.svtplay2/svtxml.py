@@ -113,12 +113,15 @@ def AddItem(items, node):
         #    item.SetEpisode(episode) #Funkar dåligt i Boxees interface med SVT
 
         SetDate(item, node)
-
+        SetExpireDate(item, node)
         SetAlternatePaths(item, node)
+
         jsActions = quote_plus('http://boxeeplay.tv/flowplayer/flow.js')
         p = item.GetPath()
         if p.startswith("flash://"):
             item.SetPath(p + "&bx-jsactions=" + jsActions)
+        else:
+            SetBxJxActionsPath(item)
 
         SetGuiInfo(item)
 
@@ -127,6 +130,13 @@ def AddItem(items, node):
         BPLog("svtxml: AddItem failed to load item, url =%s, Exception: %s" % (item.GetPath(),str(e)), Level.ERROR)
         items.append(mc.ListItem())
     BPTraceExit()
+
+def SetBxJxActionsPath(item):
+    url = quote_plus(item.GetPath())
+    jsActions = quote_plus('http://boxeeplay.tv/bx-jsactions/svtplay.js')
+    path = "flash://boxeeplay.tv/src=" + str(url) + "&bx-jsactions=" + jsActions
+    mc.LogInfo("svtxml: bx-path: " + path)
+    item.SetPath(path)
 
 def SetAlternatePaths(item, node):
     BPTraceEnter("%s, %s" % (item, node))
@@ -181,8 +191,7 @@ def AddRtmpAlternatives(item):
     try:
         amount = int(item.GetProperty("alt-paths"))
     except:
-        item.Dump()
-        BPLog("svtxml: Could not parse number of alt-paths. Check item dump above.", Level.ERROR)
+        # Normal for samples so just continue
         amount = 0
 
     path = item.GetPath()
@@ -224,8 +233,6 @@ def AddFlowplayerPaths(item, mediaNodes):
     AddFlowplayerPath(item, mediaNodes, "mp4-e-v1", "HD-kvalitet, 720p, 2400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-hd-webb-tv.gif")
     AddFlowplayerPath(item, mediaNodes, "mp4-d-v1", "Hög kvalitet, 1400 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-high-webb-tv.gif")
     AddFlowplayerPath(item, mediaNodes, "mp4-c-v1", "Medelkvalitet, 850 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-medium-webb-tv.gif")
-    AddDirectPath(item, mediaNodes, "wmv-a-v1", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
-    AddDirectPath(item, mediaNodes, "video/x-ms-asf", "Låg kvalitet, 340 kbs.", "http://svt.se/content/1/c8/01/39/57/98/play-low-webb-tv.gif")
     BPTraceExit()
 
 def AddAlternativeStream(item, type, stream, bitrate):
@@ -245,6 +252,8 @@ def AddAlternativeStream(item, type, stream, bitrate):
 def AddFlowplayerPath(item, mediaNodes, label, title, thumbnailPath):
     BPTraceEnter("%s, %s, %s, %s" % (item.GetLabel(), label, title, thumbnailPath))
     for mediaNode in mediaNodes:
+        if mediaNode.getAttribute("expression").encode("utf-8") != "full":
+            continue
         mediaLabel = GetElementData(mediaNode, "svtplay:videoIdentifier")
         mediaPath = mediaNode.getAttribute("url").encode("utf-8")
         mediaType = mediaNode.getAttribute("type").encode("utf-8")
@@ -364,7 +373,99 @@ def LookupCategory(id):
         r = "Okänd (" + str(id) + ")"
     BPTraceExit("Returning %s" % r)
     return r
-        
+
+def SetExpireDate(item, node):
+    BPTraceEnter("%s, %s" % (item, node))
+    try:
+        dateString = GetElementData(node, "svtplay:expiryDate")
+        dayString = dateString[0:3]
+        day = dateString[5:7]
+        monthString = dateString[8:11]
+        year = dateString[12:16]
+
+        dayNrMap   = { "Mon" : 0
+                     , "Tue" : 1
+                     , "Wed" : 2
+                     , "Thu" : 3
+                     , "Fri" : 4
+                     , "Sat" : 5
+                     , "Sun" : 6
+                     }
+
+        daySEMap   = ["måndag"
+                     ,"tisdag"
+                     ,"onsdag"
+                     ,"torsdag"
+                     ,"fredag"
+                     ,"lördag"
+                     ,"söndag"
+                     ]
+
+        monthNrMap = { "Jan" : 1
+                     , "Feb" : 2
+                     , "Mar" : 3
+                     , "Apr" : 4
+                     , "May" : 5
+                     , "Jun" : 6
+                     , "Jul" : 7
+                     , "Aug" : 8
+                     , "Sep" : 9
+                     , "Oct" : 10
+                     , "Nov" : 11
+                     , "Dec" : 12
+                     }
+
+        monthSEMap = ["undefined"
+                     ,"januari"
+                     ,"februari"
+                     ,"mars"
+                     ,"april"
+                     ,"maj"
+                     ,"juni"
+                     ,"juli"
+                     ,"augusti"
+                     ,"september"
+                     ,"oktober"
+                     ,"november"
+                     ,"december"
+                     ]
+
+        try:
+            hour = dateString[17:19]
+            minute = dateString[20:22]
+            second = dateString[23:25]
+            tstruct = time.struct_time((int(year)
+                                      , monthNrMap[monthString]
+                                      , int(day)
+                                      , int(hour)
+                                      , int(minute)
+                                      , int(second)
+                                      , dayNrMap[dayString]
+                                      , 0
+                                      , -1
+                                      ))
+            t = calendar.timegm(tstruct)
+            lt = time.localtime(t)
+
+            #Fulhack för GUI -.-
+            #Format: "Sändes måndag den 2 april, 17:30"
+            item.SetProperty("expiretime-se","Slutar %s den %d %s %s, %02d:%02d"
+                %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], year, lt.tm_hour, lt.tm_min))
+        except Exception, e:
+            e = e
+    except Exception, e:
+        e = e
+    BPTraceExit()
+
+def FixLiveAirTime(episodes):
+    for episode in episodes:
+        try:
+            expiretime = episode.GetProperty("expiretime-se")
+            episode.SetProperty("airtime-se", expiretime)
+            SetGuiInfo(episode)
+        except Exception, e:
+            BPLog("svtxml: Failed to set live airtime date. Exception: %s" % e, Level.ERROR)
+
 def SetDate(item, node):
     BPTraceEnter("%s, %s" % (item, node))
     try:
@@ -439,12 +540,11 @@ def SetDate(item, node):
                                       ))
             t = calendar.timegm(tstruct)
             lt = time.localtime(t)
-       
             
             #Fulhack för GUI -.-
             #Format: "Sändes måndag den 2 april, 17:30"
-            item.SetProperty("airtime-se","Sändes %s den %d %s, %02d:%02d"
-                %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], lt.tm_hour, lt.tm_min))
+            item.SetProperty("airtime-se","Sändes %s den %d %s %s, %02d:%02d"
+                %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], year, lt.tm_hour, lt.tm_min))
         except Exception, e:
             BPLog("svtxml: Failed to set GUI air date. Exception: %s" %e, Level.ERROR)
     except Exception, e:
@@ -475,3 +575,4 @@ def SetGuiInfo(item):
     except Exception, e:
         BPLog("svtxml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
     BPTraceExit()
+

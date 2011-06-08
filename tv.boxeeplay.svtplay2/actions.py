@@ -8,7 +8,7 @@ def initiate():
     if len(mc.GetWindow(14000).GetList(1000).GetItems()) == 0:
         BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
         loadCategories()
-        time.sleep(0.001) #Äckelfulhack
+        time.sleep(0.001) #ï¿½ckelfulhack
         loadPrograms()
         loadEpisodes()
     BPTraceExit()
@@ -46,7 +46,7 @@ def loadEpisodes():
     try:
         pItem = pList.GetItem(pList.GetFocusedItem())
         pId   = svt.GetTitleId(pItem)
-        episodes = svt.GetEpisodes(pId)
+        episodes = svt.GetEpisodesAndSamples(pId)
     except:
         BPLog("Laddning av avsnitt misslyckades.", Level.ERROR)
         pId = -1
@@ -72,6 +72,18 @@ def setEpisodes(items):
         target.SetFocus()
     BPTraceExit()
 
+def showLive():
+    BPTraceEnter()
+    mc.ShowDialogWait()
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
+    try:
+            setEpisodes(svt.GetLiveEpisodes())
+    except Exception, e:
+        BPLog("Could not show live episodes: %s" %e, Level.ERROR)
+    mc.HideDialogWait()
+    BPTraceExit()
+
 def search():
     BPTraceEnter()
     mc.ShowDialogWait()
@@ -81,7 +93,7 @@ def search():
         searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
         try:
             searchTerm = searchTerm.decode("utf-8").encode("latin1")
-            setEpisodes(svt.SearchEpisodes(searchTerm))
+            setEpisodes(svt.SearchEpisodesAndSamples(searchTerm))
         except Exception, e:
             BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
     except Exception, e:
