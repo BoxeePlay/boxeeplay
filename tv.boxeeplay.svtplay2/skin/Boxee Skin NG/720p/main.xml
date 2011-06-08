@@ -169,7 +169,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>110</onup>
+                <onup>109</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>

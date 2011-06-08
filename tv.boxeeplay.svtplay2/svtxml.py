@@ -469,7 +469,9 @@ def FixLiveAirTime(episodes):
 def SetDate(item, node):
     BPTraceEnter("%s, %s" % (item, node))
     try:
-        dateString = GetElementData(node, "pubDate")
+        dateString = GetElementData(node, "svtplay:broadcastDate")
+        if len(str(dateString)) == 0:
+            dateString = GetElementData(node, "pubDate")
         dayString = dateString[0:3]
         day = dateString[5:7]
         monthString = dateString[8:11]
@@ -560,13 +562,22 @@ def SetGuiInfo(item):
             info += airtime + '\n'
         cat = item.GetGenre()
         chan = item.GetProviderSource()
+        sample = ""
+        if item.GetMediaType() == mc.ListItem.MEDIA_VIDEO_CLIP:
+            sample = "Klipp"
+        else:
+            sample = "Full"
         if len(cat) > 0:
             info += "Kategori: %s" %cat
             if len(chan) > 0:
                 info += ", "
         if len(chan) > 0:
             info += "Kanal: %s" %chan
-        if len(cat) or len(chan):
+        if len(sample) > 0:
+            if len(cat) or len(chan):
+                info += ", "
+            info += "Typ: %s" %sample
+        if len(cat) or len(chan) or len(sample):
             info += '\n'
         dur = item.GetProperty("duration")
         if len(dur) > 0:
