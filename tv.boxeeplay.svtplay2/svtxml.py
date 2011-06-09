@@ -77,17 +77,29 @@ def SetItemImages(node, item) :
             item.SetImage(imageNo, imageUrl)
             imageNo = imageNo + 1
     BPTraceExit()
-    
+
+def GetMediaType(node):
+    expressionType = "sample"
+    mediaContentNodes = node.getElementsByTagName("media:content")
+    for mediaContentNode in mediaContentNodes:
+        if (mediaContentNode.getAttribute("medium").encode("utf-8") == "video"):
+            expressionType = mediaContentNode.getAttribute("expression")
+            break
+    if expressionType == "full":
+        return "Fullängd"
+    if expressionType == "nonstop":
+        return "Direkt"
+    return "Klipp"
+
 def AddItem(items, node):
     BPTraceEnter("%s, %s" % (items, node))
-    videoType = mc.ListItem.MEDIA_VIDEO_CLIP
+
+    item = mc.ListItem(mc.ListItem.MEDIA_VIDEO_CLIP)
+
     try:
         episode = int(GetElementAttribute(node, "svtplay:programInfo", "episodeNo"))
-        videoType = mc.ListItem.MEDIA_VIDEO_EPISODE
     except:
         episode = 0
-
-    item = mc.ListItem(videoType)
 
     try:
         item.SetPath(GetElementData(node, "link"))
@@ -112,6 +124,7 @@ def AddItem(items, node):
         #if episode > 0:
         #    item.SetEpisode(episode) #Funkar dåligt i Boxees interface med SVT
 
+        item.SetProperty("media-type", GetMediaType(node))
         SetDate(item, node)
         SetExpireDate(item, node)
         SetAlternatePaths(item, node)
@@ -445,7 +458,11 @@ def SetExpireDate(item, node):
                                       , -1
                                       ))
             t = calendar.timegm(tstruct)
-            lt = time.localtime(t)
+            try:
+                lt = time.localtime(t)
+            except:
+                # Fix for strange error on some dates (Windows only?)
+                lt = tstruct
 
             #Fulhack för GUI -.-
             #Format: "Sändes måndag den 2 april, 17:30"
@@ -541,13 +558,17 @@ def SetDate(item, node):
                                       , -1
                                       ))
             t = calendar.timegm(tstruct)
-            lt = time.localtime(t)
-            
+            try:
+                lt = time.localtime(t)
+            except:
+                # Fix for strange error on some dates (Windows only?)
+                lt = tstruct
+
             #Fulhack för GUI -.-
             #Format: "Sändes måndag den 2 april, 17:30"
-            item.SetProperty("airtime-se","Sändes %s den %d %s %s, %02d:%02d"
-                %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], year, lt.tm_hour, lt.tm_min))
+            item.SetProperty("airtime-se", "Sändes %s den %d %s %s, %02d:%02d" %(daySEMap[lt.tm_wday], lt.tm_mday, monthSEMap[lt.tm_mon], year, lt.tm_hour, lt.tm_min))
         except Exception, e:
+            mc.LogInfo("svtxml: %s" %e)
             BPLog("svtxml: Failed to set GUI air date. Exception: %s" %e, Level.ERROR)
     except Exception, e:
         BPLog("svtxml: Failed to set item date. Exception: %s" %e ,Level.ERROR)
@@ -558,26 +579,23 @@ def SetGuiInfo(item):
     try:
         info = ""
         airtime = item.GetProperty("airtime-se")
+        mediaType = item.GetProperty("media-type")
         if len(airtime) > 0:
             info += airtime + '\n'
         cat = item.GetGenre()
         chan = item.GetProviderSource()
-        sample = ""
-        if item.GetMediaType() == mc.ListItem.MEDIA_VIDEO_CLIP:
-            sample = "Klipp"
-        else:
-            sample = "Full"
+
         if len(cat) > 0:
             info += "Kategori: %s" %cat
             if len(chan) > 0:
                 info += ", "
         if len(chan) > 0:
             info += "Kanal: %s" %chan
-        if len(sample) > 0:
+        if len(mediaType) > 0:
             if len(cat) or len(chan):
                 info += ", "
-            info += "Typ: %s" %sample
-        if len(cat) or len(chan) or len(sample):
+            info += "Typ: %s" %mediaType
+        if len(cat) or len(chan) or len(mediaType):
             info += '\n'
         dur = item.GetProperty("duration")
         if len(dur) > 0:
@@ -586,4 +604,3 @@ def SetGuiInfo(item):
     except Exception, e:
         BPLog("svtxml: Could not set GUI info, Exception: %s" %e, Level.ERROR)
     BPTraceExit()
-

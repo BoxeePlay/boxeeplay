@@ -184,15 +184,15 @@ def GetTitles(id) :
 def GetTitleId(item) :
     return item.GetProperty("id")
 
-def GetEpisodes(id=96238, maxItems=100) :
-    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=full&num=100", maxItems)
+def GetEpisodes(id=96238) :
+    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=full&num=100", 200)
 
-def GetSamples(id=96238, maxItems=100) :
-    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", maxItems)
+def GetSamples(id=96238) :
+    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", 200)
 
-def GetEpisodesAndSamples(id=96238, maxItems=100):
-    listItems = GetEpisodes(id, maxItems)
-    sampleItems = GetSamples(id, maxItems)
+def GetEpisodesAndSamples(id=96238):
+    listItems = GetEpisodes(id)
+    sampleItems = GetSamples(id)
     for sampleItem in sampleItems:
         listItems.append(sampleItem)
     return listItems
