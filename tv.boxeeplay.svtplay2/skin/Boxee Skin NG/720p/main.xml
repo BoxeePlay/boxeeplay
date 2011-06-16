@@ -315,6 +315,9 @@
                 <orientation>vertical</orientation>
                 <onleft>2000</onleft>
                 <onup>1000</onup>
+                <ondown lang="python">
+                    <![CDATA[actions.populateNextSamplesPage()]]>
+                </ondown>
                 <content type="action">
                     <onclick lang="python">
                          <![CDATA[actions.playVideo()]]>

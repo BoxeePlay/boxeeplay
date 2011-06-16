@@ -15,19 +15,20 @@ import calendar
 import mc
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
-def GetDirectory(url, maxResults=0):
+def GetDirectory(url, maxResults=0, start=1):
     BPTraceEnter(url)
-    start = 1
     
     if (maxResults <= 0):
         maxResults = 9999
     
     BPLog("svtxml: %s" % url, Level.DEBUG)
-    root = RetrieveXmlStream(url)
+    pageUrl = url + "&start=" + str(start)
+    root = RetrieveXmlStream(pageUrl)
     
     totalResults = int(root.getElementsByTagName("opensearch:totalResults")[0].childNodes[0].data)
-    if (totalResults > maxResults):
-        totalResults = maxResults
+    completeResults = totalResults
+    if (completeResults > maxResults):
+        completeResults = maxResults
         
     listItems = ProcessDirectoryPage(root)
 
@@ -35,13 +36,16 @@ def GetDirectory(url, maxResults=0):
     start = start + noOfItems
     # A bit dangerous this loop,
     # If an exception is caught inside and items are not added as they should..
-    while (start <= totalResults):
+    while (start <= completeResults):
         pageUrl = url + "&start=" + str(start)
         pageListItems = GetDirectoryPage(pageUrl)
         start = start + len(pageListItems)
         for pageListItem in pageListItems:
             listItems.append(pageListItem)
-        
+
+    for listItem in listItems:
+        listItem.SetProperty("total-results", str(totalResults))
+
     BPLog("svtxml: Loaded %s items." % str(len(listItems)), Level.DEBUG)
     BPTraceExit("Returning %s" % listItems)
     return listItems
@@ -148,7 +152,6 @@ def SetBxJxActionsPath(item):
     url = quote_plus(item.GetPath())
     jsActions = quote_plus('http://boxeeplay.tv/bx-jsactions/svtplay.js')
     path = "flash://boxeeplay.tv/src=" + str(url) + "&bx-jsactions=" + jsActions
-    mc.LogInfo("svtxml: bx-path: " + path)
     item.SetPath(path)
 
 def SetAlternatePaths(item, node):

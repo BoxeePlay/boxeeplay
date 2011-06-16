@@ -188,7 +188,7 @@ def GetEpisodes(id=96238) :
     return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=full&num=100", 200)
 
 def GetSamples(id=96238) :
-    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", 200)
+    return svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", 100)
 
 def GetEpisodesAndSamples(id=96238):
     listItems = GetEpisodes(id)
@@ -240,3 +240,18 @@ def DumpAllSamples():
             titleId = GetTitleId(title)
             episodes = GetSamples(titleId, 100)
     BPTraceExit()
+
+def GetNextSamplesPage(id, sampleList):
+    BPTraceEnter()
+
+    item = sampleList.GetItem(0)
+    totalResults = int(item.GetProperty("total-results"))
+    loadedResults = len(sampleList.GetItems())
+
+    if totalResults > loadedResults:
+        newItems = svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/" + str(id) + "?expression=sample&num=100", 100, loadedResults + 1)
+    else:
+        newItems = mc.ListItems()
+
+    BPTraceExit()
+    return newItems

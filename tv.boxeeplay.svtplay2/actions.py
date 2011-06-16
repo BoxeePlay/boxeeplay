@@ -39,21 +39,25 @@ def loadPrograms():
     BPLog("Finished loading programs in category %s." %cId, Level.DEBUG)
     BPTraceExit()
 
+selectedTitleId = str("")
+
 def loadEpisodes():
+    global selectedTitleId
+
     BPTraceEnter()
     mc.ShowDialogWait()
     pList = mc.GetWindow(14000).GetList(2000)
     try:
         pItem = pList.GetItem(pList.GetFocusedItem())
-        pId   = svt.GetTitleId(pItem)
-        episodes = svt.GetEpisodesAndSamples(pId)
+        selectedTitleId = svt.GetTitleId(pItem)
+        episodes = svt.GetEpisodesAndSamples(selectedTitleId)
     except:
         BPLog("Laddning av avsnitt misslyckades.", Level.ERROR)
-        pId = -1
+        selectedTitleId = str("")
         episodes = mc.ListItems() #Empty
     setEpisodes(episodes)
     mc.HideDialogWait()
-    BPLog("Finished loading episodes in category %s." %pId, Level.DEBUG)
+    BPLog("Finished loading episodes in category %s." %selectedTitleId, Level.DEBUG)
     BPTraceExit()
 
 def setPrograms(items):
@@ -73,8 +77,11 @@ def setEpisodes(items):
     BPTraceExit()
 
 def showLive():
+    global selectedTitleId
+
     BPTraceEnter()
     mc.ShowDialogWait()
+    selectedTitleId = str("")
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
@@ -85,8 +92,11 @@ def showLive():
     BPTraceExit()
 
 def search():
+    global selectedTitleId
+
     BPTraceEnter()
     mc.ShowDialogWait()
+    selectedTitleId = str("")
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
@@ -116,4 +126,39 @@ def playVideo():
     item = l.GetItem(l.GetFocusedItem())
     BPLog("Playing clip \"%s\" with path \"%s\" and bitrate %s." %(item.GetLabel(), item.GetPath(), item.GetProperty("bitrate")))
     mc.GetPlayer().Play(item)
+    BPTraceExit()
+
+def populateNextSamplesPage():
+    BPTraceEnter()
+    mc.ShowDialogWait()
+
+    try:
+        if len(selectedTitleId) > 0:
+            sampleList = mc.GetWindow(14000).GetList(3001)
+            # Remember the item that was focused when the action was initiated
+            originallyFocusedItemNo = sampleList.GetFocusedItem()
+            list = sampleList.GetItems()
+            # This check prevents loading of next page
+            # before the page to be loaded is loaded
+            # due to ondown triggered twice on the same item (ondown, up, ondown)
+            if originallyFocusedItemNo + 1 == len(list):
+                # There appears to be a bug in the SVT XML load routine so that
+                # the same item is loaded as both the last on page 2 (101-200) and
+                # the first on page 3 (201-300)
+                newItems = svt.GetNextSamplesPage(selectedTitleId, sampleList)
+                if len(newItems) > 0:
+                    for newItem in newItems:
+                        list.append(newItem)
+                    # If the focused item is still the same (the last)
+                    # advance to the first newly loaded item
+                    # otherwise keep the focused item
+                    # if for example the user scrolled up during the load
+                    focusedItemNo = sampleList.GetFocusedItem()
+                    if focusedItemNo == originallyFocusedItemNo:
+                        focusedItemNo = focusedItemNo + 1
+                    sampleList.SetItems(list)
+                    sampleList.SetFocusedItem(focusedItemNo)
+    except Exception, e:
+        BPLog("Could not load next sample page. Exception: %s" %(e), Level.ERROR)
+    mc.HideDialogWait()
     BPTraceExit()
