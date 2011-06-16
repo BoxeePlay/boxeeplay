@@ -3,7 +3,14 @@ import svtmc as svt
 import time
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
+focusedCategoryNo = -1
+focusedTitleNo = -1
+focusedEpisodeNo = -1
+
 def initiate():
+    global focusedCategoryNo
+    global focusedTitleNo
+    global focusedEpisodeNo
     BPTraceEnter()
     if len(mc.GetWindow(14000).GetList(1000).GetItems()) == 0:
         BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
@@ -11,6 +18,17 @@ def initiate():
         time.sleep(0.001) #�ckelfulhack
         loadPrograms()
         loadEpisodes()
+    else:
+        #Restore last focus
+        if focusedCategoryNo >= 0:
+            categoryList = mc.GetWindow(14000).GetList(1000)
+            categoryList.SetFocusedItem(focusedCategoryNo)
+        if focusedTitleNo >= 0:
+            titleList = mc.GetWindow(14000).GetList(2000)
+            titleList.SetFocusedItem(focusedTitleNo)
+        if focusedEpisodeNo >= 0:
+            episodeList = mc.GetWindow(14000).GetList(3001)
+            episodeList.SetFocusedItem(focusedEpisodeNo)
     BPTraceExit()
 
 def loadCategories():
@@ -121,9 +139,31 @@ def appendSearch(str):
     BPTraceExit()
 
 def playVideo():
+    global focusedCategoryNo
+    global focusedTitleNo
+    global focusedEpisodeNo
     BPTraceEnter()
-    l = mc.GetWindow(14000).GetList(3001)
-    item = l.GetItem(l.GetFocusedItem())
+
+    # Remember the selections in the lists
+    categoryList = mc.GetWindow(14000).GetList(1000)
+    if len(categoryList.GetItems()) > 0:
+        focusedCategoryNo = categoryList.GetFocusedItem()
+    else:
+        focusedCategoryNo = -1
+
+    titleList = mc.GetWindow(14000).GetList(2000)
+    if len(titleList.GetItems()) > 0:
+        focusedTitleNo = titleList.GetFocusedItem()
+    else:
+        focusedTitleNo = -1
+
+    episodeList = mc.GetWindow(14000).GetList(3001)
+    if len(episodeList.GetItems()) > 0:
+        focusedEpisodeNo = episodeList.GetFocusedItem()
+    else:
+        focusedEpisodeNo = -1
+
+    item = episodeList.GetItem(focusedEpisodeNo)
     BPLog("Playing clip \"%s\" with path \"%s\" and bitrate %s." %(item.GetLabel(), item.GetPath(), item.GetProperty("bitrate")))
     mc.GetPlayer().Play(item)
     BPTraceExit()
