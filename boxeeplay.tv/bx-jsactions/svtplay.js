@@ -228,6 +228,10 @@ function boxeeLoadCommon() {
                     playerState.canSeekTo = true;
                 }
             }
+            else if (boxee.getVersion() < 7)
+            {
+                boxee.renderBrowser = false;
+            }
 
             //TODO: volume 100      -0.9 CHECK  -1.0 CHECK
             //TODO: auto-quality    -0.9 CHECK  -1.0 CHECK
