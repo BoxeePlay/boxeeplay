@@ -264,12 +264,13 @@ var doUpdates=function() {
         var time = parseTime(debug);
         var state = getState(debug);
         var bitrate = parseBitrate(debug);
+        //bplog(state);
 
         if (boxee.getVersion() >= 7 && !isFullscreen(debug) && isDynamic(debug)) {
             player.setActive(true);
         }
 
-        if (state === 'stopped') {
+        if (state === 'complete') {
             boxee.notifyPlaybackEnded();
         }
 
