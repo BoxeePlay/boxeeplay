@@ -202,6 +202,16 @@ def GetLiveEpisodes():
     svtxml.FixLiveAirTime(episodes)
     return episodes
 
+def GetRecentEpisodes():
+    episodes = svtxml.GetDirectory("http://xml.svtplay.se/v1/video/list/96238?expression=full&num=100", 100)
+    return episodes
+
+def GetRecommendedTitles() :
+    return svtxml.GetDirectory("http://xml.svtplay.se/v1/teaser/list/102445?num=100", 100)
+
+def GetPopularTitles() :
+    return svtxml.GetDirectory("http://xml.svtplay.se/v1/teaser/list/102446?num=100", 100)
+
 def SearchEpisodes(searchTerm, id="96238", maxItems=100) :
     if (len(searchTerm) == 0):
         return mc.ListItems()

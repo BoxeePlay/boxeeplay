@@ -44,6 +44,8 @@ def loadPrograms():
     BPTraceEnter()
     mc.ShowDialogWait()
     cList = mc.GetWindow(14000).GetList(1000)
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
     try:
         cItem = cList.GetItem(cList.GetFocusedItem())
         cId   = svt.GetCategoryId(cItem)
@@ -58,6 +60,36 @@ def loadPrograms():
     BPTraceExit()
 
 selectedTitleId = str("")
+
+def loadRecommendedPrograms():
+    BPTraceEnter()
+    mc.ShowDialogWait()
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
+    try:
+        programs = svt.GetRecommendedTitles()
+    except Exception, e:
+        BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
+        programs = mc.ListItems() #Empty..
+    setPrograms(programs)
+    mc.HideDialogWait()
+    BPLog("Finished loading recomended programs.", Level.DEBUG)
+    BPTraceExit()
+
+def loadPopularPrograms():
+    BPTraceEnter()
+    mc.ShowDialogWait()
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
+    try:
+        programs = svt.GetPopularTitles()
+    except Exception, e:
+        BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
+        programs = mc.ListItems() #Empty..
+    setPrograms(programs)
+    mc.HideDialogWait()
+    BPLog("Finished loading popular programs.", Level.DEBUG)
+    BPTraceExit()
 
 def loadEpisodes():
     global selectedTitleId
@@ -106,6 +138,21 @@ def showLive():
             setEpisodes(svt.GetLiveEpisodes())
     except Exception, e:
         BPLog("Could not show live episodes: %s" %e, Level.ERROR)
+    mc.HideDialogWait()
+    BPTraceExit()
+
+def showRecent():
+    global selectedTitleId
+
+    BPTraceEnter()
+    mc.ShowDialogWait()
+    selectedTitleId = str("")
+    setPrograms(mc.ListItems())
+    setEpisodes(mc.ListItems())
+    try:
+            setEpisodes(svt.GetRecentEpisodes())
+    except Exception, e:
+        BPLog("Could not show recent episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
     BPTraceExit()
 

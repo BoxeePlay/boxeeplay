@@ -34,8 +34,74 @@
 
         <control type="group" id="100" >
             <posx>134</posx>
+            <control type="button" id="106">
+                <ondown>1000</ondown>
+                <onright>107</onright>
+                <posy>23</posy>
+                <posx>122</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Rekommenderat</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.loadRecommendedPrograms()]]></onclick>
+            </control>
+            <control type="button" id="107">
+                <ondown>1000</ondown>
+                <onleft>106</onleft>
+                <onright>108</onright>
+                <posy>23</posy>
+                <posx>248</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Senaste</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.showRecent()]]></onclick>
+            </control>
+            <control type="button" id="108">
+                <ondown>1000</ondown>
+                <onleft>107</onleft>
+                <onright>109</onright>
+                <posy>23</posy>
+                <posx>374</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Populärast</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.loadPopularPrograms()]]></onclick>
+            </control>
             <control type="button" id="109">
                 <ondown>1000</ondown>
+                <onleft>108</onleft>
                 <onright>110</onright>
                 <posy>23</posy>
                 <posx>500</posx>
@@ -169,7 +235,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>109</onup>
+                <onup>106</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
