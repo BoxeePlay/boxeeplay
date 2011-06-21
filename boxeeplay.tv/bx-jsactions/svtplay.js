@@ -271,7 +271,7 @@ function doUpdates() {
             player.setActive(true);
         }
 
-        if (state === 'complete') {
+        if (state === 'complete' || state === 'stopped') {
             boxee.notifyPlaybackEnded();
         }
 
