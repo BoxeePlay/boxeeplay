@@ -2,7 +2,7 @@
 var menuY = 370;
 var audioX;
 var qualityX;
-var globalBitrate = 0;
+var globalBitrate = -1;
 var setVolFn = "";
     setVolFn += "var setVolume = function() {";
     setVolFn += "var prnt = document.playerSwf;";
@@ -214,8 +214,9 @@ function boxeeLoadCommon() {
             var hasSubs = hasSubtitles(debug);
             var volume = parseVolume(debug);
             var dynamic = isDynamic(debug);
+            var hasdyn = hasDynamic(debug);
             var live = isLive(debug);
-            audioX = player.width - ((hasSubs) ? 170 : 140);
+            audioX = player.width - 110 - ((hasSubs) ? 30 : 0) - ((hasDynamic) ? 30 : 0);
             bplog((hasSubs) ? "Subtitles available." : "No subtitles available.");
             qualityX = audioX + 30;
             bplog("Volume: " + volume);
@@ -238,7 +239,7 @@ function boxeeLoadCommon() {
             //TODO: fullscreen      -0.9 CHECK  -1.0 CHECK
             //TODO: live            -0.9 CHECK  -1.0 CHECK
 
-            if (!dynamic)
+            if (hasdyn && !dynamic)
             {
                 autoQualityClick();
             }
@@ -254,7 +255,7 @@ function boxeeLoadCommon() {
     }
 }
 
-var doUpdates=function() {
+function doUpdates() {
     //bplog("doUpdates start");
 
     var debug = runPlayerFunction("getDebugText();");
@@ -263,10 +264,10 @@ var doUpdates=function() {
         var duration = parseDuration(debug);
         var time = parseTime(debug);
         var state = getState(debug);
-        var bitrate = parseBitrate(debug);
+        var bitrate = (hasDynamic(debug)) ? parseBitrate(debug) : parseDatarate(debug);
         //bplog(state);
 
-        if (boxee.getVersion() >= 7 && !isFullscreen(debug) && isDynamic(debug)) {
+        if (boxee.getVersion() >= 7 && !isFullscreen(debug)) {
             player.setActive(true);
         }
 
@@ -312,17 +313,21 @@ function parseDuration(debug) {
     return duration;
 }
 function isLive(debug) {
-    var live = debug.match(/isLive\: (.*)/m)[1];
+    var live = debug.match(/isLive\: (.*)$/m)[1];
     //bplog("isLive: " + live);
     return (live == "true");
 }
 function isDynamic(debug) {
-    var dyn = debug.match(/isAutoBitrate\: (.*)/m)[1];
+    var dyn = debug.match(/isAutoBitrate\: (.*)$/m)[1];
     //bplog("isDynamic: " + dyn);
     return (dyn == "true");
 }
+function hasDynamic(debug) {
+    var dyn = debug.match(/isDynamicStream \: (.*)$/m)[1];
+    return (dyn == "true");
+}
 function isFullscreen(debug) {
-    var dispstate = debug.match(/displayState\: (.*)/m)[1];
+    var dispstate = debug.match(/displayState\: (.*)$/m)[1];
     //bplog("displaystate: " + dispstate);
     return (dispstate == "fullScreen");
 }
@@ -352,6 +357,16 @@ function parseBitrate(debug) {
         stream = stream[1];
         var bitrate = debug.match(new RegExp(stream + " \\((.*)\\)$","m"))[1];
         return parseInt(bitrate);
+    }
+    catch(err) {
+        bplog(err);
+        return -1;
+    }
+}
+function parseDatarate(debug) {
+    try {
+        var drate = debug.match(/videodatarate \: (.*)$/m)[1];
+        return drate;
     }
     catch(err) {
         bplog(err);
