@@ -1,7 +1,7 @@
 <app>
   <id>tv.boxeeplay.svtplay2</id>
   <name>SVTPlay2</name>
-  <version>2.15</version>
+  <version>2.16</version>
   <description>SVTPlay i din Boxee</description>
   <thumb>http://www.boxeeplay.tv/images/svtplay.png</thumb>
   <repository>http://www.boxeeplay.tv/apps</repository>
@@ -12,6 +12,7 @@
   <startWindow>start</startWindow>
   <platform>all</platform>
   <minversion>0.9.21</minversion>
+  <test-app>true</test-app>
 </app>
 
 
