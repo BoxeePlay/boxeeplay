@@ -1,4 +1,0 @@
-baseurl = 'http://svtplay.se'
-
-
-    
