@@ -1,0 +1,40 @@
+<?xml version=	"1.0"?>
+<window type="window" id="15000">
+    <defaultcontrol always="true">1000</defaultcontrol>
+    <allowoverlay>no</allowoverlay>
+    <onload lang="python">
+        <![CDATA[
+        ]]>
+	</onload>
+    <controls>
+		<control id="1000" type="group">
+            <control type="image" id="1001">
+                <posy>73</posy>
+                <posx>23</posx>
+				<width>250</width>
+				<height>40</height>
+				<font>font21</font>
+				<textcolor>ffbcbdc0</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<selectedcolor>white</selectedcolor>
+				<align>center</align>
+				<aligny>top</aligny>
+				<textoffsety>8</textoffsety>
+				<texture>button.png</texture>
+			</control>
+            <control type="label">
+                <posx>50</posx>
+                <posy>58</posy>
+                <width>230</width>
+                <height>70</height>
+                <font>font21</font>
+                <aligny>center</aligny>
+                <selectedcolor>white</selectedcolor>
+                <align>left</align>
+                <label>INSTÄLLNINGAR</label>
+            </control>
+        </control>
+    </controls>
+</window>
+
+

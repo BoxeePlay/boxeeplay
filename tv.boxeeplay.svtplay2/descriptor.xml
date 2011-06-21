@@ -1,0 +1,17 @@
+<app>
+  <id>tv.boxeeplay.svtplay</id>
+  <name>SVTPlay2</name>
+  <version>2.11</version>
+  <description>SVTPlay i din Boxee</description>
+  <thumb>http://www.boxeeplay.tv/images/svtplay.png</thumb>
+  <repository>http://www.boxeeplay.tv/apps</repository>
+  <media>video</media>
+  <copyright>none</copyright>
+  <email>boxeeplay@hypernode.se</email>
+  <type>skin</type>
+  <startWindow>start</startWindow>
+  <platform>all</platform>
+  <minversion>0.9.21</minversion>
+</app>
+
+
