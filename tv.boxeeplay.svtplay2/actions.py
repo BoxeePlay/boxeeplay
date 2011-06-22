@@ -1,5 +1,5 @@
 import mc
-import svtmc as svt
+import svtmc as playmc
 import time
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 
@@ -15,9 +15,8 @@ def initiate():
     if len(mc.GetWindow(14000).GetList(1000).GetItems()) == 0:
         BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
         loadCategories()
-        time.sleep(0.001) #�ckelfulhack
-        loadPrograms()
-        loadEpisodes()
+        time.sleep(0.001) #Äckelfulhack
+        loadRecommendedPrograms()
     else:
         #Restore last focus
         if focusedCategoryNo >= 0:
@@ -35,7 +34,7 @@ def loadCategories():
     BPTraceEnter()
     mc.ShowDialogWait()
     target = mc.GetWindow(14000).GetList(1000)
-    target.SetItems(svt.GetCategories())
+    target.SetItems(playmc.GetCategories())
     mc.HideDialogWait()
     BPLog("Successfully loaded all categories.", Level.DEBUG)
     BPTraceExit()
@@ -48,8 +47,8 @@ def loadPrograms():
     setEpisodes(mc.ListItems())
     try:
         cItem = cList.GetItem(cList.GetFocusedItem())
-        cId   = svt.GetCategoryId(cItem)
-        programs = svt.GetTitles(cId)
+        cId   = playmc.GetCategoryId(cItem)
+        programs = playmc.GetTitles(cId)
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         cId = -1
@@ -67,7 +66,7 @@ def loadRecommendedPrograms():
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
-        programs = svt.GetRecommendedTitles()
+        programs = playmc.GetRecommendedTitles()
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         programs = mc.ListItems() #Empty..
@@ -82,7 +81,7 @@ def loadPopularPrograms():
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
-        programs = svt.GetPopularTitles()
+        programs = playmc.GetPopularTitles()
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         programs = mc.ListItems() #Empty..
@@ -99,8 +98,8 @@ def loadEpisodes():
     pList = mc.GetWindow(14000).GetList(2000)
     try:
         pItem = pList.GetItem(pList.GetFocusedItem())
-        selectedTitleId = svt.GetTitleId(pItem)
-        episodes = svt.GetEpisodesAndSamples(selectedTitleId)
+        selectedTitleId = playmc.GetTitleId(pItem)
+        episodes = playmc.GetEpisodesAndSamples(selectedTitleId)
     except:
         BPLog("Laddning av avsnitt misslyckades.", Level.ERROR)
         selectedTitleId = str("")
@@ -135,7 +134,7 @@ def showLive():
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
-            setEpisodes(svt.GetLiveEpisodes())
+            setEpisodes(playmc.GetLiveEpisodes())
     except Exception, e:
         BPLog("Could not show live episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
@@ -150,7 +149,7 @@ def showRecent():
     setPrograms(mc.ListItems())
     setEpisodes(mc.ListItems())
     try:
-            setEpisodes(svt.GetRecentEpisodes())
+            setEpisodes(playmc.GetRecentEpisodes())
     except Exception, e:
         BPLog("Could not show recent episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
@@ -168,7 +167,7 @@ def search():
         searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
         try:
             searchTerm = searchTerm.decode("utf-8").encode("latin1")
-            setEpisodes(svt.SearchEpisodesAndSamples(searchTerm))
+            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm))
         except Exception, e:
             BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
     except Exception, e:
@@ -232,7 +231,7 @@ def populateNextSamplesPage():
                 # There appears to be a bug in the SVT XML load routine so that
                 # the same item is loaded as both the last on page 2 (101-200) and
                 # the first on page 3 (201-300)
-                newItems = svt.GetNextSamplesPage(selectedTitleId, sampleList)
+                newItems = playmc.GetNextSamplesPage(selectedTitleId, sampleList)
                 if len(newItems) > 0:
                     for newItem in newItems:
                         list.append(newItem)
