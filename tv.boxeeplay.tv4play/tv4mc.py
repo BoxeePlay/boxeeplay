@@ -28,11 +28,31 @@ def GetEpisodes(id) :
 def GetSamples(id) :
     return tv4xml.GetEpisodes(id, True)
 
+def GetEpisodesAndSamples(id=96238):
+    listItems = GetEpisodes(id)
+    sampleItems = GetSamples(id)
+    for sampleItem in sampleItems:
+        listItems.append(sampleItem)
+    return listItems
+
 def SearchEpisodes(searchTerm) :
     return tv4xml.SearchEpisodes(searchTerm, False)
 
 def SearchSamples(searchTerm) :
     return tv4xml.SearchEpisodes(searchTerm, True)
+
+def SearchEpisodesAndSamples(searchTerm) :
+    listItems = SearchEpisodes(searchTerm)
+    sampleItems = SearchSamples(searchTerm)
+    for sampleItem in sampleItems:
+        listItems.append(sampleItem)
+    return listItems
+
+def GetLiveEpisodes():
+    return tv4xml.GetLiveEpisodes()
+
+def GetRecommendedTitles() :
+    return tv4xml.GetRecommendedTitles()
 
 def DumpAllEpisodes():
     BPTraceEnter()

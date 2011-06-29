@@ -35,7 +35,51 @@
 
         <control type="group" id="100" >
             <posx>134</posx>
+            <control type="button" id="108">
+                <ondown>1000</ondown>
+                <onright>109</onright>
+                <posy>23</posy>
+                <posx>374</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Rekommenderat</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.loadRecommendedPrograms()]]></onclick>
+            </control>
+            <control type="button" id="109">
+                <ondown>1000</ondown>
+                <onleft>108</onleft>
+                <onright>110</onright>
+                <posy>23</posy>
+                <posx>500</posx>
+                <width>100</width>
+                <height>40</height>
+                <label>Live</label>
+                <font>font14</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>8</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.showLive()]]></onclick>
+            </control>
             <control type="edit" id="110">
+                <onleft>109</onleft>
                 <ondown>1000</ondown>
                 <onup>121</onup>
                 <onright>111</onright>
@@ -148,7 +192,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>110</onup>
+                <onup>108</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
