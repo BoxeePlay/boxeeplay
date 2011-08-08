@@ -7,6 +7,12 @@ var setVolFn = "";
     setVolFn += "var setVolume = function() {";
     setVolFn += "var prnt = document.playerSwf;";
     setVolFn += "if (typeof(prnt) === 'undefined') {return 'FAILURE';};";
+    setVolFn += "var outHTML = prnt.outerHTML;";
+    setVolFn += "outHTML = outHTML.replace(/width=\\\"640\\\"/g, 'width=\\\"1280\\\"');";
+    setVolFn += "outHTML = outHTML.replace(/height=\\\"386\\\"/g, 'height=\\\"746\\\"');";
+    setVolFn += "outHTML = outHTML.replace(/height=\\\"360\\\"/g, 'height=\\\"720\\\"');";
+    setVolFn += "prnt.outerHTML = outHTML;";
+    setVolFn += "prnt = document.playerSwf;";
     setVolFn += "var pHTML = prnt.innerHTML;";
     setVolFn += "prnt.innerHTML = '';";
     setVolFn += "var flashvars = pHTML.match(/name=\\\"flashvars\\\".*value=\\\"(.+)\\\"/)[1];";
@@ -151,6 +157,7 @@ function setVolume()
     browser.execute(setVolFn);
     var result = browser.execute('setVolume()');
     bplog("result from setvolume: " + result);
+
     if (result !== 'SUCCESS') {
         setTimeout(setVolume, 200);
 //        bplog("New setVolume in 0.2s");
@@ -277,7 +284,13 @@ function doUpdates() {
 
         if (bitrate !== globalBitrate) {
             globalBitrate = bitrate;
-            var msg = "Spelar nu upp i " + bitrate + "kbps.";
+            // boxee.showNotification("Current stream: \"" + getCurrentStream(debug) + "\"",".",2);
+            var dynLim = parseDynamicLimit(debug);
+            var extra = "";
+            if (dynLim >= 0) {
+                extra = " (" + dynLim + ")";
+            }
+            var msg = "Spelar nu upp i " + bitrate + "kbps." + extra;
             bplog(msg);
             boxee.showNotification(msg,".",3);
         }
@@ -350,7 +363,10 @@ function getState(debug) {
 }
 function parseBitrate(debug) {
     try {
-        var stream = debug.match(/streamName \: (.*)$/m);
+        var stream = debug.match(/currentStreamname\: (.+)$/m);
+        if (stream == null) {
+            stream = debug.match(/streamName \: (.+)$/m);
+        }
         if (stream == null) {
             return 0;
         }
@@ -361,6 +377,24 @@ function parseBitrate(debug) {
     catch(err) {
         bplog(err);
         return -1;
+    }
+}
+function parseDynamicLimit(debug) {
+    try {
+        return debug.match(/maxBitrate\: (.*)$/m)[1]
+    }
+    catch(err) {
+        bplog(err);
+        return -1;
+    }
+}
+function getCurrentStream(debug) {
+    try {
+        return debug.match(/currentStreamname\: (.*)$/m)[1];
+    }
+    catch(err) {
+        bplog(err);
+        return "Not found";
     }
 }
 function parseDatarate(debug) {
