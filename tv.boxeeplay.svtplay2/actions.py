@@ -6,11 +6,16 @@ from logger import BPLog,BPTraceEnter,BPTraceExit,Level
 focusedCategoryNo = -1
 focusedTitleNo = -1
 focusedEpisodeNo = -1
+labelPrograms = ""
+labelEpisodes = ""
 
 def initiate():
     global focusedCategoryNo
     global focusedTitleNo
     global focusedEpisodeNo
+    global labelPrograms
+    global labelEpisodes
+
     BPTraceEnter()
     if len(mc.GetWindow(14000).GetList(1000).GetItems()) == 0:
         BPLog("No programs in program listing. Loading defaults.", Level.DEBUG)
@@ -19,6 +24,8 @@ def initiate():
         loadRecommendedPrograms()
     else:
         #Restore last focus
+        mc.GetWindow(14000).GetLabel(2001).SetLabel(labelPrograms)
+        mc.GetWindow(14000).GetLabel(3002).SetLabel(labelEpisodes)
         if focusedCategoryNo >= 0:
             categoryList = mc.GetWindow(14000).GetList(1000)
             categoryList.SetFocusedItem(focusedCategoryNo)
@@ -118,18 +125,24 @@ def loadEpisodes():
     BPTraceExit()
 
 def setPrograms(items,title):
+    global labelPrograms
+
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(2000)
     target.SetItems(items)
+    labelPrograms = title
     mc.GetWindow(14000).GetLabel(2001).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
     BPTraceExit()
 
 def setEpisodes(items,title):
+    global labelEpisodes
+
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(3001)
     target.SetItems(items)
+    labelEpisodes = title
     mc.GetWindow(14000).GetLabel(3002).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
