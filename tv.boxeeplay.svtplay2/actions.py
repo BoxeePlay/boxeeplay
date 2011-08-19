@@ -1,4 +1,4 @@
-import mc
+ï»¿import mc
 import svtmc as playmc
 import time
 from logger import BPLog,BPTraceEnter,BPTraceExit,Level
@@ -93,7 +93,7 @@ def loadPopularPrograms():
     setEpisodes(mc.ListItems(),"")
     try:
         programs = playmc.GetPopularTitles()
-        title = "Populära program"
+        title = "PopulÃ¤ra program"
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         programs = mc.ListItems() #Empty..
@@ -157,7 +157,7 @@ def showLive():
     setPrograms(mc.ListItems(), "")
     setEpisodes(mc.ListItems(), "")
     try:
-            setEpisodes(playmc.GetLiveEpisodes(), "Livesändningar")
+            setEpisodes(playmc.GetLiveEpisodes(), "LivesÃ¤ndningar")
     except Exception, e:
         BPLog("Could not show live episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
@@ -190,7 +190,7 @@ def search():
         searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
         try:
             searchTerm = searchTerm.decode("utf-8").encode("latin1")
-            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm), "Sökning på \"" + searchTerm + "\"")
+            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm), "SÃ¶kning pÃ¥ \"" + searchTerm + "\"")
         except Exception, e:
             BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
     except Exception, e:
