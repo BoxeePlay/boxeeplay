@@ -43,17 +43,19 @@ def loadPrograms():
     BPTraceEnter()
     mc.ShowDialogWait()
     cList = mc.GetWindow(14000).GetList(1000)
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(),"")
+    setEpisodes(mc.ListItems(),"")
     try:
         cItem = cList.GetItem(cList.GetFocusedItem())
         cId   = playmc.GetCategoryId(cItem)
         programs = playmc.GetTitles(cId)
+        title = cItem.GetLabel()
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         cId = -1
         programs = mc.ListItems() #Empty..
-    setPrograms(programs)
+        title = ""
+    setPrograms(programs, title)
     mc.HideDialogWait()
     BPLog("Finished loading programs in category %s." %cId, Level.DEBUG)
     BPTraceExit()
@@ -63,14 +65,16 @@ selectedTitleId = str("")
 def loadRecommendedPrograms():
     BPTraceEnter()
     mc.ShowDialogWait()
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(),"")
+    setEpisodes(mc.ListItems(),"")
     try:
         programs = playmc.GetRecommendedTitles()
+        title = "Rekommenderade program"
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         programs = mc.ListItems() #Empty..
-    setPrograms(programs)
+        title = ""
+    setPrograms(programs, title)
     mc.HideDialogWait()
     BPLog("Finished loading recomended programs.", Level.DEBUG)
     BPTraceExit()
@@ -78,14 +82,16 @@ def loadRecommendedPrograms():
 def loadPopularPrograms():
     BPTraceEnter()
     mc.ShowDialogWait()
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(),"")
+    setEpisodes(mc.ListItems(),"")
     try:
         programs = playmc.GetPopularTitles()
+        title = "Populära program"
     except Exception, e:
         BPLog("Laddning av program misslyckades: %s" %e, Level.ERROR)
         programs = mc.ListItems() #Empty..
-    setPrograms(programs)
+        title = ""
+    setPrograms(programs, title)
     mc.HideDialogWait()
     BPLog("Finished loading popular programs.", Level.DEBUG)
     BPTraceExit()
@@ -100,27 +106,31 @@ def loadEpisodes():
         pItem = pList.GetItem(pList.GetFocusedItem())
         selectedTitleId = playmc.GetTitleId(pItem)
         episodes = playmc.GetEpisodesAndSamples(selectedTitleId)
+        title = pItem.GetLabel()
     except:
         BPLog("Laddning av avsnitt misslyckades.", Level.ERROR)
         selectedTitleId = str("")
         episodes = mc.ListItems() #Empty
-    setEpisodes(episodes)
+        title = ""
+    setEpisodes(episodes, title)
     mc.HideDialogWait()
     BPLog("Finished loading episodes in category %s." %selectedTitleId, Level.DEBUG)
     BPTraceExit()
 
-def setPrograms(items):
+def setPrograms(items,title):
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(2000)
     target.SetItems(items)
+    mc.GetWindow(14000).GetLabel(2001).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
     BPTraceExit()
 
-def setEpisodes(items):
+def setEpisodes(items,title):
     BPTraceEnter()
     target = mc.GetWindow(14000).GetList(3001)
     target.SetItems(items)
+    mc.GetWindow(14000).GetLabel(3002).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
     BPTraceExit()
@@ -131,10 +141,10 @@ def showLive():
     BPTraceEnter()
     mc.ShowDialogWait()
     selectedTitleId = str("")
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(), "")
+    setEpisodes(mc.ListItems(), "")
     try:
-            setEpisodes(playmc.GetLiveEpisodes())
+            setEpisodes(playmc.GetLiveEpisodes(), "Livesändningar")
     except Exception, e:
         BPLog("Could not show live episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
@@ -146,10 +156,10 @@ def showRecent():
     BPTraceEnter()
     mc.ShowDialogWait()
     selectedTitleId = str("")
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(),"")
+    setEpisodes(mc.ListItems(),"")
     try:
-            setEpisodes(playmc.GetRecentEpisodes())
+            setEpisodes(playmc.GetRecentEpisodes(), "Senaste avsnitt")
     except Exception, e:
         BPLog("Could not show recent episodes: %s" %e, Level.ERROR)
     mc.HideDialogWait()
@@ -161,13 +171,13 @@ def search():
     BPTraceEnter()
     mc.ShowDialogWait()
     selectedTitleId = str("")
-    setPrograms(mc.ListItems())
-    setEpisodes(mc.ListItems())
+    setPrograms(mc.ListItems(),"")
+    setEpisodes(mc.ListItems(),"")
     try:
         searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
         try:
             searchTerm = searchTerm.decode("utf-8").encode("latin1")
-            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm))
+            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm), "Sökning på \"" + searchTerm + "\"")
         except Exception, e:
             BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
     except Exception, e:

@@ -1,5 +1,4 @@
 ﻿var player = null;
-var menuY = 370;
 var audioX;
 var qualityX;
 var globalBitrate = -1;
@@ -8,17 +7,10 @@ var setVolFn = "";
     setVolFn += "var prnt = document.playerSwf;";
     setVolFn += "if (typeof(prnt) === 'undefined') {return 'FAILURE';};";
     setVolFn += "var outHTML = prnt.outerHTML;";
-    setVolFn += "outHTML = outHTML.replace(/width=\\\"640\\\"/g, 'width=\\\"1280\\\"');";
-    setVolFn += "outHTML = outHTML.replace(/height=\\\"386\\\"/g, 'height=\\\"746\\\"');";
-    setVolFn += "outHTML = outHTML.replace(/height=\\\"360\\\"/g, 'height=\\\"720\\\"');";
-    setVolFn += "prnt.outerHTML = outHTML;";
-    setVolFn += "prnt = document.playerSwf;";
-    setVolFn += "var pHTML = prnt.innerHTML;";
-    setVolFn += "prnt.innerHTML = '';";
-    setVolFn += "var flashvars = pHTML.match(/name=\\\"flashvars\\\".*value=\\\"(.+)\\\"/)[1];";
+    setVolFn += "var flashvars = outHTML.match(/name=\\\"flashvars\\\".*value=\\\"(.+)\\\"/)[1];";
     setVolFn += "var flashvars_new = flashvars + '&amp;initVolume=1&amp;useCookie=false';";
-    setVolFn += "prnt.innerHTML = pHTML.replace(flashvars,flashvars_new);";
-    setVolFn += "prnt.innerHTML = prnt.innerHTML.replace(/name=\\\"flashvars\\\".*value=\\\".+\\\"/g,'name=\"flashvars\" value=\"'+flashvars_new+'\"');";
+    setVolFn += "outHTML = outHTML.replace(flashvars,flashvars_new);";
+    setVolFn += "prnt.outerHTML = outHTML.replace(/name=\\\"flashvars\\\".*value=\\\".+\\\"/g,'name=\"flashvars\" value=\"'+flashvars_new+'\"');";
     setVolFn += "return 'SUCCESS';";
     setVolFn += "};";
 
@@ -128,9 +120,8 @@ function boxeeSetup70()
     bplog("Loading configuration for boxee 1.");
 
     boxee.apiMinVersion = 7.0;
-    boxee.setMode(boxee.LOCKED_PLAYER_MODE);
-    boxee.showOSDOnStartup = false;
-    boxee.autoChoosePlayer = true;
+    boxee.setMode(boxee.PLAYER_MODE);
+//    boxee.showOSDOnStartup = false;
 
     playerState.canSetFullScreen = true;
     playerState.canPause = true;
@@ -250,6 +241,8 @@ function boxeeLoadCommon() {
             {
                 autoQualityClick();
             }
+
+            setTimeout(function(){player.click(player.width-30,player.height-10);}, 300);
             
             var updateInterval = setInterval(doUpdates, 500);
 
@@ -273,10 +266,6 @@ function doUpdates() {
         var state = getState(debug);
         var bitrate = (hasDynamic(debug)) ? parseBitrate(debug) : parseDatarate(debug);
         //bplog(state);
-
-        if (boxee.getVersion() >= 7 && !isFullscreen(debug)) {
-            player.setActive(true);
-        }
 
         if (state === 'complete' || state === 'stopped') {
             boxee.notifyPlaybackEnded();
@@ -363,15 +352,11 @@ function getState(debug) {
 }
 function parseBitrate(debug) {
     try {
-        var stream = debug.match(/currentStreamname\: (.+)$/m);
-        if (stream == null) {
-            stream = debug.match(/streamName \: (.+)$/m);
-        }
-        if (stream == null) {
-            return 0;
-        }
-        stream = stream[1];
+        var regex =/NetStream\.Play\.[Start|Transition].* (.+)\.$/mg;
+        var stream = debug.match(regex);
+        stream = regex.exec(stream[stream.length - 1])[1];
         var bitrate = debug.match(new RegExp(stream + " \\((.*)\\)$","m"))[1];
+//        boxee.showNotification(bitrate + " (" + parseDynamicLimit(debug) + ")", ".", 1);
         return parseInt(bitrate);
     }
     catch(err) {
@@ -431,9 +416,10 @@ function runPlayerFunction(fn) {
     }
 }
 function autoQualityClick() {
-    player.click(qualityX, menuY);
-    setTimeout(function() {player.click(400,150);bplog("Automatisk bitrate vald.");},200);
-    //bplog("Clicked at " + qualityX + ", " + menuY);
+    var x = qualityX; var y = player.height-10;
+    player.click(x, y);
+    setTimeout(function() {player.click(player.width/2+80,player.height/2-43);bplog("Automatisk bitrate vald.");},200);
+//    boxee.showNotification("Clicked at " + x + ", " + y, ".", 2);
 }
 
 bplog("Finished loading Boxee control script.");

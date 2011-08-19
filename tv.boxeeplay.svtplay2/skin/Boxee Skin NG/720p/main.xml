@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="window" id="14000">
-    <defaultcontrol always="true">1000</defaultcontrol>
+    <defaultcontrol always="true">100</defaultcontrol>
     <allowoverlay>no</allowoverlay>
     <onload lang="python">
 <![CDATA[actions.initiate()]]>
@@ -32,7 +32,7 @@
             </control>
         </control>
 
-        <control type="group" id="100" >
+        <control type="group" id="100">
             <posx>134</posx>
             <control type="button" id="106">
                 <ondown>1000</ondown>
@@ -226,7 +226,7 @@
                 <onclick>SetFocus(110)</onclick>
             </control>
         </control>
-        <control type="group" ID="999">
+        <control type="group" id="999">
             <control type="list" id="1000">
                 <description>Categories</description>
                 <posy>73</posy>
@@ -235,7 +235,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>106</onup>
+                <onup>100</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
@@ -271,6 +271,14 @@
                             <height>40</height>
                             <posx>10</posx>
                             <posy>0</posy>
+                            <texture>button_bg.png</texture>
+                            <fadetime>100</fadetime>
+                        </control>
+                        <control type="image">
+                            <width>220</width>
+                            <height>40</height>
+                            <posx>10</posx>
+                            <posy>0</posy>
                             <texture>button.png</texture>
                             <visible>Control.HasFocus(1000)</visible>
                             <fadetime>100</fadetime>
@@ -281,6 +289,7 @@
                             <posx>10</posx>
                             <posy>0</posy>
                             <texture>button_alt.png</texture>
+                            <visible>![Control.HasFocus(106) | Control.HasFocus(107) | Control.HasFocus(108) | Control.HasFocus(109) | Control.HasFocus(110) | Control.HasFocus(111) | Control.HasFocus(120) | Control.HasFocus(121) | Control.HasFocus(122)]</visible>
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
@@ -298,12 +307,25 @@
                 </focusedlayout>
             </control>
 
-            <control type="list" id="2000">
-                <description>Programs</description>
+            <control type="label" id="2001">
+                <description>Category Label</description>
                 <posx>20</posx>
                 <posy>120</posy>
                 <width>380</width>
-                <height>600</height>
+                <height>30</height>
+                <scroll>true</scroll>
+                <textcolor>white</textcolor>
+                <font>font30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label></label>
+            </control>
+            <control type="list" id="2000">
+                <description>Programs</description>
+                <posx>20</posx>
+                <posy>155</posy>
+                <width>380</width>
+                <height>560</height>
                 <visible>true</visible>
                 <onup>1000</onup>
                 <onleft>1000</onleft>
@@ -372,10 +394,23 @@
                 </focusedlayout>
             </control>
 
-            <control type="list" id="3001">
+            <control type="label" id="3002">
+                <description>Category Label</description>
                 <posx>420</posx>
                 <posy>120</posy>
-                <height>600</height>
+                <width>380</width>
+                <height>30</height>
+                <scroll>true</scroll>
+                <textcolor>white</textcolor>
+                <font>font30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label></label>
+            </control>
+            <control type="list" id="3001">
+                <posx>420</posx>
+                <posy>160</posy>
+                <height>560</height>
                 <width>860</width>
                 <scrolltime>200</scrolltime>
                 <orientation>vertical</orientation>
