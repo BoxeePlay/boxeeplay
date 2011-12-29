@@ -40,8 +40,14 @@ def initiate():
 def loadCategories():
     BPTraceEnter()
     mc.ShowDialogWait()
-    target = mc.GetWindow(14000).GetList(1000)
-    target.SetItems(playmc.GetCategories())
+    win = mc.GetWindow(14000)
+    time.sleep(0.001) #Äckelfulhack
+    target = win.GetList(1000)
+    time.sleep(0.001) #Äckelfulhack
+    cats = playmc.GetCategories()
+    time.sleep(0.001) #Äckelfulhack
+    target.SetItems(cats)
+#    mc.SetItems(14000, 1000, cats, 0)          # Documented but unsupported method
     mc.HideDialogWait()
     BPLog("Successfully loaded all categories.", Level.DEBUG)
     BPTraceExit()
@@ -128,10 +134,16 @@ def setPrograms(items,title):
     global labelPrograms
 
     BPTraceEnter()
-    target = mc.GetWindow(14000).GetList(2000)
+    win = mc.GetWindow(14000)
+    time.sleep(0.01) #Äckelfulhack
+    target = win.GetList(2000)
+    time.sleep(0.01) #Äckelfulhack
     target.SetItems(items)
+#    mc.SetItems(14000, 2000, items, 0)             # Documented but apparently unsupported method
     labelPrograms = title
-    mc.GetWindow(14000).GetLabel(2001).SetLabel(title)
+#    time.sleep(0.01) #Äckelfulhack
+#    lbl.SetLabel(title)
+    win.GetLabel(2001).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
     BPTraceExit()
@@ -140,12 +152,20 @@ def setEpisodes(items,title):
     global labelEpisodes
 
     BPTraceEnter()
-    target = mc.GetWindow(14000).GetList(3001)
+
+    win = mc.GetWindow(14000)
+    time.sleep(0.01) #Äckelfulhack
+    target = win.GetList(3001)
+    time.sleep(0.01) #Äckelfulhack
     target.SetItems(items)
+
+#    mc.SetItems(14000,3001,items,0)
     labelEpisodes = title
-    mc.GetWindow(14000).GetLabel(3002).SetLabel(title)
+
+    win.GetLabel(3002).SetLabel(title)
     if len(items) > 0:
         target.SetFocus()
+    
     BPTraceExit()
 
 def showLive():
@@ -189,10 +209,11 @@ def search():
     try:
         searchTerm = mc.GetWindow(14000).GetEdit(110).GetText()
         try:
-            searchTerm = searchTerm.decode("utf-8").encode("latin1")
-            setEpisodes(playmc.SearchEpisodesAndSamples(searchTerm), "Sökning på \"" + searchTerm + "\"")
+            searchTerm = searchTerm.decode("utf-8")
+            result = playmc.SearchEpisodesAndSamples(searchTerm.encode("latin-1"))
+            setEpisodes(result, str(len(result)) + " träffar på \"" + searchTerm.encode("utf-8") + "\"")
         except Exception, e:
-            BPLog("Could not search for %s: %s" %(searchTerm, e), Level.ERROR)
+            BPLog("Could not search for %s: %s" %(searchTerm.encode("utf-8"), e), Level.ERROR)
     except Exception, e:
         BPLog("Could not search: %s" %e, Level.ERROR)
     mc.HideDialogWait()

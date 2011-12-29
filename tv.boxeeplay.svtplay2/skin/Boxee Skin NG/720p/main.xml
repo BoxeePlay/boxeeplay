@@ -33,16 +33,16 @@
         </control>
 
         <control type="group" id="100">
-            <posx>134</posx>
+            <posx>150</posx>
+            <posy>23</posy>
             <control type="button" id="106">
                 <ondown>1000</ondown>
                 <onright>107</onright>
-                <posy>23</posy>
-                <posx>122</posx>
-                <width>100</width>
+                <posx>0</posx>
+                <width>180</width>
                 <height>40</height>
                 <label>Rekommenderat</label>
-                <font>font14</font>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -59,12 +59,11 @@
                 <ondown>1000</ondown>
                 <onleft>106</onleft>
                 <onright>108</onright>
-                <posy>23</posy>
-                <posx>248</posx>
-                <width>100</width>
+                <posx>200</posx>
+                <width>120</width>
                 <height>40</height>
                 <label>Senaste</label>
-                <font>font14</font>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -81,12 +80,11 @@
                 <ondown>1000</ondown>
                 <onleft>107</onleft>
                 <onright>109</onright>
-                <posy>23</posy>
-                <posx>374</posx>
-                <width>100</width>
+                <posx>340</posx>
+                <width>140</width>
                 <height>40</height>
                 <label>Populärast</label>
-                <font>font14</font>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -103,12 +101,11 @@
                 <ondown>1000</ondown>
                 <onleft>108</onleft>
                 <onright>110</onright>
-                <posy>23</posy>
                 <posx>500</posx>
                 <width>100</width>
                 <height>40</height>
                 <label>Live</label>
-                <font>font14</font>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -126,11 +123,10 @@
                 <onup>121</onup>
                 <onleft>109</onleft>
                 <onright>111</onright>
-                <posy>23</posy>
-                <posx>626</posx>
+                <posx>620</posx>
                 <width>390</width>
                 <height>40</height>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>FF000000</textcolor>
                 <focusedcolor>FF000000</focusedcolor>
                 <texturefocus border="15">searchbar.png</texturefocus>
@@ -141,12 +137,11 @@
                 <onleft>110</onleft>
                 <onright>199</onright>
                 <onup>111</onup>
-                <posy>23</posy>
-                <posx>1026</posx>
-                <width>100</width>
+                <posx>1030</posx>
+                <width>80</width>
                 <height>40</height>
-                <label>Sök avsnitt</label>
-                <font>font14</font>
+                <label>Sök</label>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -163,12 +158,12 @@
                 <description>Svenskt å</description>
                 <ondown>110</ondown>
                 <onright>121</onright>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>958</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>å</label>
-                <font>font14</font>
+                <font>font18</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -186,12 +181,12 @@
                 <onleft>120</onleft>
                 <onright>122</onright>
                 <onup>121</onup>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>978</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>ä</label>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -208,12 +203,12 @@
                 <ondown>110</ondown>
                 <onleft>121</onleft>
                 <onup>122</onup>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>998</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>ö</label>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -398,7 +393,7 @@
                 <description>Category Label</description>
                 <posx>420</posx>
                 <posy>120</posy>
-                <width>380</width>
+                <width>860</width>
                 <height>30</height>
                 <scroll>true</scroll>
                 <textcolor>white</textcolor>
