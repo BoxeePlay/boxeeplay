@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="window" id="14000">
-    <defaultcontrol always="true">1000</defaultcontrol>
+    <defaultcontrol always="true">100</defaultcontrol>
     <allowoverlay>no</allowoverlay>
     <onload lang="python">
 <![CDATA[actions.initiate()]]>
@@ -33,45 +33,66 @@
         </control>
 
 
+
         <control type="group" id="100" >
-            <posx>134</posx>
-            <control type="button" id="108">
+            <posx>150</posx>
+            <posy>23</posy>
+            <control type="button" id="107">
                 <ondown>1000</ondown>
-                <onright>109</onright>
-                <posy>23</posy>
-                <posx>374</posx>
-                <width>100</width>
+                <onright>108</onright>
+                <posx>100</posx>
+                <width>210</width>
                 <height>40</height>
-                <label>Rekommenderat</label>
-                <font>font14</font>
+                <label>Mest sedda program</label>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
                 <align>center</align>
                 <aligny>top</aligny>
-                <textoffsety>8</textoffsety>
+                <textoffsety>5</textoffsety>
                 <texturenofocus border="10">button_bg.png</texturenofocus>
                 <texturefocus border="10">button.png</texturefocus>
                 <alttexturefocus border="10">button.png</alttexturefocus>
                 <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
-                <onclick lang="python"><![CDATA[actions.loadRecommendedPrograms()]]></onclick>
+                <onclick lang="python"><![CDATA[actions.loadMostViewedPrograms()]]></onclick>
+            </control>
+            <control type="button" id="108">
+                <ondown>1000</ondown>
+                <onleft>107</onleft>
+                <onright>109</onright>
+                <posx>330</posx>
+                <width>180</width>
+                <height>40</height>
+                <label>Mest sedda klipp</label>
+                <font>font22</font>
+                <textcolor>ffbcbdc0</textcolor>
+                <focusedcolor>white</focusedcolor>
+                <selectedcolor>white</selectedcolor>
+                <align>center</align>
+                <aligny>top</aligny>
+                <textoffsety>5</textoffsety>
+                <texturenofocus border="10">button_bg.png</texturenofocus>
+                <texturefocus border="10">button.png</texturefocus>
+                <alttexturefocus border="10">button.png</alttexturefocus>
+                <alttexturenofocus border="10">button_alt.png</alttexturenofocus>
+                <onclick lang="python"><![CDATA[actions.loadMostViewedClips()]]></onclick>
             </control>
             <control type="button" id="109">
                 <ondown>1000</ondown>
                 <onleft>108</onleft>
                 <onright>110</onright>
-                <posy>23</posy>
-                <posx>500</posx>
-                <width>100</width>
+                <posx>530</posx>
+                <width>70</width>
                 <height>40</height>
                 <label>Live</label>
-                <font>font14</font>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
                 <align>center</align>
                 <aligny>top</aligny>
-                <textoffsety>8</textoffsety>
+                <textoffsety>5</textoffsety>
                 <texturenofocus border="10">button_bg.png</texturenofocus>
                 <texturefocus border="10">button.png</texturefocus>
                 <alttexturefocus border="10">button.png</alttexturefocus>
@@ -83,11 +104,10 @@
                 <ondown>1000</ondown>
                 <onup>121</onup>
                 <onright>111</onright>
-                <posy>23</posy>
-                <posx>626</posx>
+                <posx>620</posx>
                 <width>390</width>
                 <height>40</height>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>FF000000</textcolor>
                 <focusedcolor>FF000000</focusedcolor>
                 <texturefocus border="15">searchbar.png</texturefocus>
@@ -98,18 +118,17 @@
                 <onleft>110</onleft>
                 <onright>199</onright>
                 <onup>111</onup>
-                <posy>23</posy>
-                <posx>1026</posx>
-                <width>100</width>
+                <posx>1030</posx>
+                <width>80</width>
                 <height>40</height>
-                <label>Sök avsnitt</label>
-                <font>font14</font>
+                <label>Sök</label>
+                <font>font22</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
                 <align>center</align>
                 <aligny>top</aligny>
-                <textoffsety>8</textoffsety>
+                <textoffsety>5</textoffsety>
                 <texturenofocus border="10">button_bg.png</texturenofocus>
                 <texturefocus border="10">button.png</texturefocus>
                 <alttexturefocus border="10">button.png</alttexturefocus>
@@ -120,12 +139,12 @@
                 <description>Svenskt å</description>
                 <ondown>110</ondown>
                 <onright>121</onright>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>958</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>å</label>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -143,12 +162,12 @@
                 <onleft>120</onleft>
                 <onright>122</onright>
                 <onup>121</onup>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>978</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>ä</label>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -165,12 +184,12 @@
                 <ondown>110</ondown>
                 <onleft>121</onleft>
                 <onup>122</onup>
-                <posy>3</posy>
+                <posy>-20</posy>
                 <posx>998</posx>
                 <width>18</width>
                 <height>18</height>
                 <label>ö</label>
-                <font>font14</font>
+                <font>font20</font>
                 <textcolor>ffbcbdc0</textcolor>
                 <focusedcolor>white</focusedcolor>
                 <selectedcolor>white</selectedcolor>
@@ -183,7 +202,7 @@
                 <onclick>SetFocus(110)</onclick>
             </control>
         </control>
-        <control type="group" ID="999">
+        <control type="group" id="999">
             <control type="list" id="1000">
                 <description>Categories</description>
                 <posy>73</posy>
@@ -192,7 +211,7 @@
                 <height>40</height>
                 <orientation>horizontal</orientation>
                 <ondown>2000</ondown>
-                <onup>108</onup>
+                <onup>100</onup>
                 <content type="action">
                     <onclick lang="python">
                         <![CDATA[actions.loadPrograms()]]>
@@ -228,6 +247,14 @@
                             <height>40</height>
                             <posx>10</posx>
                             <posy>0</posy>
+                            <texture>button_bg.png</texture>
+                            <fadetime>100</fadetime>
+                        </control>
+                        <control type="image">
+                            <width>220</width>
+                            <height>40</height>
+                            <posx>10</posx>
+                            <posy>0</posy>
                             <texture>button.png</texture>
                             <visible>Control.HasFocus(1000)</visible>
                             <fadetime>100</fadetime>
@@ -238,6 +265,7 @@
                             <posx>10</posx>
                             <posy>0</posy>
                             <texture>button_alt.png</texture>
+                            <visible>![Control.HasFocus(108) | Control.HasFocus(109) | Control.HasFocus(110) | Control.HasFocus(111) | Control.HasFocus(120) | Control.HasFocus(121) | Control.HasFocus(122)]</visible>
                             <fadetime>100</fadetime>
                         </control>
                         <control type="label">
@@ -255,12 +283,25 @@
                 </focusedlayout>
             </control>
 
-            <control type="list" id="2000">
-                <description>Programs</description>
+            <control type="label" id="2001">
+                <description>Category Label</description>
                 <posx>20</posx>
                 <posy>120</posy>
                 <width>380</width>
-                <height>600</height>
+                <height>30</height>
+                <scroll>true</scroll>
+                <textcolor>white</textcolor>
+                <font>font30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label></label>
+            </control>
+            <control type="list" id="2000">
+                <description>Programs</description>
+                <posx>20</posx>
+                <posy>155</posy>
+                <width>380</width>
+                <height>560</height>
                 <visible>true</visible>
                 <onup>1000</onup>
                 <onleft>1000</onleft>
@@ -329,10 +370,24 @@
                 </focusedlayout>
             </control>
 
-            <control type="list" id="3001">
+            <control type="label" id="3002">
+                <description>Category Label</description>
                 <posx>420</posx>
                 <posy>120</posy>
-                <height>600</height>
+
+                <width>860</width>
+                <height>30</height>
+                <scroll>true</scroll>
+                <textcolor>white</textcolor>
+                <font>font30</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label></label>
+            </control>
+            <control type="list" id="3001">
+                <posx>420</posx>
+                <posy>160</posy>
+                <height>560</height>
                 <width>860</width>
                 <scrolltime>200</scrolltime>
                 <orientation>vertical</orientation>
@@ -457,7 +512,7 @@
                         <height>100</height>
                         <font>font20</font>
                         <textcolor>FFAAAAAA</textcolor>
-                        <label>$INFO[ListItem.Studio]</label>
+                        <label>$INFO[ListItem.Property(custom:info)]</label>
                     </control>
                     <control type="label">
                         <description>Episode description</description>
