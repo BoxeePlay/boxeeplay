@@ -281,7 +281,7 @@ function doUpdates() {
             }
             var msg = "Spelar nu upp i " + bitrate + "kbps." + extra;
             bplog(msg);
-            boxee.showNotification(msg,".",3);
+            //boxee.showNotification(msg,".",3);
         }
 
         if (boxee.getVersion() < 7) {
