@@ -30,6 +30,8 @@
 			
 			var bitrates = gatherStreams();
 			var netUrl   = gup('net');
+            var isLive   = gup('live') == "true";
+
 			function doLoad(){
 				if (  typeof(bitrates)    == 'undefined'
 				   || typeof(bitrates[0]) == 'undefined'
@@ -48,7 +50,8 @@
  
 						clip: {
 							urlResolvers: 'bwcheck',
-							//url: url,
+							//url: "webb1_720p",
+                            live: isLive,
 							bitrates: bitrates,
 							provider: 'rtmp',
 							scaling: 'fit'
@@ -82,10 +85,10 @@
 									bplog("Switched stream to: " + newItem.streamName);
 									//notifyBoxee("Ändrade överföringshastighet till " + newItem.bitrate + "kbps.");
 								}
-							}/*,
+							},
 
 							// Mainly for debugging purposes on Boxee 0.9
-							content: {
+							/*content: {
 								url: 'flowplayer.content-3.2.0.swf',
 								top: 0, left: 0, width: 250, height: 150,
 								backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
@@ -98,7 +101,7 @@
 										color: '#ffffff' 
 									}  
 								}  		
-							}*/,
+							},*/
 							controls: null
 						},
 

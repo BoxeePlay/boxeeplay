@@ -67,8 +67,9 @@ function boxeeLoadNew()
 	boxee.setMode(boxee.LOCKED_PLAYER_MODE);
 	boxee.realFullScreen = true;
 	playerState.canPause = true;
-	playerState.canSeek = true;
-    playerState.canSeekTo = true;
+    var isLive = browser.execute("gup('live')") != 'true';
+	playerState.canSeek = isLive
+    playerState.canSeekTo = isLive;
 	boxee.onUpdateState = function()
 	{
 		playerState.isPaused = browser.execute('$f().isPaused()') == 'true';
