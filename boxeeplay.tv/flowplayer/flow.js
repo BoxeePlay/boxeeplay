@@ -50,6 +50,10 @@ function boxeeLoadCommon()
 		sendProgress()
 	   
 	}
+    
+    boxee.onSeekTo = function(millis) {
+		browser.execute('$f().seek(' + millis/1000 + ')')
+    }
 	boxee.log("Finished loading common boxee configuration.");
 	//boxee.showNotification("Finished loading common boxee configuration.", ".", 2);
 }
@@ -64,11 +68,15 @@ function boxeeLoadNew()
 	boxee.realFullScreen = true;
 	playerState.canPause = true;
 	playerState.canSeek = true;
+    playerState.canSeekTo = true;
 	boxee.onUpdateState = function()
 	{
 		playerState.isPaused = browser.execute('$f().isPaused()') == 'true';
 		playerState.time     = parseFloat(Number(browser.execute('$f().getTime();')));
 		playerState.duration = parseFloat(Number(browser.execute('$f().getClip().fullDuration;')));
+        playerState.canPause = true;
+        playerState.canSeek = true;
+        playerState.canSeekTo = true;
 	}
 	boxee.isPaused = false;
 	boxee.log("Finished loading configuration for boxee >= 1.0.");

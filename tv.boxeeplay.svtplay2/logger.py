@@ -83,11 +83,11 @@ def BPLog(msg, lvl=Level.INFO):
                  , Level.WARNING : "noteWarn.png"
                  , Level.ERROR   : "noteError.png"
                  }
-    logFunc    = { Level.TRACEIN : mc.LogDebug
-                 , Level.TRACEOUT: mc.LogDebug
-                 , Level.DEBUG   : mc.LogDebug
-                 , Level.INFO    : mc.LogInfo
-                 , Level.WARNING : mc.LogInfo
+    logFunc    = { Level.TRACEIN : mc.LogError#mc.LogDebug
+                 , Level.TRACEOUT: mc.LogError#mc.LogDebug
+                 , Level.DEBUG   : mc.LogError#mc.LogDebug
+                 , Level.INFO    : mc.LogError#mc.LogInfo
+                 , Level.WARNING : mc.LogError#mc.LogInfo
                  , Level.ERROR   : mc.LogError
                  , Level.FATAL   : mc.LogError
                  }
