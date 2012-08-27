@@ -1,22 +1,20 @@
-﻿
-<app>
-  <id>tv.boxeeplay.tv4play</id>
-  <name>TV4Play</name>
-  <version>2.00</version>
-  <description>TV4Play i din Boxee!
+﻿<app>
+   <id>tv.boxeeplay.tv4play</id>
+   <name>TV4Play</name>
+   <version>2.01</version>
+   <description>TV4Play i din Boxee!
 
 Premiuminnehåll stöds ej
 
-Version 2.00</description>
-  <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
-  <repository>http://www.boxeeplay.tv/apps</repository>
-  <media>video</media>
-  <copyright>boxeeplay</copyright>
-  <email>dev@boxeeplay.tv</email>
-  <type>skin</type>
-  <startWindow>start</startWindow>
-  <platform>all</platform>
-  <minversion>0.9.21</minversion>
+Version 2.01</description>
+   <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
+   <repositoryid>tv.boxeeplay</repositoryid>
+   <repository>http://www.boxeeplay.tv/apps</repository>
+   <media>video</media>
+   <copyright>boxeeplay</copyright>
+   <email>dev@boxeeplay.tv</email>
+   <type>skin</type>
+   <startWindow>start</startWindow>
+   <platform>all</platform>
+   <minversion>0.9.21</minversion>
 </app>
-
-

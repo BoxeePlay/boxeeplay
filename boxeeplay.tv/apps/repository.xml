@@ -1,5 +1,5 @@
 <repository>
-   <id>tv.boxeeplay.www</id>
+   <id>tv.boxeeplay</id>
    <url>http://www.boxeeplay.tv/apps</url>
    <name>BoxeePlay</name>
    <thumb>http://www.boxeeplay.tv/images/boxeeplay.png</thumb>

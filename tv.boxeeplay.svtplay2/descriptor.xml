@@ -1,17 +1,19 @@
 ﻿<app>
-  <id>tv.boxeeplay.svtplay2</id>
-  <name>SVTPlay2</name>
-  <version>2.22</version>
-  <description>SVTPlay i din Boxee!
+   <id>tv.boxeeplay.svtplay2</id>
+   <name>SVTPlay2</name>
+   <version>2.23</version>
+   <description>SVTPlay i din Boxee
 
-Version 2.22</description>
-  <thumb>http://www.boxeeplay.tv/images/svtplay.png</thumb>
-  <repository>http://www.boxeeplay.tv/apps</repository>
-  <media>video</media>
-  <copyright>boxeeplay</copyright>
-  <email>dev@boxeeplay.tv</email>
-  <type>skin</type>
-  <startWindow>start</startWindow>
-  <platform>all</platform>
-  <minversion>0.9.21</minversion>
+Version 2.23</description>
+   <thumb>http://www.boxeeplay.tv/images/svtplay.png</thumb>
+   <repositoryid>tv.boxeeplay</repositoryid>
+   <repository>http://www.boxeeplay.tv/apps</repository>
+   <media>video</media>
+   <author>boxeeplay</author>
+   <copyright>boxeeplay.tv</copyright>
+   <email>dev@boxeeplay.tv</email>
+   <type>skin</type>
+   <startWindow>start</startWindow>
+   <platform>all</platform>
+   <minversion>0.9.21</minversion>
 </app>
