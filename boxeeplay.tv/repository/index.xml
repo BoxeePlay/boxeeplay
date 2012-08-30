@@ -1,0 +1,42 @@
+﻿<apps>
+    <app>
+       <id>tv.boxeeplay.svtplay2</id>
+       <name>SVTPlay2</name>
+       <version>2.23</version>
+       <description>SVTPlay i din Boxee
+
+Version 2.23</description>
+       <thumb>http://www.boxeeplay.tv/images/svtplay.png</thumb>
+       <repositoryid>tv.boxeeplay</repositoryid>
+       <repository>http://www.boxeeplay.tv/repository</repository>
+       <media>video</media>
+       <author>boxeeplay</author>
+       <copyright>boxeeplay.tv</copyright>
+       <email>dev@boxeeplay.tv</email>
+       <type>skin</type>
+       <startWindow>start</startWindow>
+       <platform>all</platform>
+       <minversion>0.9.21</minversion>
+    </app>
+    <app>
+       <id>tv.boxeeplay.tv4play</id>
+       <name>TV4Play</name>
+       <version>2.01</version>
+       <description>TV4Play i din Boxee!
+
+Premiuminnehåll stöds ej
+
+Version 2.01</description>
+       <thumb>http://www.boxeeplay.tv/images/tv4play.png</thumb>
+       <repositoryid>tv.boxeeplay</repositoryid>
+       <repository>http://www.boxeeplay.tv/repository</repository>
+       <media>video</media>
+       <copyright>boxeeplay</copyright>
+       <email>dev@boxeeplay.tv</email>
+       <type>skin</type>
+       <startWindow>start</startWindow>
+       <platform>all</platform>
+       <minversion>0.9.21</minversion>
+    </app>
+</apps>
+
